@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * audiotrack.c: Android native AudioTrack audio output module
+ *****************************************************************************
+ * Copyright © 2012 VLC authors and VideoLAN
+ *
+ * Authors: Ming Hu <tewilove@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -77,14 +98,21 @@ vlc_module_end ()
 
 void *InitLibrary() {
     void *p_library;
-
-    p_library = dlopen("libmedia.so", RTLD_NOW);
+    p_library = dlopen("libmedia.so", RTLD_NOW|RTLD_LOCAL);
     if (!p_library)
         return NULL;
     as_getOutputFrameCount = (AudioSystem_getOutputFrameCount)(dlsym(p_library, "_ZN7android11AudioSystem19getOutputFrameCountEPii"));
     as_getOutputLatency = (AudioSystem_getOutputLatency)(dlsym(p_library, "_ZN7android11AudioSystem16getOutputLatencyEPji"));
+    if(as_getOutputLatency == NULL) {
+        /* 4.1 Jellybean prototype */
+        as_getOutputLatency = (AudioSystem_getOutputLatency)(dlsym(p_library, "_ZN7android11AudioSystem16getOutputLatencyEPj19audio_stream_type_t"));
+    }
     as_getOutputSamplingRate = (AudioSystem_getOutputSamplingRate)(dlsym(p_library, "_ZN7android11AudioSystem21getOutputSamplingRateEPii"));
     at_getMinFrameCount = (AudioTrack_getMinFrameCount)(dlsym(p_library, "_ZN7android10AudioTrack16getMinFrameCountEPiij"));
+    if(at_getMinFrameCount == NULL) {
+        /* 4.1 Jellybean prototype */
+        at_getMinFrameCount = (AudioTrack_getMinFrameCount)(dlsym(p_library, "_ZN7android10AudioTrack16getMinFrameCountEPi19audio_stream_type_tj"));
+    }
     at_ctor = (AudioTrack_ctor)(dlsym(p_library, "_ZN7android10AudioTrackC1EijiiijPFviPvS1_ES1_ii"));
     at_ctor_legacy = (AudioTrack_ctor_legacy)(dlsym(p_library, "_ZN7android10AudioTrackC1EijiiijPFviPvS1_ES1_i"));
     at_dtor = (AudioTrack_dtor)(dlsym(p_library, "_ZN7android10AudioTrackD1Ev"));

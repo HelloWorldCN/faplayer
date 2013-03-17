@@ -2404,6 +2404,13 @@ static int InputSourceInit( input_thread_t *p_input,
             }
         }
 
+#if 1
+		/* --------------------------------------------------------------------------------- */
+		//add by juguofeng              2013-03-17
+		psz_demux = "avformat";
+#endif
+		/* --------------------------------------------------------------------------------- */
+
         /* Try access_demux first */
         in->p_demux = demux_New( p_input, p_input, psz_access, psz_demux, psz_path,
                                   NULL, p_input->p->p_es_out, false );
