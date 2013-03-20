@@ -30,7 +30,7 @@ endif
 ifeq ($(APP_ABI),armeabi-v7a)
     ifeq ($(FPU),neon)
         OPT_CFLAGS += -mfpu=neon -mtune=$(TUNE) -ftree-vectorize -mvectorize-with-neon-quad
-        BUILD_WITH_NEON := 1
+        BUILD_WITH_NEON := 0
     else
         OPT_CFLAGS += -mfpu=$(FPU) -mtune=$(TUNE) -ftree-vectorize
         BUILD_WITH_NEON := 0

@@ -102,7 +102,7 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 
 	/* called by native side */
 	private void onVlcEvent(VlcEvent ev) {
-		Log.d(LOGTAG, String.format("received vlc event %d", ev.eventType));
+		//Log.d(LOGTAG, String.format("received vlc event %d", ev.eventType));
 		switch (ev.eventType) {
 		case VlcEvent.MediaParsedChanged: {
 			if (!ev.booleanValue) {
