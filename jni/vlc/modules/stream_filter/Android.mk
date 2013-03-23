@@ -19,7 +19,8 @@ LOCAL_CFLAGS += \
 LOCAL_C_INCLUDES += \
     $(VLCROOT) \
     $(VLCROOT)/include \
-    $(VLCROOT)/src
+    $(VLCROOT)/src	\
+    $(LOCALLIBROOT)/include
 
 LOCAL_SRC_FILES := \
     httplive.c

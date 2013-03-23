@@ -323,13 +323,18 @@ public class PlayerActivity extends Activity implements
 		int indexOfDot = uri.lastIndexOf('.');
 		if (indexOfDot != -1) {
 			String extension = uri.substring(indexOfDot).toLowerCase();
+			/* used for mms network radio */
+			boolean mms_radio_flag = uri.contains("mms://");
+			boolean http_live_flag = uri.contains("http://");
 			if (extension.compareTo(".flv") == 0
 					|| extension.compareTo(".hlv") == 0
 					|| extension.compareTo(".m3u8") == 0
 					|| extension.compareTo(".mkv") == 0
 					|| extension.compareTo(".rm") == 0
 					|| extension.compareTo(".rmvb") == 0
-					|| extension.compareTo(".ts") == 0){
+					|| extension.compareTo(".ts") == 0
+					|| mms_radio_flag 
+					|| http_live_flag) {
 				useDefault = false;
 			}
 		}

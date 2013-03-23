@@ -178,6 +178,9 @@ LOCAL_SRC_FILES := \
 
 LOCAL_LDLIBS += -ldl -llog -lz
 
+LOCAL_LDLIBS += -L$(LOCALLIBROOT)/lib \
+	-lgcrypt -lgpg-error
+
 include $(LOCAL_PATH)/Modules.mk
 
 LOCAL_STATIC_LIBRARIES += compat

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * httplive.c: HTTP Live Streaming stream filter
  *****************************************************************************
- * Copyright (C) 2010-2011 M2X BV
- * $Id: cc3fe48c755b392037599427fd59332efe132d1a $
+ * Copyright (C) 2010-2012 M2X BV
+ * $Id: d6ee0a9450280da0b51e54071d4255c7790ebed4 $
  *
  * Author: Jean-Paul Saman <jpsaman _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,18 +29,19 @@
 #endif
 
 #include <limits.h>
-#include <errno.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
 #include <assert.h>
+#include <errno.h>
+#include <gcrypt.h>
 
 #include <vlc_threads.h>
 #include <vlc_arrays.h>
 #include <vlc_stream.h>
-#include <vlc_url.h>
 #include <vlc_memory.h>
+#include <vlc_gcrypt.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -59,6 +60,7 @@ vlc_module_end()
 /*****************************************************************************
  *
  *****************************************************************************/
+#define AES_BLOCK_SIZE 16 /* Only support AES-128 */
 typedef struct segment_s
 {
     int         sequence;   /* unique sequence number */
@@ -66,7 +68,11 @@ typedef struct segment_s
     uint64_t    size;       /* segment size in bytes */
     uint64_t    bandwidth;  /* bandwidth usage of segments (bits per second)*/
 
-    vlc_url_t   url;
+    char        *url;
+    char       *psz_key_path;         /* url key path */
+    uint8_t     aes_key[16];      /* AES-128 */
+    bool        b_key_loaded;
+
     vlc_mutex_t lock;
     block_t     *data;      /* data */
 } segment_t;
@@ -76,21 +82,28 @@ typedef struct hls_stream_s
     int         id;         /* program id */
     int         version;    /* protocol version should be 1 */
     int         sequence;   /* media sequence number */
-    int         duration;   /* maximum duration per segment (ms) */
+    int         duration;   /* maximum duration per segment (s) */
     uint64_t    bandwidth;  /* bandwidth usage of segments (bits per second)*/
-    uint64_t    size;       /* stream length (segment->duration * hls->bandwidth/8) */
+    uint64_t    size;       /* stream length is calculated by taking the sum
+                               foreach segment of (segment->duration * hls->bandwidth/8) */
 
     vlc_array_t *segments;  /* list of segments */
-    vlc_url_t   url;        /* uri to m3u8 */
+    char        *url;        /* uri to m3u8 */
     vlc_mutex_t lock;
     bool        b_cache;    /* allow caching */
+
+    char        *psz_current_key_path;          /* URL path of the encrypted key */
+    uint8_t      psz_AES_IV[AES_BLOCK_SIZE];    /* IV used when decypher the block */
+    bool         b_iv_loaded;
 } hls_stream_t;
 
 struct stream_sys_t
 {
-    vlc_url_t     m3u8;         /* M3U8 url */
+    char         *m3u8;         /* M3U8 url */
     vlc_thread_t  reload;       /* HLS m3u8 reload thread */
     vlc_thread_t  thread;       /* HLS segment download thread */
+
+    block_t      *peeked;
 
     /* */
     vlc_array_t  *hls_stream;   /* bandwidth adaptation */
@@ -127,6 +140,7 @@ struct stream_sys_t
     bool        b_meta;     /* meta playlist */
     bool        b_live;     /* live stream? or vod? */
     bool        b_error;    /* parsing error */
+    bool        b_aesmsg;   /* only print one time that the media is encrypted */
 };
 
 /****************************************************************************
@@ -137,7 +151,7 @@ static int  Peek   (stream_t *, const uint8_t **pp_peek, unsigned int i_peek);
 static int  Control(stream_t *, int i_query, va_list);
 
 static ssize_t read_M3U8_from_stream(stream_t *s, uint8_t **buffer);
-static ssize_t read_M3U8_from_url(stream_t *s, vlc_url_t *url, uint8_t **buffer);
+static ssize_t read_M3U8_from_url(stream_t *s, const char *psz_url, uint8_t **buffer);
 static char *ReadLine(uint8_t *buffer, uint8_t **pos, size_t len);
 
 static int hls_Download(stream_t *s, segment_t *segment);
@@ -151,45 +165,57 @@ static void segment_Free(segment_t *segment);
 /****************************************************************************
  *
  ****************************************************************************/
-static const char *const ext[] = {
-    "#EXT-X-TARGETDURATION",
-    "#EXT-X-MEDIA-SEQUENCE",
-    "#EXT-X-KEY",
-    "#EXT-X-ALLOW-CACHE",
-    "#EXT-X-ENDLIST",
-    "#EXT-X-STREAM-INF",
-    "#EXT-X-DISCONTINUITY",
-    "#EXT-X-VERSION"
-};
-
 static bool isHTTPLiveStreaming(stream_t *s)
 {
-    const uint8_t *peek, *peek_end;
+    const uint8_t *peek;
 
-    int64_t i_size = stream_Peek(s->p_source, &peek, 46);
-    if (i_size < 1)
+    int size = stream_Peek(s->p_source, &peek, 46);
+    if (size < 7)
         return false;
 
-    if (strncasecmp((const char*)peek, "#EXTM3U", 7) != 0)
+    if (memcmp(peek, "#EXTM3U", 7) != 0)
         return false;
+
+    peek += 7;
+    size -= 7;
 
     /* Parse stream and search for
      * EXT-X-TARGETDURATION or EXT-X-STREAM-INF tag, see
      * http://tools.ietf.org/html/draft-pantos-http-live-streaming-04#page-8 */
-    peek_end = peek + i_size;
-    while(peek <= peek_end)
+    while (size--)
     {
-        if (*peek == '#')
+        static const char *const ext[] = {
+            "TARGETDURATION",
+            "MEDIA-SEQUENCE",
+            "KEY",
+            "ALLOW-CACHE",
+            "ENDLIST",
+            "STREAM-INF",
+            "DISCONTINUITY",
+            "VERSION"
+        };
+
+        if (*peek++ != '#')
+            continue;
+
+        if (size < 6)
+            continue;
+
+        if (memcmp(peek, "EXT-X-", 6))
+            continue;
+
+        peek += 6;
+        size -= 6;
+
+        for (size_t i = 0; i < ARRAY_SIZE(ext); i++)
         {
-            for (unsigned int i = 0; i < ARRAY_SIZE(ext); i++)
-            {
-                char *p = strstr((const char*)peek, ext[i]);
-                if (p != NULL)
-                    return true;
-            }
+            size_t len = strlen(ext[i]);
+            if (size < 0 || (size_t)size < len)
+                continue;
+            if (!memcmp(peek, ext[i], len))
+                return true;
         }
-        peek++;
-    };
+    }
 
     return false;
 }
@@ -207,7 +233,13 @@ static hls_stream_t *hls_New(vlc_array_t *hls_stream, const int id, const uint64
     hls->sequence = 0; /* default is 0 */
     hls->version = 1;  /* default protocol version */
     hls->b_cache = true;
-    vlc_UrlParse(&hls->url, uri, 0);
+    hls->url = strdup(uri);
+    if (hls->url == NULL)
+    {
+        free(hls);
+        return NULL;
+    }
+    hls->psz_current_key_path = NULL;
     hls->segments = vlc_array_new();
     vlc_array_append(hls_stream, hls);
     vlc_mutex_init(&hls->lock);
@@ -222,15 +254,43 @@ static void hls_Free(hls_stream_t *hls)
     {
         for (int n = 0; n < vlc_array_count(hls->segments); n++)
         {
-            segment_t *segment = (segment_t *)vlc_array_item_at_index(hls->segments, n);
+            segment_t *segment = segment_GetSegment(hls, n);
             if (segment) segment_Free(segment);
         }
         vlc_array_destroy(hls->segments);
     }
-
-    vlc_UrlClean(&hls->url);
+    free(hls->url);
+    free(hls->psz_current_key_path);
     free(hls);
-    hls = NULL;
+}
+
+static hls_stream_t *hls_Copy(hls_stream_t *src, const bool b_cp_segments)
+{
+    assert(src);
+    assert(!b_cp_segments); /* FIXME: copying segments is not implemented */
+
+    hls_stream_t *dst = (hls_stream_t *)malloc(sizeof(hls_stream_t));
+    if (dst == NULL) return NULL;
+
+    dst->id = src->id;
+    dst->bandwidth = src->bandwidth;
+    dst->duration = src->duration;
+    dst->size = src->size;
+    dst->sequence = src->sequence;
+    dst->version = src->version;
+    dst->b_cache = src->b_cache;
+    dst->psz_current_key_path = src->psz_current_key_path ?
+                strdup( src->psz_current_key_path ) : NULL;
+    dst->url = strdup(src->url);
+    if (dst->url == NULL)
+    {
+        free(dst);
+        return NULL;
+    }
+    if (!b_cp_segments)
+        dst->segments = vlc_array_new();
+    vlc_mutex_init(&dst->lock);
+    return dst;
 }
 
 static hls_stream_t *hls_Get(vlc_array_t *hls_stream, const int wanted)
@@ -245,7 +305,7 @@ static hls_stream_t *hls_Get(vlc_array_t *hls_stream, const int wanted)
 
 static inline hls_stream_t *hls_GetFirst(vlc_array_t *hls_stream)
 {
-    return (hls_stream_t*) hls_Get(hls_stream, 0);
+    return hls_Get(hls_stream, 0);
 }
 
 static hls_stream_t *hls_GetLast(vlc_array_t *hls_stream)
@@ -254,7 +314,7 @@ static hls_stream_t *hls_GetLast(vlc_array_t *hls_stream)
     if (count <= 0)
         return NULL;
     count--;
-    return (hls_stream_t *) hls_Get(hls_stream, count);
+    return hls_Get(hls_stream, count);
 }
 
 static hls_stream_t *hls_Find(vlc_array_t *hls_stream, hls_stream_t *hls_new)
@@ -262,12 +322,12 @@ static hls_stream_t *hls_Find(vlc_array_t *hls_stream, hls_stream_t *hls_new)
     int count = vlc_array_count(hls_stream);
     for (int n = 0; n < count; n++)
     {
-        hls_stream_t *hls = vlc_array_item_at_index(hls_stream, n);
+        hls_stream_t *hls = hls_Get(hls_stream, n);
         if (hls)
         {
             /* compare */
             if ((hls->id == hls_new->id) &&
-                (hls->bandwidth == hls_new->bandwidth))
+                ((hls->bandwidth == hls_new->bandwidth)||(hls_new->bandwidth==0)))
                 return hls;
         }
     }
@@ -281,6 +341,12 @@ static uint64_t hls_GetStreamSize(hls_stream_t *hls)
      * then the deviation from exact byte size will be big and the seek/
      * progressbar will not behave entirely as one expects. */
     uint64_t size = 0UL;
+
+    /* If there is no valid bandwidth yet, then there is no point in
+     * computing stream size. */
+    if (hls->bandwidth == 0)
+        return size;
+
     int count = vlc_array_count(hls->segments);
     for (int n = 0; n < count; n++)
     {
@@ -304,10 +370,19 @@ static segment_t *segment_New(hls_stream_t* hls, const int duration, const char 
     segment->size = 0; /* bytes */
     segment->sequence = 0;
     segment->bandwidth = 0;
-    vlc_UrlParse(&segment->url, uri, 0);
+    segment->url = strdup(uri);
+    if (segment->url == NULL)
+    {
+        free(segment);
+        return NULL;
+    }
     segment->data = NULL;
     vlc_array_append(hls->segments, segment);
     vlc_mutex_init(&segment->lock);
+    segment->b_key_loaded = false;
+    segment->psz_key_path = NULL;
+    if (hls->psz_current_key_path)
+        segment->psz_key_path = strdup(hls->psz_current_key_path);
     return segment;
 }
 
@@ -315,11 +390,11 @@ static void segment_Free(segment_t *segment)
 {
     vlc_mutex_destroy(&segment->lock);
 
-    vlc_UrlClean(&segment->url);
+    free(segment->url);
+    free(segment->psz_key_path);
     if (segment->data)
         block_Release(segment->data);
     free(segment);
-    segment = NULL;
 }
 
 static segment_t *segment_GetSegment(hls_stream_t *hls, const int wanted)
@@ -342,7 +417,7 @@ static segment_t *segment_Find(hls_stream_t *hls, const int sequence)
     if (count <= 0) return NULL;
     for (int n = 0; n < count; n++)
     {
-        segment_t *segment = vlc_array_item_at_index(hls->segments, n);
+        segment_t *segment = segment_GetSegment(hls, n);
         if (segment == NULL) break;
         if (segment->sequence == sequence)
             return segment;
@@ -356,7 +431,7 @@ static int ChooseSegment(stream_t *s, const int current)
     hls_stream_t *hls = hls_Get(p_sys->hls_stream, current);
     if (hls == NULL) return 0;
 
-    /* Choose a segment to start which is no closer then
+    /* Choose a segment to start which is no closer than
      * 3 times the target duration from the end of the playlist.
      */
     int wanted = 0;
@@ -365,14 +440,14 @@ static int ChooseSegment(stream_t *s, const int current)
     int count = vlc_array_count(hls->segments);
     int i = p_sys->b_live ? count - 1 : 0;
 
-    while((i >= 0) && (i < count) && vlc_object_alive(s))
+    while((i >= 0) && (i < count))
     {
         segment_t *segment = segment_GetSegment(hls, i);
         assert(segment);
 
         if (segment->duration > hls->duration)
         {
-            msg_Err(s, "EXTINF:%d duration is larger then EXT-X-TARGETDURATION:%d",
+            msg_Err(s, "EXTINF:%d duration is larger than EXT-X-TARGETDURATION:%d",
                     segment->duration, hls->duration);
         }
 
@@ -388,7 +463,7 @@ static int ChooseSegment(stream_t *s, const int current)
         if (p_sys->b_live)
             i-- ;
         else
-          i++;
+            i++;
     }
 
     msg_Info(s, "Choose segment %d/%d (sequence=%d)", wanted, count, sequence);
@@ -409,7 +484,8 @@ static char *parse_Attributes(const char *line, const char *attr)
     begin = p;
     do
     {
-        if (strncasecmp(begin, attr, strlen(attr)) == 0)
+        if (strncasecmp(begin, attr, strlen(attr)) == 0
+          && begin[strlen(attr)] == '=')
         {
             /* <attr>=<value>[,]* */
             p = strchr(begin, ',');
@@ -427,78 +503,59 @@ static char *parse_Attributes(const char *line, const char *attr)
     return NULL;
 }
 
-static char *relative_URI(stream_t *s, const char *uri, const char *path)
+static int string_to_IV(char *string_hexa, uint8_t iv[AES_BLOCK_SIZE])
 {
-    stream_sys_t *p_sys = s->p_sys;
+    unsigned long long iv_hi, iv_lo;
+    char *end = NULL;
+    if (*string_hexa++ != '0')
+        return VLC_EGENERIC;
+    if (*string_hexa != 'x' && *string_hexa != 'X')
+        return VLC_EGENERIC;
 
-    char *p = strchr(uri, ':');
-    if (p != NULL)
-        return NULL;
+    string_hexa++;
 
-    if (p_sys->m3u8.psz_path == NULL)
-        return NULL;
-
-    char *psz_path = strdup(p_sys->m3u8.psz_path);
-    if (psz_path == NULL) return NULL;
-    p = strrchr(psz_path, '/');
-    if (p) *p = '\0';
-
-    char *psz_uri = NULL;
-    if (p_sys->m3u8.psz_password || p_sys->m3u8.psz_username)
-    {
-        if (asprintf(&psz_uri, "%s://%s:%s@%s:%d%s/%s", p_sys->m3u8.psz_protocol,
-                     p_sys->m3u8.psz_username, p_sys->m3u8.psz_password,
-                     p_sys->m3u8.psz_host, p_sys->m3u8.i_port,
-                     path ? path : psz_path, uri) < 0)
-            goto fail;
+    size_t len = strlen(string_hexa);
+    if (len <= 16) {
+        iv_hi = 0;
+        iv_lo = strtoull(string_hexa, &end, 16);
+        if (end)
+            return VLC_EGENERIC;
+    } else {
+        iv_lo = strtoull(&string_hexa[len-16], NULL, 16);
+        if (end)
+            return VLC_EGENERIC;
+        string_hexa[len-16] = '\0';
+        iv_hi = strtoull(string_hexa, NULL, 16);
+        if (end)
+            return VLC_EGENERIC;
     }
-    else
-    {
-        if (asprintf(&psz_uri, "%s://%s:%d%s/%s", p_sys->m3u8.psz_protocol,
-                     p_sys->m3u8.psz_host, p_sys->m3u8.i_port,
-                     path ? path : psz_path, uri) < 0)
-           goto fail;
-    }
-    free(psz_path);
-    return psz_uri;
 
-fail:
-    free(psz_path);
-    return NULL;
+    for (int i = 7; i >= 0 ; --i) {
+        iv[  i] = iv_hi & 0xff;
+        iv[8+i] = iv_lo & 0xff;
+        iv_hi >>= 8;
+        iv_lo >>= 8;
+    }
+
+    return VLC_SUCCESS;
 }
 
-static char *ConstructUrl(vlc_url_t *url)
+static char *relative_URI(const char *psz_url, const char *psz_path)
 {
-    if ((url->psz_protocol == NULL) ||
-        (url->psz_path == NULL))
+    assert(psz_url != NULL && psz_path != NULL);
+    //If the path is actually an absolute URL, don't do anything.
+    if (strncmp(psz_path, "http", 4) == 0)
         return NULL;
 
-    if (url->i_port <= 0)
-    {
-        if (strncmp(url->psz_protocol, "https", 5) == 0)
-            url->i_port = 443;
-        else
-            url->i_port = 80;
-    }
-
-    char *psz_url = NULL;
-    if (url->psz_password || url->psz_username)
-    {
-        if (asprintf(&psz_url, "%s://%s:%s@%s:%d%s",
-                     url->psz_protocol,
-                     url->psz_username, url->psz_password,
-                     url->psz_host, url->i_port, url->psz_path) < 0)
-            return NULL;
-    }
-    else
-    {
-        if (asprintf(&psz_url, "%s://%s:%d%s",
-                     url->psz_protocol,
-                     url->psz_host, url->i_port, url->psz_path) < 0)
-            return NULL;
-    }
-
-    return psz_url;
+    char    *path_end = strrchr(psz_url, '/');
+    if (path_end == NULL)
+        return NULL;
+    unsigned int    url_length = path_end - psz_url + 1;
+    char    *psz_res = malloc(url_length + strlen(psz_path) + 1);
+    strncpy(psz_res, psz_url, url_length);
+    psz_res[url_length] = 0;
+    strcat(psz_res, psz_path);
+    return psz_res;
 }
 
 static int parse_SegmentInformation(hls_stream_t *hls, char *p_read, int *duration)
@@ -518,20 +575,23 @@ static int parse_SegmentInformation(hls_stream_t *hls, char *p_read, int *durati
         return VLC_EGENERIC;
 
     int value;
+    char *endptr;
     if (hls->version < 3)
     {
-       value = strtol(token, NULL, 10);
-       if (errno == ERANGE)
-       {
-           *duration = -1;
-           return VLC_EGENERIC;
-       }
-       *duration = value;
+        errno = 0;
+        value = strtol(token, &endptr, 10);
+        if (token == endptr || errno == ERANGE)
+        {
+            *duration = -1;
+            return VLC_EGENERIC;
+        }
+        *duration = value;
     }
     else
     {
-        double d = strtod(token, (char **) NULL);
-        if (errno == ERANGE)
+        errno = 0;
+        double d = strtof(token, &endptr);
+        if (token == endptr || errno == ERANGE)
         {
             *duration = -1;
             return VLC_EGENERIC;
@@ -540,38 +600,30 @@ static int parse_SegmentInformation(hls_stream_t *hls, char *p_read, int *durati
             value = ((int)d) + 1;
         else
             value = ((int)d);
+        *duration = value;
     }
 
     /* Ignore the rest of the line */
-
     return VLC_SUCCESS;
 }
 
-static int parse_AddSegment(stream_t *s, hls_stream_t *hls, const int duration, const char *uri)
+static int parse_AddSegment(hls_stream_t *hls, const int duration, const char *uri)
 {
     assert(hls);
     assert(uri);
 
     /* Store segment information */
-    char *psz_path = NULL;
-    if (hls->url.psz_path != NULL)
-    {
-        psz_path = strdup(hls->url.psz_path);
-        if (psz_path == NULL)
-            return VLC_ENOMEM;
-        char *p = strrchr(psz_path, '/');
-        if (p) *p = '\0';
-    }
-    char *psz_uri = relative_URI(s, uri, psz_path);
-    free(psz_path);
-
     vlc_mutex_lock(&hls->lock);
+
+    char *psz_uri = relative_URI(hls->url, uri);
+
     segment_t *segment = segment_New(hls, duration, psz_uri ? psz_uri : uri);
     if (segment)
         segment->sequence = hls->sequence + vlc_array_count(hls->segments) - 1;
+    free(psz_uri);
+
     vlc_mutex_unlock(&hls->lock);
 
-    free(psz_uri);
     return segment ? VLC_SUCCESS : VLC_ENOMEM;
 }
 
@@ -601,13 +653,13 @@ static int parse_StreamInformation(stream_t *s, vlc_array_t **hls_stream,
     assert(*hls == NULL);
 
     attr = parse_Attributes(p_read, "PROGRAM-ID");
-    if (attr == NULL)
+    if (attr)
     {
-        msg_Err(s, "#EXT-X-STREAM-INF: expected PROGRAM-ID=<value>");
-        return VLC_EGENERIC;
+        id = atol(attr);
+        free(attr);
     }
-    id = atol(attr);
-    free(attr);
+    else
+        id = 0;
 
     attr = parse_Attributes(p_read, "BANDWIDTH");
     if (attr == NULL)
@@ -624,9 +676,9 @@ static int parse_StreamInformation(stream_t *s, vlc_array_t **hls_stream,
         return VLC_EGENERIC;
     }
 
-    msg_Info(s, "bandwidth adaption detected (program-id=%d, bandwidth=%"PRIu64").", id, bw);
+    msg_Info(s, "bandwidth adaptation detected (program-id=%d, bandwidth=%"PRIu64").", id, bw);
 
-    char *psz_uri = relative_URI(s, uri, NULL);
+    char *psz_uri = relative_URI(s->p_sys->m3u8, uri);
 
     *hls = hls_New(*hls_stream, id, bw, psz_uri ? psz_uri : uri);
 
@@ -648,9 +700,18 @@ static int parse_MediaSequence(stream_t *s, hls_stream_t *hls, char *p_read)
     }
 
     if (hls->sequence > 0)
-        msg_Err(s, "EXT-X-MEDIA-SEQUENCE already present in playlist (new=%d, old=%d)",
-                    sequence, hls->sequence);
-
+    {
+        if (s->p_sys->b_live)
+        {
+            hls_stream_t *last = hls_GetLast(s->p_sys->hls_stream);
+            if ((last->sequence < sequence) && (sequence - last->sequence != 1))
+                msg_Err(s, "EXT-X-MEDIA-SEQUENCE gap in playlist (new=%d, old=%d)",
+                            sequence, last->sequence);
+        }
+        else
+            msg_Err(s, "EXT-X-MEDIA-SEQUENCE already present in playlist (new=%d, old=%d)",
+                        sequence, hls->sequence);
+    }
     hls->sequence = sequence;
     return VLC_SUCCESS;
 }
@@ -670,7 +731,6 @@ static int parse_Key(stream_t *s, hls_stream_t *hls, char *p_read)
 
     if (strncasecmp(attr, "NONE", 4) == 0)
     {
-
         char *uri = parse_Attributes(p_read, "URI");
         if (uri != NULL)
         {
@@ -688,6 +748,65 @@ static int parse_Key(stream_t *s, hls_stream_t *hls, char *p_read)
                 err = VLC_EGENERIC;
             }
             free(iv);
+        }
+    }
+    else if (strncasecmp(attr, "AES-128", 7) == 0)
+    {
+        char *value, *uri, *iv;
+        if (s->p_sys->b_aesmsg == false)
+        {
+            msg_Info(s, "playback of AES-128 encrypted HTTP Live media detected.");
+            s->p_sys->b_aesmsg = true;
+        }
+        value = uri = parse_Attributes(p_read, "URI");
+        if (value == NULL)
+        {
+            msg_Err(s, "#EXT-X-KEY: URI not found for encrypted HTTP Live media in AES-128");
+            free(attr);
+            return VLC_EGENERIC;
+        }
+
+        /* Url is put between quotes, remove them */
+        if (*value == '"')
+        {
+            /* We need to strip the "" from the attribute value */
+            uri = value + 1;
+            char* end = strchr(uri, '"');
+            if (end != NULL)
+                *end = 0;
+        }
+        hls->psz_current_key_path = relative_URI(hls->url, uri);
+        free(value);
+
+        value = iv = parse_Attributes(p_read, "IV");
+        if (iv == NULL)
+        {
+            /*
+            * If the EXT-X-KEY tag does not have the IV attribute, implementations
+            * MUST use the sequence number of the media file as the IV when
+            * encrypting or decrypting that media file.  The big-endian binary
+            * representation of the sequence number SHALL be placed in a 16-octet
+            * buffer and padded (on the left) with zeros.
+            */
+            hls->b_iv_loaded = false;
+        }
+        else
+        {
+            /*
+            * If the EXT-X-KEY tag has the IV attribute, implementations MUST use
+            * the attribute value as the IV when encrypting or decrypting with that
+            * key.  The value MUST be interpreted as a 128-bit hexadecimal number
+            * and MUST be prefixed with 0x or 0X.
+            */
+
+            if (string_to_IV(iv, hls->psz_AES_IV) == VLC_EGENERIC)
+            {
+                msg_Err(s, "IV invalid");
+                err = VLC_EGENERIC;
+            }
+            else
+                hls->b_iv_loaded = true;
+            free(value);
         }
     }
     else
@@ -736,9 +855,9 @@ static int parse_Version(stream_t *s, hls_stream_t *hls, char *p_read)
 
     /* Check version */
     hls->version = version;
-    if (hls->version != 1)
+    if (hls->version <= 0 || hls->version > 3)
     {
-        msg_Err(s, "#EXT-X-VERSION should be version 1 iso %d", version);
+        msg_Err(s, "#EXT-X-VERSION should be version 1, 2 or 3 iso %d", version);
         return VLC_EGENERIC;
     }
     return VLC_SUCCESS;
@@ -760,6 +879,13 @@ static int parse_Discontinuity(stream_t *s, hls_stream_t *hls, char *p_read)
     /* FIXME: Do we need to act on discontinuity ?? */
     msg_Dbg(s, "#EXT-X-DISCONTINUITY %s", p_read);
     return VLC_SUCCESS;
+}
+
+static int hls_CompareStreams( const void* a, const void* b )
+{
+    hls_stream_t*   stream_a = *(hls_stream_t**)a;
+    hls_stream_t*   stream_b = *(hls_stream_t**)b;
+    return stream_a->bandwidth > stream_b->bandwidth;
 }
 
 /* The http://tools.ietf.org/html/draft-pantos-http-live-streaming-04#page-8
@@ -828,6 +954,8 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
 
         /* M3U8 Meta Index file */
         do {
+            bool failed_to_download_stream_m3u8 = false;
+
             /* Next line */
             line = ReadLine(p_begin, &p_read, p_end - p_begin);
             if (line == NULL)
@@ -843,27 +971,49 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
                     err = VLC_ENOMEM;
                 else
                 {
-                    hls_stream_t *hls = NULL;
-                    err = parse_StreamInformation(s, &streams, &hls, line, uri);
-                    free(uri);
-
-                    /* Download playlist file from server */
-                    uint8_t *buf = NULL;
-                    ssize_t len = read_M3U8_from_url(s, &hls->url, &buf);
-                    if (len < 0)
-                        err = VLC_EGENERIC;
+                    if (*uri == '#')
+                    {
+                        msg_Info(s, "Skipping invalid stream-inf: %s", uri);
+                        free(uri);
+                    }
                     else
                     {
-                        /* Parse HLS m3u8 content. */
-                        err = parse_M3U8(s, streams, buf, len);
-                        free(buf);
-                    }
+                        bool new_stream_added = false;
+                        hls_stream_t *hls = NULL;
+                        err = parse_StreamInformation(s, &streams, &hls, line, uri);
+                        if (err == VLC_SUCCESS)
+                            new_stream_added = true;
 
-                    if (hls)
-                    {
-                        hls->version = version;
-                        if (!p_sys->b_live)
-                            hls->size = hls_GetStreamSize(hls); /* Stream size (approximate) */
+                        free(uri);
+
+                        /* Download playlist file from server */
+                        uint8_t *buf = NULL;
+                        ssize_t len = read_M3U8_from_url(s, hls->url, &buf);
+                        if (len < 0)
+                        {
+                            msg_Warn(s, "failed to read %s, continue for other streams", hls->url);
+                            failed_to_download_stream_m3u8 = true;
+
+                            /* remove stream just added */
+                            if (new_stream_added)
+                                vlc_array_remove(streams, vlc_array_count(streams) - 1);
+
+                            /* ignore download error, so we have chance to try other streams */
+                            err = VLC_SUCCESS;
+                        }
+                        else
+                        {
+                            /* Parse HLS m3u8 content. */
+                            err = parse_M3U8(s, streams, buf, len);
+                            free(buf);
+                        }
+
+                        if (hls)
+                        {
+                            hls->version = version;
+                            if (!p_sys->b_live)
+                                hls->size = hls_GetStreamSize(hls); /* Stream size (approximate) */
+                        }
                     }
                 }
                 p_begin = p_read;
@@ -875,8 +1025,15 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
             if (p_begin >= p_end)
                 break;
 
-        } while ((err == VLC_SUCCESS) && vlc_object_alive(s));
+        } while (err == VLC_SUCCESS);
 
+        size_t stream_count = vlc_array_count(streams);
+        msg_Dbg(s, "%d streams loaded in Meta playlist", (int)stream_count);
+        if (stream_count == 0)
+        {
+            msg_Err(s, "No playable streams found in Meta playlist");
+            err = VLC_EGENERIC;
+        }
     }
     else
     {
@@ -888,7 +1045,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
         else
         {
             /* No Meta playlist used */
-            hls = hls_New(streams, 0, -1, NULL);
+            hls = hls_New(streams, 0, 0, p_sys->m3u8);
             if (hls)
             {
                 /* Get TARGET-DURATION first */
@@ -912,6 +1069,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
         assert(hls);
 
         /* */
+        bool media_sequence_loaded = false;
         int segment_duration = -1;
         do
         {
@@ -926,7 +1084,15 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
             else if (strncmp(line, "#EXT-X-TARGETDURATION", 21) == 0)
                 err = parse_TargetDuration(s, hls, line);
             else if (strncmp(line, "#EXT-X-MEDIA-SEQUENCE", 21) == 0)
-                err = parse_MediaSequence(s, hls, line);
+            {
+                /* A Playlist file MUST NOT contain more than one EXT-X-MEDIA-SEQUENCE tag. */
+                /* We only care about first one */
+                if (!media_sequence_loaded)
+                {
+                    err = parse_MediaSequence(s, hls, line);
+                    media_sequence_loaded = true;
+                }
+            }
             else if (strncmp(line, "#EXT-X-KEY", 10) == 0)
                 err = parse_Key(s, hls, line);
             else if (strncmp(line, "#EXT-X-PROGRAM-DATE-TIME", 24) == 0)
@@ -941,7 +1107,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
                 err = parse_EndList(s, hls);
             else if ((strncmp(line, "#", 1) != 0) && (*line != '\0') )
             {
-                err = parse_AddSegment(s, hls, segment_duration, line);
+                err = parse_AddSegment(hls, segment_duration, line);
                 segment_duration = -1; /* reset duration */
             }
 
@@ -951,7 +1117,7 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
             if (p_begin >= p_end)
                 break;
 
-        } while ((err == VLC_SUCCESS) && vlc_object_alive(s));
+        } while (err == VLC_SUCCESS);
 
         free(line);
     }
@@ -959,80 +1125,269 @@ static int parse_M3U8(stream_t *s, vlc_array_t *streams, uint8_t *buffer, const 
     return err;
 }
 
+
+static int hls_DownloadSegmentKey(stream_t *s, segment_t *seg)
+{
+    stream_t *p_m3u8 = stream_UrlNew(s, seg->psz_key_path);
+    if (p_m3u8 == NULL)
+    {
+        msg_Err(s, "Failed to load the AES key for segment sequence %d", seg->sequence);
+        return VLC_EGENERIC;
+    }
+
+    int len = stream_Read(p_m3u8, seg->aes_key, sizeof(seg->aes_key));
+    stream_Delete(p_m3u8);
+    if (len != AES_BLOCK_SIZE)
+    {
+        msg_Err(s, "The AES key loaded doesn't have the right size (%d)", len);
+        return VLC_EGENERIC;
+    }
+
+    return VLC_SUCCESS;
+}
+
+static int hls_ManageSegmentKeys(stream_t *s, hls_stream_t *hls)
+{
+    segment_t   *seg = NULL;
+    segment_t   *prev_seg;
+    int         count = vlc_array_count(hls->segments);
+
+    for (int i = 0; i < count; i++)
+    {
+        prev_seg = seg;
+        seg = segment_GetSegment(hls, i);
+        if (seg == NULL )
+            continue;
+        if (seg->psz_key_path == NULL)
+            continue;   /* No key to load ? continue */
+        if (seg->b_key_loaded)
+            continue;   /* The key is already loaded */
+
+        /* if the key has not changed, and already available from previous segment,
+         * try to copy it, and don't load the key */
+        if (prev_seg && prev_seg->b_key_loaded && strcmp(seg->psz_key_path, prev_seg->psz_key_path) == 0)
+        {
+            memcpy(seg->aes_key, prev_seg->aes_key, AES_BLOCK_SIZE);
+            seg->b_key_loaded = true;
+            continue;
+        }
+        if (hls_DownloadSegmentKey(s, seg) != VLC_SUCCESS)
+            return VLC_EGENERIC;
+       seg->b_key_loaded = true;
+    }
+    return VLC_SUCCESS;
+}
+
+static int hls_DecodeSegmentData(stream_t *s, hls_stream_t *hls, segment_t *segment)
+{
+    /* Did the segment need to be decoded ? */
+    if (segment->psz_key_path == NULL)
+        return VLC_SUCCESS;
+
+    /* Do we have loaded the key ? */
+    if (!segment->b_key_loaded)
+    {
+        /* No ? try to download it now */
+        if (hls_ManageSegmentKeys(s, hls) != VLC_SUCCESS)
+            return VLC_EGENERIC;
+    }
+
+    /* For now, we only decode AES-128 data */
+    gcry_error_t i_gcrypt_err;
+    gcry_cipher_hd_t aes_ctx;
+    /* Setup AES */
+    i_gcrypt_err = gcry_cipher_open(&aes_ctx, GCRY_CIPHER_AES,
+                                     GCRY_CIPHER_MODE_CBC, 0);
+    if (i_gcrypt_err)
+    {
+        msg_Err(s, "gcry_cipher_open failed: %s", gpg_strerror(i_gcrypt_err));
+        gcry_cipher_close(aes_ctx);
+        return VLC_EGENERIC;
+    }
+
+    /* Set key */
+    i_gcrypt_err = gcry_cipher_setkey(aes_ctx, segment->aes_key,
+                                       sizeof(segment->aes_key));
+    if (i_gcrypt_err)
+    {
+        msg_Err(s, "gcry_cipher_setkey failed: %s", gpg_strerror(i_gcrypt_err));
+        gcry_cipher_close(aes_ctx);
+        return VLC_EGENERIC;
+    }
+
+    if (hls->b_iv_loaded == false)
+    {
+        memset(hls->psz_AES_IV, 0, AES_BLOCK_SIZE);
+        hls->psz_AES_IV[15] = segment->sequence & 0xff;
+        hls->psz_AES_IV[14] = (segment->sequence >> 8)& 0xff;
+        hls->psz_AES_IV[13] = (segment->sequence >> 16)& 0xff;
+        hls->psz_AES_IV[12] = (segment->sequence >> 24)& 0xff;
+    }
+
+    i_gcrypt_err = gcry_cipher_setiv(aes_ctx, hls->psz_AES_IV,
+                                      sizeof(hls->psz_AES_IV));
+
+    if (i_gcrypt_err)
+    {
+        msg_Err(s, "gcry_cipher_setiv failed: %s", gpg_strerror(i_gcrypt_err));
+        gcry_cipher_close(aes_ctx);
+        return VLC_EGENERIC;
+    }
+
+    i_gcrypt_err = gcry_cipher_decrypt(aes_ctx,
+                                       segment->data->p_buffer, /* out */
+                                       segment->data->i_buffer,
+                                       NULL, /* in */
+                                       0);
+    if (i_gcrypt_err)
+    {
+        msg_Err(s, "gcry_cipher_decrypt failed:  %s/%s\n", gcry_strsource(i_gcrypt_err), gcry_strerror(i_gcrypt_err));
+        gcry_cipher_close(aes_ctx);
+        return VLC_EGENERIC;
+    }
+    gcry_cipher_close(aes_ctx);
+    /* remove the PKCS#7 padding from the buffer */
+    int pad = segment->data->p_buffer[segment->data->i_buffer-1];
+    if (pad <= 0 || pad > AES_BLOCK_SIZE)
+    {
+        msg_Err(s, "Bad padding character (0x%x), perhaps we failed to decrypt the segment with the correct key", pad);
+        return VLC_EGENERIC;
+    }
+    int count = pad;
+    while (count--)
+    {
+        if (segment->data->p_buffer[segment->data->i_buffer-1-count] != pad)
+        {
+                msg_Err(s, "Bad ending buffer, perhaps we failed to decrypt the segment with the correct key");
+                return VLC_EGENERIC;
+        }
+    }
+
+    /* not all the data is readable because of padding */
+    segment->data->i_buffer -= pad;
+
+    return VLC_SUCCESS;
+}
+
 static int get_HTTPLiveMetaPlaylist(stream_t *s, vlc_array_t **streams)
 {
     stream_sys_t *p_sys = s->p_sys;
     assert(*streams);
+    int err = VLC_EGENERIC;
 
-    /* Download new playlist file from server */
-    uint8_t *buffer = NULL;
-    ssize_t len = read_M3U8_from_url(s, &p_sys->m3u8, &buffer);
-    if (len < 0)
-        return VLC_EGENERIC;
+    /* Duplicate HLS stream META information */
+    for (int i = 0; i < vlc_array_count(p_sys->hls_stream); i++)
+    {
+        hls_stream_t *src, *dst;
+        src = hls_Get(p_sys->hls_stream, i);
+        if (src == NULL)
+            return VLC_EGENERIC;
 
-    /* Parse HLS m3u8 content. */
-    int err = parse_M3U8(s, *streams, buffer, len);
-    free(buffer);
+        dst = hls_Copy(src, false);
+        if (dst == NULL)
+            return VLC_ENOMEM;
+        vlc_array_append(*streams, dst);
 
+        /* Download playlist file from server */
+        uint8_t *buf = NULL;
+        ssize_t len = read_M3U8_from_url(s, dst->url, &buf);
+        if (len < 0)
+            err = VLC_EGENERIC;
+        else
+        {
+            /* Parse HLS m3u8 content. */
+            err = parse_M3U8(s, *streams, buf, len);
+            free(buf);
+        }
+    }
     return err;
 }
 
-/* Reload playlist */
-static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t **hls)
+/* Update hls_old (an existing member of p_sys->hls_stream) to match hls_new
+   (which represents a downloaded, perhaps newer version of the same playlist) */
+static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t *hls_old)
 {
     int count = vlc_array_count(hls_new->segments);
 
     msg_Info(s, "updating hls stream (program-id=%d, bandwidth=%"PRIu64") has %d segments",
              hls_new->id, hls_new->bandwidth, count);
+
+    vlc_mutex_lock(&hls_old->lock);
     for (int n = 0; n < count; n++)
     {
         segment_t *p = segment_GetSegment(hls_new, n);
         if (p == NULL) return VLC_EGENERIC;
 
-        vlc_mutex_lock(&(*hls)->lock);
-        segment_t *segment = segment_Find(*hls, p->sequence);
+        segment_t *segment = segment_Find(hls_old, p->sequence);
         if (segment)
         {
+            vlc_mutex_lock(&segment->lock);
+
+            assert(p->url);
+            assert(segment->url);
+
             /* they should be the same */
             if ((p->sequence != segment->sequence) ||
                 (p->duration != segment->duration) ||
-                (strcmp(p->url.psz_path, segment->url.psz_path) != 0))
+                (strcmp(p->url, segment->url) != 0))
             {
-                msg_Err(s, "existing segment found with different content - resetting");
-                msg_Err(s, "- sequence: new=%d, old=%d", p->sequence, segment->sequence);
-                msg_Err(s, "- duration: new=%d, old=%d", p->duration, segment->duration);
-                msg_Err(s, "- file: new=%s", p->url.psz_path);
-                msg_Err(s, "        old=%s", segment->url.psz_path);
+                msg_Warn(s, "existing segment found with different content - resetting");
+                msg_Warn(s, "- sequence: new=%d, old=%d", p->sequence, segment->sequence);
+                msg_Warn(s, "- duration: new=%d, old=%d", p->duration, segment->duration);
+                msg_Warn(s, "- file: new=%s", p->url);
+                msg_Warn(s, "        old=%s", segment->url);
 
                 /* Resetting content */
                 segment->sequence = p->sequence;
                 segment->duration = p->duration;
-                vlc_UrlClean(&segment->url);
-                vlc_UrlParse(&segment->url, p->url.psz_buffer, 0);
+                free(segment->url);
+                segment->url = strdup(p->url);
+                if ( segment->url == NULL )
+                {
+                    msg_Err(s, "Failed updating segment %d - skipping it",  p->sequence);
+                    segment_Free(p);
+                    vlc_mutex_unlock(&segment->lock);
+                    continue;
+                }
+                /* We must free the content, because if the key was not downloaded, content can't be decrypted */
+                if ((p->psz_key_path || p->b_key_loaded) &&
+                    segment->data)
+                {
+                    block_Release(segment->data);
+                    segment->data = NULL;
+                }
+                free(segment->psz_key_path);
+                segment->psz_key_path = p->psz_key_path ? strdup(p->psz_key_path) : NULL;
                 segment_Free(p);
             }
+            vlc_mutex_unlock(&segment->lock);
         }
         else
         {
-            int last = vlc_array_count((*hls)->segments) - 1;
-            segment_t *l = segment_GetSegment(*hls, last);
-            if (l == NULL) goto fail_and_unlock;
+            int last = vlc_array_count(hls_old->segments) - 1;
+            segment_t *l = segment_GetSegment(hls_old, last);
+            if (l == NULL) {
+                vlc_mutex_unlock(&hls_old->lock);
+                return VLC_EGENERIC;
+            }
 
             if ((l->sequence + 1) != p->sequence)
             {
                 msg_Err(s, "gap in sequence numbers found: new=%d expected %d",
                         p->sequence, l->sequence+1);
             }
-            vlc_array_append((*hls)->segments, p);
+            vlc_array_append(hls_old->segments, p);
             msg_Info(s, "- segment %d appended", p->sequence);
         }
-        vlc_mutex_unlock(&(*hls)->lock);
     }
+
+    /* update meta information */
+    hls_old->sequence = hls_new->sequence;
+    hls_old->duration = (hls_new->duration == -1) ? hls_old->duration : hls_new->duration;
+    hls_old->b_cache = hls_new->b_cache;
+    vlc_mutex_unlock(&hls_old->lock);
     return VLC_SUCCESS;
 
-fail_and_unlock:
-    vlc_mutex_unlock(&(*hls)->lock);
-    return VLC_EGENERIC;
 }
 
 static int hls_ReloadPlaylist(stream_t *s)
@@ -1051,7 +1406,7 @@ static int hls_ReloadPlaylist(stream_t *s)
         for (int i = 0; i < vlc_array_count(hls_streams); i++)
         {
             hls_stream_t *hls;
-            hls = (hls_stream_t *)vlc_array_item_at_index(hls_streams, i);
+            hls = hls_Get(hls_streams, i);
             if (hls) hls_Free(hls);
         }
         vlc_array_destroy(hls_streams);
@@ -1075,11 +1430,10 @@ static int hls_ReloadPlaylist(stream_t *s)
             msg_Info(s, "new HLS stream appended (id=%d, bandwidth=%"PRIu64")",
                      hls_new->id, hls_new->bandwidth);
         }
-        else if (hls_UpdatePlaylist(s, hls_new, &hls_old) != VLC_SUCCESS)
+        else if (hls_UpdatePlaylist(s, hls_new, hls_old) != VLC_SUCCESS)
             msg_Info(s, "failed updating HLS stream (id=%d, bandwidth=%"PRIu64")",
                      hls_new->id, hls_new->bandwidth);
     }
-
     vlc_array_destroy(hls_streams);
     return VLC_SUCCESS;
 }
@@ -1117,7 +1471,7 @@ static int BandwidthAdaptation(stream_t *s, int progid, uint64_t *bandwidth)
     return candidate;
 }
 
-static int Download(stream_t *s, hls_stream_t *hls, segment_t *segment, int *cur_stream)
+static int hls_DownloadSegmentData(stream_t *s, hls_stream_t *hls, segment_t *segment, int *cur_stream)
 {
     stream_sys_t *p_sys = s->p_sys;
 
@@ -1139,7 +1493,7 @@ static int Download(stream_t *s, hls_stream_t *hls, segment_t *segment, int *cur
         int estimated = (int)(size / p_sys->bandwidth);
         if (estimated > segment->duration)
         {
-            msg_Warn(s,"downloading of segment %d takes %ds, which is longer then its playback (%ds)",
+            msg_Warn(s,"downloading segment %d predicted to take %ds, which exceeds its length (%ds)",
                         segment->sequence, estimated, segment->duration);
         }
     }
@@ -1147,22 +1501,31 @@ static int Download(stream_t *s, hls_stream_t *hls, segment_t *segment, int *cur
     mtime_t start = mdate();
     if (hls_Download(s, segment) != VLC_SUCCESS)
     {
+        msg_Err(s, "downloading segment %d from stream %d failed",
+                    segment->sequence, *cur_stream);
         vlc_mutex_unlock(&segment->lock);
         return VLC_EGENERIC;
     }
     mtime_t duration = mdate() - start;
+    if (hls->bandwidth == 0 && segment->duration > 0)
+    {
+        /* Try to estimate the bandwidth for this stream */
+        hls->bandwidth = (uint64_t)(((double)segment->size * 8) / ((double)segment->duration));
+    }
+
+    /* If the segment is encrypted, decode it */
+    if (hls_DecodeSegmentData(s, hls, segment) != VLC_SUCCESS)
+    {
+        vlc_mutex_unlock(&segment->lock);
+        return VLC_EGENERIC;
+    }
 
     vlc_mutex_unlock(&segment->lock);
 
     msg_Info(s, "downloaded segment %d from stream %d",
                 segment->sequence, *cur_stream);
 
-    /* check for division by zero */
-    double ms = (double)duration / 1000.0; /* ms */
-    if (ms <= 0.0)
-        return VLC_SUCCESS;
-
-    uint64_t bw = ((double)(segment->size * 8) / ms) * 1000; /* bits / s */
+    uint64_t bw = segment->size * 8 * 1000000 / __MAX(1, duration); /* bits / s */
     p_sys->bandwidth = bw;
     if (p_sys->b_meta && (hls->bandwidth != bw))
     {
@@ -1228,7 +1591,7 @@ static void* hls_Thread(void *p_this)
         vlc_mutex_unlock(&hls->lock);
 
         if ((segment != NULL) &&
-            (Download(s, hls, segment, &p_sys->download.stream) != VLC_SUCCESS))
+            (hls_DownloadSegmentData(s, hls, segment, &p_sys->download.stream) != VLC_SUCCESS))
         {
             if (!vlc_object_alive(s)) break;
 
@@ -1266,9 +1629,9 @@ static void* hls_Reload(void *p_this)
 
     int canc = vlc_savecancel();
 
+    double wait = 0.5;
     while (vlc_object_alive(s))
     {
-        double wait = 1;
         mtime_t now = mdate();
         if (now >= p_sys->playlist.wakeup)
         {
@@ -1279,9 +1642,20 @@ static void* hls_Reload(void *p_this)
                 p_sys->playlist.tries++;
                 if (p_sys->playlist.tries == 1) wait = 0.5;
                 else if (p_sys->playlist.tries == 2) wait = 1;
-                else if (p_sys->playlist.tries >= 3) wait = 3;
+                else if (p_sys->playlist.tries >= 3) wait = 2;
+
+                /* Can we afford to backoff? */
+                if (p_sys->download.segment - p_sys->playback.segment < 3)
+                {
+                    p_sys->playlist.tries = 0;
+                    wait = 0.5;
+                }
             }
-            else p_sys->playlist.tries = 0;
+            else
+            {
+                p_sys->playlist.tries = 0;
+                wait = 0.5;
+            }
 
             hls_stream_t *hls = hls_Get(p_sys->hls_stream, p_sys->download.stream);
             assert(hls);
@@ -1302,42 +1676,33 @@ static void* hls_Reload(void *p_this)
 static int Prefetch(stream_t *s, int *current)
 {
     stream_sys_t *p_sys = s->p_sys;
-    int stream;
+    int stream = *current;
 
-    /* Try to pick best matching stream */;
-again:
-    stream = *current;
-
-    hls_stream_t *hls = hls_Get(p_sys->hls_stream, *current);
+    hls_stream_t *hls = hls_Get(p_sys->hls_stream, stream);
     if (hls == NULL)
         return VLC_EGENERIC;
 
-    segment_t *segment = segment_GetSegment(hls, p_sys->download.segment);
-    if (segment == NULL )
+    if (vlc_array_count(hls->segments) == 0)
         return VLC_EGENERIC;
+    else if (vlc_array_count(hls->segments) == 1 && p_sys->b_live)
+        msg_Warn(s, "Only 1 segment available to prefetch in live stream; may stall");
 
-    if (Download(s, hls, segment, current) != VLC_SUCCESS)
-        return VLC_EGENERIC;
-
-    /* Found better bandwidth match, try again */
-    if (*current != stream)
-        goto again;
-
-    /* Download first 2 segments of this HLS stream */
-    stream = *current;
-    for (int i = 0; i < 2; i++)
+    /* Download first 2 segments of this HLS stream if they exist */
+    for (int i = 0; i < __MIN(vlc_array_count(hls->segments), 2); i++)
     {
         segment_t *segment = segment_GetSegment(hls, p_sys->download.segment);
         if (segment == NULL )
             return VLC_EGENERIC;
 
+        /* It is useless to lock the segment here, as Prefetch is called before
+           download and playlit thread are started. */
         if (segment->data)
         {
             p_sys->download.segment++;
             continue;
         }
 
-        if (Download(s, hls, segment, current) != VLC_SUCCESS)
+        if (hls_DownloadSegmentData(s, hls, segment, current) != VLC_SUCCESS)
             return VLC_EGENERIC;
 
         p_sys->download.segment++;
@@ -1363,13 +1728,7 @@ static int hls_Download(stream_t *s, segment_t *segment)
 {
     assert(segment);
 
-    /* Construct URL */
-    char *psz_url = ConstructUrl(&segment->url);
-    if (psz_url == NULL)
-           return VLC_ENOMEM;
-
-    stream_t *p_ts = stream_UrlNew(s, psz_url);
-    free(psz_url);
+    stream_t *p_ts = stream_UrlNew(s, segment->url);
     if (p_ts == NULL)
         return VLC_EGENERIC;
 
@@ -1389,18 +1748,26 @@ static int hls_Download(stream_t *s, segment_t *segment)
     uint64_t size;
     do
     {
+        /* NOTE: Beware the size reported for a segment by the HLS server may not
+         * be correct, when downloading the segment data. Therefore check the size
+         * and enlarge the segment data block if necessary.
+         */
         size = stream_Size(p_ts);
         if (size > segment->size)
         {
             msg_Dbg(s, "size changed %"PRIu64, segment->size);
-            segment->data = block_Realloc(segment->data, 0, size);
-            if (segment->data == NULL)
+            block_t *p_block = block_Realloc(segment->data, 0, size);
+            if (p_block == NULL)
             {
                 stream_Delete(p_ts);
+                block_Release(segment->data);
+                segment->data = NULL;
                 return VLC_ENOMEM;
             }
+            segment->data = p_block;
             segment->size = size;
             assert(segment->data->i_buffer == segment->size);
+            p_block = NULL;
         }
         length = stream_Read(p_ts, segment->data->p_buffer + curlen, segment->size - curlen);
         if (length <= 0)
@@ -1435,7 +1802,7 @@ static ssize_t read_M3U8_from_stream(stream_t *s, uint8_t **buffer)
             if (total_allocated)
                 total_allocated *= 2;
             else
-                total_allocated = __MIN(bytes+1, sizeof(buf));
+                total_allocated = __MIN((uint64_t)bytes+1, sizeof(buf));
 
             p = realloc_or_free(p, total_allocated);
             if (p == NULL)
@@ -1455,17 +1822,12 @@ static ssize_t read_M3U8_from_stream(stream_t *s, uint8_t **buffer)
     return total_bytes;
 }
 
-static ssize_t read_M3U8_from_url(stream_t *s, vlc_url_t *url, uint8_t **buffer)
+static ssize_t read_M3U8_from_url(stream_t *s, const char* psz_url, uint8_t **buffer)
 {
     assert(*buffer == NULL);
 
     /* Construct URL */
-    char *psz_url = ConstructUrl(url);
-    if (psz_url == NULL)
-           return VLC_ENOMEM;
-
     stream_t *p_m3u8 = stream_UrlNew(s, psz_url);
-    free(psz_url);
     if (p_m3u8 == NULL)
         return VLC_EGENERIC;
 
@@ -1486,21 +1848,27 @@ static char *ReadLine(uint8_t *buffer, uint8_t **pos, const size_t len)
 
     while (p < end)
     {
-        if ((*p == '\n') || (*p == '\0'))
+        if ((*p == '\r') || (*p == '\n') || (*p == '\0'))
             break;
         p++;
     }
 
-    /* copy line excluding \n or \0 */
+    /* copy line excluding \r \n or \0 */
     line = strndup((char *)begin, p - begin);
 
-    if (*p == '\0')
-        *pos = end;
-    else
+    while ((*p == '\r') || (*p == '\n') || (*p == '\0'))
     {
-        /* next pass start after \n */
-        p++;
-        *pos = p;
+        if (*p == '\0')
+        {
+            *pos = end;
+            break;
+        }
+        else
+        {
+            /* next pass start after \r and \n */
+            p++;
+            *pos = p;
+        }
     }
 
     return line;
@@ -1519,6 +1887,9 @@ static int Open(vlc_object_t *p_this)
 
     msg_Info(p_this, "HTTP Live Streaming (%s)", s->psz_path);
 
+    /* Initialize crypto bit */
+    vlc_gcrypt_init();
+
     /* */
     s->p_sys = p_sys = calloc(1, sizeof(*p_sys));
     if (p_sys == NULL)
@@ -1530,10 +1901,19 @@ static int Open(vlc_object_t *p_this)
         free(p_sys);
         return VLC_ENOMEM;
     }
-    vlc_UrlParse(&p_sys->m3u8, psz_uri, 0);
-    free(psz_uri);
+    p_sys->m3u8 = psz_uri;
 
-    p_sys->bandwidth = -1;
+    char *new_path;
+    if (asprintf(&new_path, "%s.ts", s->psz_path) < 0)
+    {
+        free(p_sys->m3u8);
+        free(p_sys);
+        return VLC_ENOMEM;
+    }
+    free(s->psz_path);
+    s->psz_path = new_path;
+
+    p_sys->bandwidth = 0;
     p_sys->b_live = true;
     p_sys->b_meta = false;
     p_sys->b_error = false;
@@ -1541,7 +1921,7 @@ static int Open(vlc_object_t *p_this)
     p_sys->hls_stream = vlc_array_new();
     if (p_sys->hls_stream == NULL)
     {
-        vlc_UrlClean(&p_sys->m3u8);
+        free(p_sys->m3u8);
         free(p_sys);
         return VLC_ENOMEM;
     }
@@ -1562,22 +1942,23 @@ static int Open(vlc_object_t *p_this)
         goto fail;
     }
     free(buffer);
+    /* HLS standard doesn't provide any guaranty about streams
+       being sorted by bandwidth, so we sort them */
+    qsort( p_sys->hls_stream->pp_elems, p_sys->hls_stream->i_count,
+           sizeof( hls_stream_t* ), &hls_CompareStreams );
 
     /* Choose first HLS stream to start with */
     int current = p_sys->playback.stream = 0;
     p_sys->playback.segment = p_sys->download.segment = ChooseSegment(s, current);
 
-    if (p_sys->b_live && (p_sys->playback.segment < 0))
-    {
-        msg_Warn(s, "less data then 3 times 'target duration' available for live playback, playback may stall");
-    }
+    /* manage encryption key if needed */
+    hls_ManageSegmentKeys(s, hls_Get(p_sys->hls_stream, current));
 
     if (Prefetch(s, &current) != VLC_SUCCESS)
     {
         msg_Err(s, "fetching first segment failed.");
         goto fail;
     }
-
 
     p_sys->download.stream = current;
     p_sys->playback.stream = current;
@@ -1617,14 +1998,13 @@ fail:
     /* Free hls streams */
     for (int i = 0; i < vlc_array_count(p_sys->hls_stream); i++)
     {
-        hls_stream_t *hls;
-        hls = (hls_stream_t *)vlc_array_item_at_index(p_sys->hls_stream, i);
+        hls_stream_t *hls = hls_Get(p_sys->hls_stream, i);
         if (hls) hls_Free(hls);
     }
     vlc_array_destroy(p_sys->hls_stream);
 
     /* */
-    vlc_UrlClean(&p_sys->m3u8);
+    free(p_sys->m3u8);
     free(p_sys);
     return VLC_EGENERIC;
 }
@@ -1641,6 +2021,9 @@ static void Close(vlc_object_t *p_this)
 
     /* */
     vlc_mutex_lock(&p_sys->download.lock_wait);
+    /* negate the condition variable's predicate */
+    p_sys->download.segment = p_sys->playback.segment = 0;
+    p_sys->download.seek = 0; /* better safe than sorry */
     vlc_cond_signal(&p_sys->download.wait);
     vlc_mutex_unlock(&p_sys->download.lock_wait);
 
@@ -1654,14 +2037,15 @@ static void Close(vlc_object_t *p_this)
     /* Free hls streams */
     for (int i = 0; i < vlc_array_count(p_sys->hls_stream); i++)
     {
-        hls_stream_t *hls;
-        hls = (hls_stream_t *)vlc_array_item_at_index(p_sys->hls_stream, i);
+        hls_stream_t *hls = hls_Get(p_sys->hls_stream, i);
         if (hls) hls_Free(hls);
     }
     vlc_array_destroy(p_sys->hls_stream);
 
     /* */
-    vlc_UrlClean(&p_sys->m3u8);
+    free(p_sys->m3u8);
+    if (p_sys->peeked)
+        block_Release (p_sys->peeked);
     free(p_sys);
 }
 
@@ -1681,21 +2065,23 @@ static segment_t *GetSegment(stream_t *s)
         segment = segment_GetSegment(hls, p_sys->playback.segment);
         if (segment != NULL)
         {
+            vlc_mutex_lock(&segment->lock);
             /* This segment is ready? */
             if (segment->data != NULL)
             {
+                vlc_mutex_unlock(&segment->lock);
                 p_sys->b_cache = hls->b_cache;
                 vlc_mutex_unlock(&hls->lock);
                 goto check;
             }
+            vlc_mutex_unlock(&segment->lock);
         }
         vlc_mutex_unlock(&hls->lock);
     }
 
     /* Was the HLS stream changed to another bitrate? */
-    int i_stream = 0;
     segment = NULL;
-    while(vlc_object_alive(s))
+    for (int i_stream = 0; i_stream < vlc_array_count(p_sys->hls_stream); i_stream++)
     {
         /* Is the next segment ready */
         hls_stream_t *hls = hls_Get(p_sys->hls_stream, i_stream);
@@ -1714,23 +2100,21 @@ static segment_t *GetSegment(stream_t *s)
         int i_segment = p_sys->download.segment;
         vlc_mutex_unlock(&p_sys->download.lock_wait);
 
+        vlc_mutex_lock(&segment->lock);
         /* This segment is ready? */
         if ((segment->data != NULL) &&
             (p_sys->playback.segment < i_segment))
         {
             p_sys->playback.stream = i_stream;
             p_sys->b_cache = hls->b_cache;
+            vlc_mutex_unlock(&segment->lock);
             vlc_mutex_unlock(&hls->lock);
             goto check;
         }
+        vlc_mutex_unlock(&segment->lock);
         vlc_mutex_unlock(&hls->lock);
 
         if (!p_sys->b_meta)
-            break;
-
-        /* Was the stream changed to another bitrate? */
-        i_stream++;
-        if (i_stream >= vlc_array_count(p_sys->hls_stream))
             break;
     }
     /* */
@@ -1738,6 +2122,7 @@ static segment_t *GetSegment(stream_t *s)
 
 check:
     /* sanity check */
+    assert(segment->data);
     if (segment->data->i_buffer == 0)
     {
         vlc_mutex_lock(&hls->lock);
@@ -1754,10 +2139,25 @@ check:
     return segment;
 }
 
+static int segment_RestorePos(segment_t *segment)
+{
+    if (segment->data)
+    {
+        uint64_t size = segment->size - segment->data->i_buffer;
+        if (size > 0)
+        {
+            segment->data->i_buffer += size;
+            segment->data->p_buffer -= size;
+        }
+    }
+    return VLC_SUCCESS;
+}
+
+/* p_read might be NULL if caller wants to skip data */
 static ssize_t hls_Read(stream_t *s, uint8_t *p_read, unsigned int i_read)
 {
     stream_sys_t *p_sys = s->p_sys;
-    ssize_t copied = 0;
+    ssize_t used = 0;
 
     do
     {
@@ -1777,19 +2177,13 @@ static ssize_t hls_Read(stream_t *s, uint8_t *p_read, unsigned int i_read)
                 segment->data = NULL;
             }
             else
-            {   /* reset playback pointer to start of buffer */
-                uint64_t size = segment->size - segment->data->i_buffer;
-                if (size > 0)
-                {
-                    segment->data->i_buffer += size;
-                    segment->data->p_buffer -= size;
-                }
-            }
-            p_sys->playback.segment++;
+                segment_RestorePos(segment);
+
             vlc_mutex_unlock(&segment->lock);
 
             /* signal download thread */
             vlc_mutex_lock(&p_sys->download.lock_wait);
+            p_sys->playback.segment++;
             vlc_cond_signal(&p_sys->download.wait);
             vlc_mutex_unlock(&p_sys->download.lock_wait);
             continue;
@@ -1807,17 +2201,18 @@ static ssize_t hls_Read(stream_t *s, uint8_t *p_read, unsigned int i_read)
 
         if (len > 0)
         {
-            memcpy(p_read + copied, segment->data->p_buffer, len);
+            if (p_read) /* if NULL, then caller skips data */
+                memcpy(p_read + used, segment->data->p_buffer, len);
             segment->data->i_buffer -= len;
             segment->data->p_buffer += len;
-            copied += len;
+            used += len;
             i_read -= len;
         }
         vlc_mutex_unlock(&segment->lock);
 
-    } while ((i_read > 0) && vlc_object_alive(s));
+    } while (i_read > 0);
 
-    return copied;
+    return used;
 }
 
 static int Read(stream_t *s, void *buffer, unsigned int i_read)
@@ -1830,15 +2225,7 @@ static int Read(stream_t *s, void *buffer, unsigned int i_read)
     if (p_sys->b_error)
         return 0;
 
-    if (buffer == NULL)
-    {
-        /* caller skips data, get big enough buffer */
-        msg_Warn(s, "buffer is NULL (allocate %d)", i_read);
-        buffer = calloc(1, i_read);
-        if (buffer == NULL)
-            return 0; /* NO MEMORY left*/
-    }
-
+    /* NOTE: buffer might be NULL if caller wants to skip data */
     length = hls_Read(s, (uint8_t*) buffer, i_read);
     if (length < 0)
         return 0;
@@ -1850,10 +2237,9 @@ static int Read(stream_t *s, void *buffer, unsigned int i_read)
 static int Peek(stream_t *s, const uint8_t **pp_peek, unsigned int i_peek)
 {
     stream_sys_t *p_sys = s->p_sys;
-    size_t curlen = 0;
     segment_t *segment;
+    unsigned int len = i_peek;
 
-again:
     segment = GetSegment(s);
     if (segment == NULL)
     {
@@ -1864,29 +2250,78 @@ again:
 
     vlc_mutex_lock(&segment->lock);
 
-    /* remember segment to peek */
-    int peek_segment = p_sys->playback.segment;
-    do
+    size_t i_buff = segment->data->i_buffer;
+    uint8_t *p_buff = segment->data->p_buffer;
+
+    if (i_peek < i_buff)
     {
-        if (i_peek < segment->data->i_buffer)
+        *pp_peek = p_buff;
+        vlc_mutex_unlock(&segment->lock);
+        return i_peek;
+    }
+
+    else /* This will seldom be run */
+    {
+        /* remember segment to read */
+        int peek_segment = p_sys->playback.segment;
+        size_t curlen = 0;
+        segment_t *nsegment;
+        p_sys->playback.segment++;
+        block_t *peeked = p_sys->peeked;
+
+        if (peeked == NULL)
+            peeked = block_Alloc (i_peek);
+        else if (peeked->i_buffer < i_peek)
+            peeked = block_Realloc (peeked, 0, i_peek);
+        if (peeked == NULL)
+            return 0;
+        p_sys->peeked = peeked;
+
+        memcpy(peeked->p_buffer, p_buff, i_buff);
+        curlen = i_buff;
+        len -= i_buff;
+        vlc_mutex_unlock(&segment->lock);
+
+        i_buff = peeked->i_buffer;
+        p_buff = peeked->p_buffer;
+        *pp_peek = p_buff;
+
+        while (curlen < i_peek)
         {
-            *pp_peek = segment->data->p_buffer;
-            curlen += i_peek;
+            nsegment = GetSegment(s);
+            if (nsegment == NULL)
+            {
+                msg_Err(s, "segment %d should have been available (stream %d)",
+                        p_sys->playback.segment, p_sys->playback.stream);
+                /* restore segment to read */
+                p_sys->playback.segment = peek_segment;
+                return curlen; /* eof? */
+            }
+
+            vlc_mutex_lock(&nsegment->lock);
+
+            if (len < nsegment->data->i_buffer)
+            {
+                memcpy(p_buff + curlen, nsegment->data->p_buffer, len);
+                curlen += len;
+            }
+            else
+            {
+                size_t i_nbuff = nsegment->data->i_buffer;
+                memcpy(p_buff + curlen, nsegment->data->p_buffer, i_nbuff);
+                curlen += i_nbuff;
+                len -= i_nbuff;
+
+                p_sys->playback.segment++;
+            }
+
+            vlc_mutex_unlock(&nsegment->lock);
         }
-        else
-        {
-            p_sys->playback.segment++;
-            vlc_mutex_unlock(&segment->lock);
-            goto again;
-        }
-    } while ((curlen < i_peek) && vlc_object_alive(s));
 
-    /* restore segment to read */
-    p_sys->playback.segment = peek_segment;
-
-    vlc_mutex_unlock(&segment->lock);
-
-    return curlen;
+        /* restore segment to read */
+        p_sys->playback.segment = peek_segment;
+        return curlen;
+    }
 }
 
 static bool hls_MaySeek(stream_t *s)
@@ -1924,6 +2359,8 @@ static uint64_t GetStreamSize(stream_t *s)
     if (hls == NULL) return 0;
 
     vlc_mutex_lock(&hls->lock);
+    if (hls->size == 0)
+        hls->size = hls_GetStreamSize(hls);
     uint64_t size = hls->size;
     vlc_mutex_unlock(&hls->lock);
 
@@ -1945,9 +2382,16 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
     uint64_t size = hls->size;
     int count = vlc_array_count(hls->segments);
 
+    segment_t *currentSegment = segment_GetSegment(hls, p_sys->playback.segment);
+    if (currentSegment == NULL)
+    {
+        vlc_mutex_unlock(&hls->lock);
+        return VLC_EGENERIC;
+    }
+
     for (int n = 0; n < count; n++)
     {
-        segment_t *segment = vlc_array_item_at_index(hls->segments, n);
+        segment_t *segment = segment_GetSegment(hls, n);
         if (segment == NULL)
         {
             vlc_mutex_unlock(&hls->lock);
@@ -1958,7 +2402,7 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
         length += segment->duration * (hls->bandwidth/8);
         vlc_mutex_unlock(&segment->lock);
 
-        if (!b_found && (pos <= length))
+        if (pos <= length)
         {
             if (count - n >= 3)
             {
@@ -1982,7 +2426,13 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
     /* */
     if (b_found)
     {
-        /* restore segment to start position */
+
+        /* restore current segment to start position */
+        vlc_mutex_lock(&currentSegment->lock);
+        segment_RestorePos(currentSegment);
+        vlc_mutex_unlock(&currentSegment->lock);
+
+        /* restore seeked segment to start position */
         segment_t *segment = segment_GetSegment(hls, p_sys->playback.segment);
         if (segment == NULL)
         {
@@ -1991,15 +2441,7 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
         }
 
         vlc_mutex_lock(&segment->lock);
-        if (segment->data)
-        {
-            uint64_t size = segment->size -segment->data->i_buffer;
-            if (size > 0)
-            {
-                segment->data->i_buffer += size;
-                segment->data->p_buffer -= size;
-            }
-        }
+        segment_RestorePos(segment);
         vlc_mutex_unlock(&segment->lock);
 
         /* start download at current playback segment */
@@ -2009,14 +2451,12 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
         vlc_mutex_lock(&p_sys->download.lock_wait);
         p_sys->download.seek = p_sys->playback.segment;
         vlc_cond_signal(&p_sys->download.wait);
-        vlc_mutex_unlock(&p_sys->download.lock_wait);
 
         /* Wait for download to be finished */
-        vlc_mutex_lock(&p_sys->download.lock_wait);
         msg_Info(s, "seek to segment %d", p_sys->playback.segment);
-        while (((p_sys->download.seek != -1) ||
-                (p_sys->download.segment - p_sys->playback.segment < 3)) &&
-                (p_sys->download.segment < (count - 6)))
+        while ((p_sys->download.seek != -1) ||
+           ((p_sys->download.segment - p_sys->playback.segment < 3) &&
+                (p_sys->download.segment < count)))
         {
             vlc_cond_wait(&p_sys->download.wait, &p_sys->download.lock_wait);
             if (!vlc_object_alive(s) || s->b_error) break;
@@ -2037,7 +2477,6 @@ static int Control(stream_t *s, int i_query, va_list args)
     switch (i_query)
     {
         case STREAM_CAN_SEEK:
-        case STREAM_CAN_FASTSEEK:
             *(va_arg (args, bool *)) = hls_MaySeek(s);
             break;
         case STREAM_GET_POSITION:

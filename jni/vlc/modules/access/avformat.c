@@ -116,16 +116,24 @@ int OpenDemux( vlc_object_t *p_this )
     bool          b_can_seek;
     char         *psz_url;
 
-    if( p_demux->psz_file )
-        psz_url = strdup( p_demux->psz_file );
-    else
-    {
-        if ( !strcmp( p_demux->psz_access, "avformat"))
-            psz_url = strdup ( p_demux->psz_location );
-        else
-            if (asprintf( &psz_url, "%s://%s", p_demux->psz_access, p_demux->psz_location ) < 0 )
-                return VLC_ENOMEM;
-    }
+	if( p_demux->psz_file )
+		psz_url = strdup( p_demux->psz_file );
+	else
+	{
+		if ( !strcmp( p_demux->psz_access, "avformat"))
+			psz_url = strdup ( p_demux->psz_location );
+		else 
+		{
+			/* FIXME just for tmp use, need fix this bug(have tow "http://")
+			 * @{ add 2013-03-21, hls first use vlc, if failed then use avformat */
+			if ((!strncmp(p_demux->psz_location, "http://", 7)) && (!strncmp(p_demux->psz_access, "http", 4))) {
+				if (asprintf( &psz_url, "%s", p_demux->psz_location ) < 0 )
+					return VLC_ENOMEM;
+			/* }@ */
+			} else if (asprintf( &psz_url, "%s://%s", p_demux->psz_access, p_demux->psz_location ) < 0 )
+				return VLC_ENOMEM;
+		}
+	}
 
     if (psz_url == NULL)
         return VLC_ENOMEM;
