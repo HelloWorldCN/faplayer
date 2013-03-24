@@ -167,7 +167,8 @@ vlc_module_begin ()
                  DUMPSIZE_LONGTEXT, true )
     add_bool( "ts-split-es", true, SPLIT_ES_TEXT, SPLIT_ES_LONGTEXT, false )
 
-    set_capability( "demux", 10 )
+    //set_capability( "demux", 10 )
+    set_capability( "demux", 0 )	/* FIXME 2013-03-24 do not use it only in my faplay version */
     set_callbacks( Open, Close )
     add_shortcut( "ts" )
 vlc_module_end ()

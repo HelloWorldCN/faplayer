@@ -164,10 +164,10 @@ int OpenDemux( vlc_object_t *p_this )
 
     /* Don't try to handle MPEG unless forced */
     if( !p_demux->b_force &&
-        ( !strcmp( fmt->name, "mpeg" ) ||
+        ( //!strcmp( fmt->name, "mpeg" ) ||		/* FIXME 2013-03-24 do not use it only in my faplay version */
           !strcmp( fmt->name, "vcd" ) ||
           !strcmp( fmt->name, "vob" ) ||
-          !strcmp( fmt->name, "mpegts" ) ||
+          //!strcmp( fmt->name, "mpegts" ) ||	/* FIXME 2013-03-24 do not use it only in my faplay version */
           /* libavformat's redirector won't work */
           !strcmp( fmt->name, "redir" ) ||
           !strcmp( fmt->name, "sdp" ) ) )
