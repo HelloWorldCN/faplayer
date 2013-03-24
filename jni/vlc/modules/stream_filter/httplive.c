@@ -53,7 +53,8 @@ vlc_module_begin()
     set_category(CAT_INPUT)
     set_subcategory(SUBCAT_INPUT_STREAM_FILTER)
     set_description(N_("Http Live Streaming stream filter"))
-    set_capability("stream_filter", 20)
+    //set_capability("stream_filter", 20)
+    set_capability("stream_filter", 0)	/* FIXME 2013-03-24 do not use it only in my faplay version */
     set_callbacks(Open, Close)
 vlc_module_end()
 
