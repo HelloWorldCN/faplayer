@@ -42,7 +42,7 @@
 #include <vlc_stream.h>
 #include <vlc_memory.h>
 #include <vlc_gcrypt.h>
-
+#include <android/log.h>
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -542,21 +542,63 @@ static int string_to_IV(char *string_hexa, uint8_t iv[AES_BLOCK_SIZE])
 
 static char *relative_URI(const char *psz_url, const char *psz_path)
 {
-    assert(psz_url != NULL && psz_path != NULL);
-    //If the path is actually an absolute URL, don't do anything.
-    if (strncmp(psz_path, "http", 4) == 0)
-        return NULL;
+	assert(psz_url != NULL && psz_path != NULL);
+	//If the path is actually an absolute URL, don't do anything.
+	if (strncmp(psz_path, "http", 4) == 0)
+		return NULL;
 
-    char    *path_end = strrchr(psz_url, '/');
-    if (path_end == NULL)
-        return NULL;
-    unsigned int    url_length = path_end - psz_url + 1;
-    char    *psz_res = malloc(url_length + strlen(psz_path) + 1);
-    strncpy(psz_res, psz_url, url_length);
-    psz_res[url_length] = 0;
-    strcat(psz_res, psz_path);
-    return psz_res;
+	/* FIXBUG RFC1630	2013-03-23
+	 * relative URI method need modify
+	 * eg: if path begins with '/', then put it after url's first '/'
+	 *     if has no '/', then put it after url's last '/'
+	 * @{ 
+	 */
+	char *path_end = NULL;
+
+	__android_log_print(ANDROID_LOG_DEBUG, "httplive", "===>psz_url=%s, psz_path=%s", psz_url, psz_path);
+
+	/* when begin with '/' */
+	if (*psz_path == '/') {
+		/* FIXME this version has a bug, psz_url may have two "http://" */
+		char *p = NULL;
+		p = strstr(psz_url, "://");
+		if (p == NULL)
+			return NULL;
+		/* skips "://" */
+		p += 3;
+		p = strstr(p, "://");
+		if (p == NULL)
+			return NULL;
+		/* skips "://" */
+		p += 3;
+
+		__android_log_print(ANDROID_LOG_DEBUG, "httplive", "===>%s", p);
+
+		path_end = strchr(p, '/');
+		if (path_end == NULL)
+			return NULL;
+
+		__android_log_print(ANDROID_LOG_DEBUG, "httplive", "===>%s", path_end);
+
+		/* ignore the last '/', as we have one after */
+		path_end -= 1;
+	} else {
+		/* has no '/' */
+		path_end = strrchr(psz_url, '/');
+		if (path_end == NULL)
+			return NULL;
+	}
+	/* @} */
+	
+	unsigned int  url_length = path_end - psz_url + 1;
+	char *psz_res = malloc(url_length + strlen(psz_path) + 1);
+	strncpy(psz_res, psz_url, url_length);
+	psz_res[url_length] = 0;
+	strcat(psz_res, psz_path);
+
+	return psz_res;
 }
+
 
 static int parse_SegmentInformation(hls_stream_t *hls, char *p_read, int *duration)
 {
