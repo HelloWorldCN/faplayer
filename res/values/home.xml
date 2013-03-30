@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="local_btn">本地媒体</string>
+    <string name="live_btn">电视直播</string>
+    <string name="home_title">可可视频</string>
+    
+</resources>

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-
-	<TextView android:id="@+id/file_item_name"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView 
+        android:id="@+id/channel_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp"
         android:gravity="center_vertical"
@@ -15,4 +17,3 @@
         />
 
 </LinearLayout>
-
