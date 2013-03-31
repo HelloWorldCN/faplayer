@@ -1,6 +1,6 @@
 package org.stagex.danmaku.adapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.stagex.danmaku.R;
 
@@ -11,10 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class ChannelAdapter extends BaseAdapter {
-	private ArrayList<ChannelInfo> infos;
+	private List<ChannelInfo> infos;
 	private Context mContext;
 
-	public ChannelAdapter(Context context, ArrayList<ChannelInfo> infos) {
+	public ChannelAdapter(Context context, List<ChannelInfo> infos) {
 		this.infos = infos;
 		this.mContext = context;
 	}

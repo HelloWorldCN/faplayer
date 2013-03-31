@@ -2,6 +2,7 @@ package org.stagex.danmaku.activity;
 
 import org.stagex.danmaku.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
+import org.stagex.danmaku.util.ParseUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -48,13 +49,13 @@ public class HomeActivity extends Activity {
 			}
 		}
 	};
-	
+
 	private void startLocalMedia() {
 		Intent intent = new Intent();
 		intent.setClass(HomeActivity.this, FileBrowserActivity.class);
 		startActivity(intent);
 	};
-	
+
 	private void startLiveMedia() {
 		Intent intent = new Intent();
 		intent.setClass(HomeActivity.this, ChannelListActivity.class);
