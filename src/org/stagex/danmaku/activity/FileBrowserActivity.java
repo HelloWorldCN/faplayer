@@ -5,6 +5,7 @@ import org.stagex.danmaku.adapter.FileBrowserAdapter;
 import org.stagex.danmaku.helper.SystemUtility;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -23,6 +24,8 @@ public class FileBrowserActivity extends Activity {
 		setContentView(R.layout.file_browser);
 		mFileAdapter = new FileBrowserAdapter(this, SystemUtility.getExternalStoragePath());
 		mFileList = (ListView) findViewById(R.id.file_list);
+		//防止滑动黑屏
+		mFileList.setCacheColorHint(Color.TRANSPARENT);
 		mFileList.setAdapter(mFileAdapter);
 		mFileList.setOnItemClickListener(mFileAdapter);
 		mFileList.setOnItemLongClickListener(mFileAdapter);

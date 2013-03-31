@@ -2,18 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_home"
     android:orientation="vertical" >
-    
-    <Button android:id="@+id/local_media"
-        android:layout_width="fill_parent"
+
+    <ImageView
+        android:layout_width="120.0dip"
+        android:layout_height="120.0dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_keke" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/local_btn"
-        />
-    
-    <Button android:id="@+id/live_media"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/live_btn"
-        />
+        android:layout_marginTop="90dp"
+        android:layout_gravity="center_horizontal"
+        >
+
+        <LinearLayout
+            android:id="@+id/l1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/live_media"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/sel_livetv" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/live_btn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/l2"
+            android:layout_toRightOf="@id/l1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/local_media"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/sel_local" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/local_btn" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

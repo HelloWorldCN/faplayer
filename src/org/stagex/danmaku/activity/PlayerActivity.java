@@ -96,7 +96,7 @@ public class PlayerActivity extends Activity implements
 	private int mTime = -1;
 	private int mLength = -1;
 	private boolean mCanSeek = true;
-	private int mAspectRatio = 0;
+	private int mAspectRatio = 1;				//直接全屏
 
 	private int mAudioTrackIndex = 0;
 	private int mAudioTrackCount = 0;
@@ -297,7 +297,7 @@ public class PlayerActivity extends Activity implements
 		mTime = -1;
 		mLength = -1;
 		mCanSeek = true;
-		mAspectRatio = 0;
+		mAspectRatio = 1;			//直接全屏
 		/* */
 		mImageButtonToggleMessage.setVisibility(View.GONE);
 		mImageButtonSwitchAudio.setVisibility(View.GONE);

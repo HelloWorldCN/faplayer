@@ -10,6 +10,7 @@ import org.stagex.danmaku.util.ParseUtil;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,8 @@ public class ChannelListActivity extends Activity {
 		setContentView(R.layout.channel_list_activity);
 
 		list = (ListView) findViewById(R.id.channel_list);
+		//防止滑动黑屏
+		list.setCacheColorHint(Color.TRANSPARENT);
 
 		List<ChannelInfo> infos = ParseUtil.parse(this);
 
