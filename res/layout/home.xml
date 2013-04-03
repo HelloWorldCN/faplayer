@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_home"
+    android:background="@drawable/helpback_mini"
     android:orientation="vertical" >
 
     <ImageView
@@ -27,8 +27,8 @@
 
             <Button
                 android:id="@+id/live_media"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/sel_livetv" />
 
@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
+                android:textColor="#ff4b4949"
                 android:text="@string/live_btn" />
         </LinearLayout>
 
@@ -50,8 +51,8 @@
 
             <Button
                 android:id="@+id/local_media"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/sel_local" />
 
@@ -60,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
+                android:textColor="#ff4b4949"
                 android:text="@string/local_btn" />
         </LinearLayout>
     </RelativeLayout>

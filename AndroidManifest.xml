@@ -46,6 +46,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.ChannelListActivity"></activity>
+        <activity android:name=".activity.ChannelTabActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />

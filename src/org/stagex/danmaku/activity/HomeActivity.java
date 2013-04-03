@@ -58,7 +58,7 @@ public class HomeActivity extends Activity {
 
 	private void startLiveMedia() {
 		Intent intent = new Intent();
-		intent.setClass(HomeActivity.this, ChannelListActivity.class);
+		intent.setClass(HomeActivity.this, ChannelTabActivity.class);
 		startActivity(intent);
 	};
 

@@ -1,0 +1,301 @@
+package org.stagex.danmaku.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.stagex.danmaku.R;
+import org.stagex.danmaku.adapter.ChannelAdapter;
+import org.stagex.danmaku.adapter.ChannelInfo;
+import org.stagex.danmaku.util.ParseUtil;
+
+import android.app.TabActivity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabWidget;
+
+@SuppressWarnings("deprecation")
+public class ChannelTabActivity extends TabActivity implements
+		OnTabChangeListener {
+
+	List<ChannelInfo> allinfos = null;
+	
+	List<ChannelInfo> yangshi_infos = null;
+	List<ChannelInfo> weishi_infos = null;
+	List<ChannelInfo> difang_infos = null;
+	List<ChannelInfo> tiyu_infos = null;
+	
+	private ListView yang_shi_list;
+	private ListView wei_shi_list;
+	private ListView di_fang_list;
+	private ListView ti_yu_list;
+	
+	private TabHost myTabhost;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		myTabhost = this.getTabHost();
+		// get Tabhost
+		View view = LayoutInflater.from(this).inflate(R.layout.tab_channel,
+				myTabhost.getTabContentView(), true);
+		myTabhost.setBackgroundDrawable(this.getResources().getDrawable(
+				R.drawable.bg_home));
+		
+		/* 设置每一个台类别的Tab */
+		myTabhost.addTab(myTabhost.newTabSpec("One")// make a new Tab
+				.setIndicator("央视")
+				// set the Title and Icon
+				.setContent(R.id.yang_shi_tab));
+		// set the layout
+
+		myTabhost.addTab(myTabhost.newTabSpec("Two")// make a new Tab
+				.setIndicator("卫视")
+				// set the Title and Icon
+				.setContent(R.id.wei_shi_tab));
+		// set the layout
+
+		myTabhost.addTab(myTabhost.newTabSpec("Three")// make a new Tab
+				.setIndicator("地方")
+				// set the Title and Icon
+				.setContent(R.id.di_fang_tab));
+		// set the layout
+
+		myTabhost.addTab(myTabhost.newTabSpec("Four")// make a new Tab
+				.setIndicator("体育")
+				// set the Title and Icon
+				.setContent(R.id.ti_yu_tab));
+		// set the layout
+		
+		/* 设置Tab的监听事件 */
+		myTabhost.setOnTabChangedListener(this);
+
+		/* 解析所有的channel list */
+		allinfos = ParseUtil.parse(this);
+		
+		/* 获得各个台类别的list */
+		yang_shi_list = (ListView) view.findViewById(R.id.yang_shi_tab);
+		// 防止滑动黑屏
+		yang_shi_list.setCacheColorHint(Color.TRANSPARENT);
+		wei_shi_list = (ListView) view.findViewById(R.id.wei_shi_tab);
+		// 防止滑动黑屏
+		wei_shi_list.setCacheColorHint(Color.TRANSPARENT);
+		di_fang_list = (ListView) view.findViewById(R.id.di_fang_tab);
+		// 防止滑动黑屏
+		di_fang_list.setCacheColorHint(Color.TRANSPARENT);
+		ti_yu_list = (ListView) view.findViewById(R.id.ti_yu_tab);
+		// 防止滑动黑屏
+		ti_yu_list.setCacheColorHint(Color.TRANSPARENT);
+
+		/* 设置Tab的高度 */
+		TabWidget tabget = myTabhost.getTabWidget();
+		tabget.getChildAt(0).getLayoutParams().height = 50;
+		tabget.getChildAt(1).getLayoutParams().height = 50;
+		tabget.getChildAt(2).getLayoutParams().height = 50;
+		tabget.getChildAt(3).getLayoutParams().height = 50;
+
+		//默认显示第一个标签
+		setYangshiView();
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return false;
+	}
+
+	@Override
+	public void onTabChanged(String tagString) {
+		// TODO Auto-generated method stub
+		if (tagString.equals("One")) {
+			setYangshiView();
+		}
+		if (tagString.equals("Two")) {
+			setWeishiView();
+		}
+		if (tagString.equals("Three")) {
+			setDifangView();
+		}
+
+		if (tagString.equals("Four")) {
+			setTiyuView();
+		}
+
+	}
+
+	/*
+	 * 设置央视台源的channel list
+	 */
+	private void setYangshiView() {
+		yangshi_infos = getYangShi(allinfos);
+		ChannelAdapter adapter = new ChannelAdapter(this, yangshi_infos);
+		yang_shi_list.setAdapter(adapter);
+		yang_shi_list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				ChannelInfo info = (ChannelInfo) yang_shi_list
+						.getItemAtPosition(arg2);
+				Log.d("ChannelInfo",
+						"  name = " + info.getName() + "[" + info.getUrl()
+								+ "]");
+
+				startLiveMedia(info.getUrl());
+			}
+		});
+	}
+	
+	/*
+	 * 设置卫视台源的channel list
+	 */
+	private void setWeishiView() {
+		weishi_infos = getWeiShi(allinfos);
+		ChannelAdapter adapter = new ChannelAdapter(this, weishi_infos);
+		wei_shi_list.setAdapter(adapter);
+		wei_shi_list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				ChannelInfo info = (ChannelInfo) wei_shi_list
+						.getItemAtPosition(arg2);
+				Log.d("ChannelInfo",
+						"  name = " + info.getName() + "[" + info.getUrl()
+								+ "]");
+
+				startLiveMedia(info.getUrl());
+			}
+		});
+	}
+	
+	/*
+	 * 设置地方台源的channel list
+	 */
+	private void setDifangView() {
+		difang_infos = getDiFang(allinfos);
+		ChannelAdapter adapter = new ChannelAdapter(this, difang_infos);
+		di_fang_list.setAdapter(adapter);
+		di_fang_list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				ChannelInfo info = (ChannelInfo) di_fang_list
+						.getItemAtPosition(arg2);
+				Log.d("ChannelInfo",
+						"  name = " + info.getName() + "[" + info.getUrl()
+								+ "]");
+
+				startLiveMedia(info.getUrl());
+			}
+		});
+	}
+	
+	/*
+	 * 设置体育台源的channel list
+	 */
+	private void setTiyuView() {
+		tiyu_infos = getTiYu(allinfos);
+		ChannelAdapter adapter = new ChannelAdapter(this, tiyu_infos);
+		ti_yu_list.setAdapter(adapter);
+		ti_yu_list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				ChannelInfo info = (ChannelInfo) ti_yu_list
+						.getItemAtPosition(arg2);
+				Log.d("ChannelInfo",
+						"  name = " + info.getName() + "[" + info.getUrl()
+								+ "]");
+
+				startLiveMedia(info.getUrl());
+			}
+		});
+	}
+
+	private void startLiveMedia(String liveUrl) {
+		Intent intent = new Intent(this, PlayerActivity.class);
+		ArrayList<String> playlist = new ArrayList<String>();
+		playlist.add(liveUrl);
+		intent.putExtra("selected", 0);
+		intent.putExtra("playlist", playlist);
+		startActivity(intent);
+	}
+
+	/*
+	 * 从所有的台源中解析出央视的台源
+	 */
+	private List<ChannelInfo> getYangShi(List<ChannelInfo> all) {
+		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
+
+		for (int i = 0; i < all.size(); i++) {
+			ChannelInfo cinfo = all.get(i);
+			if (cinfo.getTypes().equals("1") ||cinfo.getTypes().equals("1|4") ) {
+				info.add(cinfo);
+			}
+		}
+		return info;
+	}
+	
+	/*
+	 * 从所有的台源中解析出央视的台源
+	 */
+	private List<ChannelInfo> getWeiShi(List<ChannelInfo> all) {
+		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
+
+		for (int i = 0; i < all.size(); i++) {
+			ChannelInfo cinfo = all.get(i);
+			if (cinfo.getTypes().equals("2") || cinfo.getTypes().equals("2|4")) {
+				info.add(cinfo);
+			}
+		}
+		return info;
+	}
+	
+	/*
+	 * 从所有的台源中解析出央视的台源
+	 */
+	private List<ChannelInfo> getDiFang(List<ChannelInfo> all) {
+		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
+
+		for (int i = 0; i < all.size(); i++) {
+			ChannelInfo cinfo = all.get(i);
+			if (cinfo.getTypes().equals("3") || cinfo.getTypes().equals("3|4")) {
+				info.add(cinfo);
+			}
+		}
+		return info;
+	}
+	
+	/*
+	 * 从所有的台源中解析出央视的台源
+	 */
+	private List<ChannelInfo> getTiYu(List<ChannelInfo> all) {
+		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
+
+		for (int i = 0; i < all.size(); i++) {
+			ChannelInfo cinfo = all.get(i);
+			if (cinfo.getTypes().equals("4") || cinfo.getTypes().equals("1|4") || cinfo.getTypes().equals("2|4") || cinfo.getTypes().equals("3|4")) {
+				info.add(cinfo);
+			}
+		}
+		return info;
+	}
+
+}
