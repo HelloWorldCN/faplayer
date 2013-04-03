@@ -67,6 +67,7 @@ public class PlayerActivity extends Activity implements
 
 	/* player misc */
 	private ProgressBar mProgressBarPreparing;
+	private TextView mLoadingTxt;
 
 	/* player controls */
 	private TextView mTextViewTime;
@@ -122,6 +123,9 @@ public class PlayerActivity extends Activity implements
 						mProgressBarPreparing
 								.setVisibility(msg.arg1 < 100 ? View.VISIBLE
 										: View.GONE);
+						mLoadingTxt
+						.setVisibility(msg.arg1 < 100 ? View.VISIBLE
+								: View.GONE);
 					}
 					break;
 				}
@@ -141,8 +145,10 @@ public class PlayerActivity extends Activity implements
 						mSurfaceViewVlc.setVisibility(View.GONE);
 					}
 					/* update UI */
-					if (mMediaPlayerLoaded)
+					if (mMediaPlayerLoaded) {
 						mProgressBarPreparing.setVisibility(View.GONE);
+						mLoadingTxt.setVisibility(View.GONE);
+					}
 					startMediaPlayer();
 					break;
 				}
@@ -158,8 +164,10 @@ public class PlayerActivity extends Activity implements
 						mMediaPlayerLoaded = true;
 					}
 					/* update UI */
-					if (mMediaPlayerLoaded)
+					if (mMediaPlayerLoaded) {
 						mProgressBarPreparing.setVisibility(View.GONE);
+						mLoadingTxt.setVisibility(View.GONE);
+					}
 					startMediaPlayer();
 					break;
 				}
@@ -268,7 +276,10 @@ public class PlayerActivity extends Activity implements
 
 		mLinearLayoutControlBar = (LinearLayout) findViewById(R.id.player_control_bar);
 
+		//缓冲进度圈
 		mProgressBarPreparing = (ProgressBar) findViewById(R.id.player_prepairing);
+		//缓冲提示语言
+		mLoadingTxt =  (TextView)findViewById(R.id.player_loading);
 	}
 
 	protected void initializeData() {
@@ -451,6 +462,7 @@ public class PlayerActivity extends Activity implements
 		setContentView(R.layout.player);
 		initializeControls();
 		mProgressBarPreparing.setVisibility(View.VISIBLE);
+		mLoadingTxt.setVisibility(View.VISIBLE);
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
 		selectMediaPlayer(uri, false);
