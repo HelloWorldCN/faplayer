@@ -16,34 +16,34 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabWidget;
+import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
 public class ChannelTabActivity extends TabActivity implements
 		OnTabChangeListener {
 
 	List<ChannelInfo> allinfos = null;
-	
+
 	List<ChannelInfo> yangshi_infos = null;
 	List<ChannelInfo> weishi_infos = null;
 	List<ChannelInfo> difang_infos = null;
 	List<ChannelInfo> tiyu_infos = null;
-	
+
 	private ListView yang_shi_list;
 	private ListView wei_shi_list;
 	private ListView di_fang_list;
 	private ListView ti_yu_list;
-	
+
 	private TabHost myTabhost;
-	
+
 	TextView view0, view1, view2, view3;
 
 	@Override
@@ -51,15 +51,16 @@ public class ChannelTabActivity extends TabActivity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.tab_channel);
-		
+
 		myTabhost = this.getTabHost();
 		myTabhost.setup();
-		
+
 		myTabhost.setBackgroundDrawable(this.getResources().getDrawable(
 				R.drawable.bg_home));
-		
+
 		/* 设置每一个台类别的Tab */
-		RelativeLayout  tab0 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		RelativeLayout tab0 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_host_ctx, null);
 		view0 = (TextView) tab0.findViewById(R.id.tab_label);
 		view0.setText("央视");
 		myTabhost.addTab(myTabhost.newTabSpec("One")// make a new Tab
@@ -68,7 +69,8 @@ public class ChannelTabActivity extends TabActivity implements
 				.setContent(R.id.yang_shi_tab));
 		// set the layout
 
-		RelativeLayout  tab1 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		RelativeLayout tab1 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_host_ctx, null);
 		view1 = (TextView) tab1.findViewById(R.id.tab_label);
 		view1.setText("卫视");
 		myTabhost.addTab(myTabhost.newTabSpec("Two")// make a new Tab
@@ -77,7 +79,8 @@ public class ChannelTabActivity extends TabActivity implements
 				.setContent(R.id.wei_shi_tab));
 		// set the layout
 
-		RelativeLayout  tab2 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		RelativeLayout tab2 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_host_ctx, null);
 		view2 = (TextView) tab2.findViewById(R.id.tab_label);
 		view2.setText("地方");
 		myTabhost.addTab(myTabhost.newTabSpec("Three")// make a new Tab
@@ -86,7 +89,8 @@ public class ChannelTabActivity extends TabActivity implements
 				.setContent(R.id.di_fang_tab));
 		// set the layout
 
-		RelativeLayout  tab3 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		RelativeLayout tab3 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_host_ctx, null);
 		view3 = (TextView) tab3.findViewById(R.id.tab_label);
 		view3.setText("体育");
 		myTabhost.addTab(myTabhost.newTabSpec("Four")// make a new Tab
@@ -94,34 +98,36 @@ public class ChannelTabActivity extends TabActivity implements
 				// set the Title and Icon
 				.setContent(R.id.ti_yu_tab));
 		// set the layout
-		
+
 		/* 设置Tab的监听事件 */
 		myTabhost.setOnTabChangedListener(this);
 
 		/* 解析所有的channel list */
 		allinfos = ParseUtil.parse(this);
-		
+
 		/* 获得各个台类别的list */
-		yang_shi_list = (ListView)findViewById(R.id.yang_shi_tab);
+		yang_shi_list = (ListView) findViewById(R.id.yang_shi_tab);
 		// 防止滑动黑屏
 		yang_shi_list.setCacheColorHint(Color.TRANSPARENT);
-		wei_shi_list = (ListView)findViewById(R.id.wei_shi_tab);
+		wei_shi_list = (ListView) findViewById(R.id.wei_shi_tab);
 		// 防止滑动黑屏
 		wei_shi_list.setCacheColorHint(Color.TRANSPARENT);
-		di_fang_list = (ListView)findViewById(R.id.di_fang_tab);
+		di_fang_list = (ListView) findViewById(R.id.di_fang_tab);
 		// 防止滑动黑屏
 		di_fang_list.setCacheColorHint(Color.TRANSPARENT);
-		ti_yu_list = (ListView)findViewById(R.id.ti_yu_tab);
+		ti_yu_list = (ListView) findViewById(R.id.ti_yu_tab);
 		// 防止滑动黑屏
 		ti_yu_list.setCacheColorHint(Color.TRANSPARENT);
 
-		//默认显示第一个标签
+		// 默认显示第一个标签
 		view0.setTextSize(25);
 		view1.setTextSize(15);
 		view2.setTextSize(15);
 		view3.setTextSize(15);
 		setYangshiView();
-
+		setWeishiView();
+		setDifangView();
+		setTiyuView();
 	}
 
 	@Override
@@ -137,21 +143,21 @@ public class ChannelTabActivity extends TabActivity implements
 			view1.setTextSize(15);
 			view2.setTextSize(15);
 			view3.setTextSize(15);
-			setYangshiView();
+			// setYangshiView();
 		}
 		if (tagString.equals("Two")) {
 			view0.setTextSize(15);
 			view1.setTextSize(25);
 			view2.setTextSize(15);
 			view3.setTextSize(15);
-			setWeishiView();
+			// setWeishiView();
 		}
 		if (tagString.equals("Three")) {
 			view0.setTextSize(15);
 			view1.setTextSize(15);
 			view2.setTextSize(25);
 			view3.setTextSize(15);
-			setDifangView();
+			// setDifangView();
 		}
 
 		if (tagString.equals("Four")) {
@@ -159,7 +165,7 @@ public class ChannelTabActivity extends TabActivity implements
 			view1.setTextSize(15);
 			view2.setTextSize(15);
 			view3.setTextSize(25);
-			setTiyuView();
+			// setTiyuView();
 		}
 
 	}
@@ -186,8 +192,23 @@ public class ChannelTabActivity extends TabActivity implements
 				startLiveMedia(info.getUrl());
 			}
 		});
+		yang_shi_list.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 	}
-	
+
 	/*
 	 * 设置卫视台源的channel list
 	 */
@@ -210,8 +231,24 @@ public class ChannelTabActivity extends TabActivity implements
 				startLiveMedia(info.getUrl());
 			}
 		});
+
+		wei_shi_list.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 	}
-	
+
 	/*
 	 * 设置地方台源的channel list
 	 */
@@ -234,8 +271,24 @@ public class ChannelTabActivity extends TabActivity implements
 				startLiveMedia(info.getUrl());
 			}
 		});
+
+		di_fang_list.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 	}
-	
+
 	/*
 	 * 设置体育台源的channel list
 	 */
@@ -258,6 +311,22 @@ public class ChannelTabActivity extends TabActivity implements
 				startLiveMedia(info.getUrl());
 			}
 		});
+
+		ti_yu_list.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 	}
 
 	private void startLiveMedia(String liveUrl) {
@@ -277,13 +346,13 @@ public class ChannelTabActivity extends TabActivity implements
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("1") ||cinfo.getTypes().equals("1|4") ) {
+			if (cinfo.getTypes().equals("1") || cinfo.getTypes().equals("1|4")) {
 				info.add(cinfo);
 			}
 		}
 		return info;
 	}
-	
+
 	/*
 	 * 从所有的台源中解析出央视的台源
 	 */
@@ -298,7 +367,7 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 		return info;
 	}
-	
+
 	/*
 	 * 从所有的台源中解析出央视的台源
 	 */
@@ -313,7 +382,7 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 		return info;
 	}
-	
+
 	/*
 	 * 从所有的台源中解析出央视的台源
 	 */
@@ -322,7 +391,9 @@ public class ChannelTabActivity extends TabActivity implements
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("4") || cinfo.getTypes().equals("1|4") || cinfo.getTypes().equals("2|4") || cinfo.getTypes().equals("3|4")) {
+			if (cinfo.getTypes().equals("4") || cinfo.getTypes().equals("1|4")
+					|| cinfo.getTypes().equals("2|4")
+					|| cinfo.getTypes().equals("3|4")) {
 				info.add(cinfo);
 			}
 		}
