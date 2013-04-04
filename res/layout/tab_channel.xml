@@ -1,58 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <LinearLayout
-        android:id="@+id/yang_shi_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <ListView
-            android:id="@+id/yang_shi_tab"
+        <TabWidget
+            android:id="@android:id/tabs"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
+            android:layout_height="50dip"
+            android:layout_weight="0" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+            <ListView
+                android:id="@+id/yang_shi_tab"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000" />
+
+            <ListView
+                android:id="@+id/wei_shi_tab"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000" />
+
+            <ListView
+                android:id="@+id/di_fang_tab"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000" />
+
+            <ListView
+                android:id="@+id/ti_yu_tab"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000" />
+        </FrameLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/wei_shi_list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
-
-        <ListView
-            android:id="@+id/wei_shi_tab"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/di_fang_list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
-
-        <ListView
-            android:id="@+id/di_fang_tab"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ti_yu_list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
-
-        <ListView
-            android:id="@+id/ti_yu_tab"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
-    </LinearLayout>
-
-</FrameLayout>
+</TabHost>

@@ -18,8 +18,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
 
@@ -40,39 +43,54 @@ public class ChannelTabActivity extends TabActivity implements
 	private ListView ti_yu_list;
 	
 	private TabHost myTabhost;
+	
+	TextView view0, view1, view2, view3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.tab_channel);
+		
 		myTabhost = this.getTabHost();
-		// get Tabhost
-		View view = LayoutInflater.from(this).inflate(R.layout.tab_channel,
-				myTabhost.getTabContentView(), true);
+		myTabhost.setup();
+		
 		myTabhost.setBackgroundDrawable(this.getResources().getDrawable(
 				R.drawable.bg_home));
 		
 		/* 设置每一个台类别的Tab */
+		RelativeLayout  tab0 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		view0 = (TextView) tab0.findViewById(R.id.tab_label);
+		view0.setText("央视");
 		myTabhost.addTab(myTabhost.newTabSpec("One")// make a new Tab
-				.setIndicator("央视")
+				.setIndicator(tab0)
 				// set the Title and Icon
 				.setContent(R.id.yang_shi_tab));
 		// set the layout
 
+		RelativeLayout  tab1 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		view1 = (TextView) tab1.findViewById(R.id.tab_label);
+		view1.setText("卫视");
 		myTabhost.addTab(myTabhost.newTabSpec("Two")// make a new Tab
-				.setIndicator("卫视")
+				.setIndicator(tab1)
 				// set the Title and Icon
 				.setContent(R.id.wei_shi_tab));
 		// set the layout
 
+		RelativeLayout  tab2 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		view2 = (TextView) tab2.findViewById(R.id.tab_label);
+		view2.setText("地方");
 		myTabhost.addTab(myTabhost.newTabSpec("Three")// make a new Tab
-				.setIndicator("地方")
+				.setIndicator(tab2)
 				// set the Title and Icon
 				.setContent(R.id.di_fang_tab));
 		// set the layout
 
+		RelativeLayout  tab3 = (RelativeLayout )LayoutInflater.from(this).inflate(R.layout.tab_host_ctx, null);
+		view3 = (TextView) tab3.findViewById(R.id.tab_label);
+		view3.setText("体育");
 		myTabhost.addTab(myTabhost.newTabSpec("Four")// make a new Tab
-				.setIndicator("体育")
+				.setIndicator(tab3)
 				// set the Title and Icon
 				.setContent(R.id.ti_yu_tab));
 		// set the layout
@@ -84,27 +102,24 @@ public class ChannelTabActivity extends TabActivity implements
 		allinfos = ParseUtil.parse(this);
 		
 		/* 获得各个台类别的list */
-		yang_shi_list = (ListView) view.findViewById(R.id.yang_shi_tab);
+		yang_shi_list = (ListView)findViewById(R.id.yang_shi_tab);
 		// 防止滑动黑屏
 		yang_shi_list.setCacheColorHint(Color.TRANSPARENT);
-		wei_shi_list = (ListView) view.findViewById(R.id.wei_shi_tab);
+		wei_shi_list = (ListView)findViewById(R.id.wei_shi_tab);
 		// 防止滑动黑屏
 		wei_shi_list.setCacheColorHint(Color.TRANSPARENT);
-		di_fang_list = (ListView) view.findViewById(R.id.di_fang_tab);
+		di_fang_list = (ListView)findViewById(R.id.di_fang_tab);
 		// 防止滑动黑屏
 		di_fang_list.setCacheColorHint(Color.TRANSPARENT);
-		ti_yu_list = (ListView) view.findViewById(R.id.ti_yu_tab);
+		ti_yu_list = (ListView)findViewById(R.id.ti_yu_tab);
 		// 防止滑动黑屏
 		ti_yu_list.setCacheColorHint(Color.TRANSPARENT);
 
-		/* 设置Tab的高度 */
-		TabWidget tabget = myTabhost.getTabWidget();
-		tabget.getChildAt(0).getLayoutParams().height = 50;
-		tabget.getChildAt(1).getLayoutParams().height = 50;
-		tabget.getChildAt(2).getLayoutParams().height = 50;
-		tabget.getChildAt(3).getLayoutParams().height = 50;
-
 		//默认显示第一个标签
+		view0.setTextSize(25);
+		view1.setTextSize(15);
+		view2.setTextSize(15);
+		view3.setTextSize(15);
 		setYangshiView();
 
 	}
@@ -118,16 +133,32 @@ public class ChannelTabActivity extends TabActivity implements
 	public void onTabChanged(String tagString) {
 		// TODO Auto-generated method stub
 		if (tagString.equals("One")) {
+			view0.setTextSize(25);
+			view1.setTextSize(15);
+			view2.setTextSize(15);
+			view3.setTextSize(15);
 			setYangshiView();
 		}
 		if (tagString.equals("Two")) {
+			view0.setTextSize(15);
+			view1.setTextSize(25);
+			view2.setTextSize(15);
+			view3.setTextSize(15);
 			setWeishiView();
 		}
 		if (tagString.equals("Three")) {
+			view0.setTextSize(15);
+			view1.setTextSize(15);
+			view2.setTextSize(25);
+			view3.setTextSize(15);
 			setDifangView();
 		}
 
 		if (tagString.equals("Four")) {
+			view0.setTextSize(15);
+			view1.setTextSize(15);
+			view2.setTextSize(15);
+			view3.setTextSize(25);
 			setTiyuView();
 		}
 
