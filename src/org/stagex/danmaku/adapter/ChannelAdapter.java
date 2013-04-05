@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.stagex.danmaku.R;
 
+import com.fedorvlasov.lazylist.ImageLoader;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,10 +24,15 @@ import android.widget.TextView;
 public class ChannelAdapter extends BaseAdapter {
 	private List<ChannelInfo> infos;
 	private Context mContext;
+	
+	//自定义的img加载类，提升加载性能，防止OOM
+    public ImageLoader imageLoader; 
 
 	public ChannelAdapter(Context context, List<ChannelInfo> infos) {
 		this.infos = infos;
 		this.mContext = context;
+		
+		imageLoader=new ImageLoader(context);
 	}
 
 	@Override
@@ -54,63 +61,9 @@ public class ChannelAdapter extends BaseAdapter {
 		ImageView imageView = (ImageView) view.findViewById(R.id.channel_icon);
 		text.setText(infos.get(position).getName());
 
-		// 网络资源
-		// imageView.setImageBitmap(httpGetBitmap(infos.get(position).getIcon_url()));
-		//本地资源
-		imageView.setImageBitmap(localGetBitmap(infos.get(position).getIcon_url()));
+		//TODO 新方法，防止OOM
+		 imageLoader.DisplayImage(infos.get(position).getIcon_url(), null, imageView);
+		
 		return view;
 	}
-
-	/**
-	 * 这个是根据网络url去下载图标
-	 * 
-	 * @param icon_url
-	 * @return
-	 */
-	private Bitmap httpGetBitmap(String icon_url) {
-		try {
-			URL url = new URL(icon_url);
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-			InputStream inputStream = connection.getInputStream();
-			Bitmap bit = BitmapFactory.decodeStream(inputStream);
-			return bit;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * 这个是根据网络url，提取出文件名，到本地下载图标
-	 * 
-	 * @param icon_url
-	 * @return
-	 */
-	private Bitmap localGetBitmap(String icon_url) {
-		int index = icon_url.lastIndexOf("/");
-		if (index == -1) {
-			return null;
-		}
-		String url = icon_url.substring(index + 1);
-		try {
-			InputStream is = mContext.getAssets().open("tv_icon/" + url);
-			
-			//以最省的方式读取本地图片资源，防止out of memory
-			BitmapFactory.Options opt = new BitmapFactory.Options();
-			opt.inPreferredConfig = Bitmap.Config.RGB_565;
-			opt.inSampleSize = 2;
-			opt.inPurgeable = true;
-			opt.inInputShareable = true;
-
-			return BitmapFactory.decodeStream(is, null, opt);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-
 }
