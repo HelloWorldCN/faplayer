@@ -9,6 +9,8 @@ import org.stagex.danmaku.player.DefMediaPlayer;
 import org.stagex.danmaku.player.VlcMediaPlayer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PlayerActivity extends Activity implements
 		AbsMediaPlayer.OnBufferingUpdateListener,
@@ -113,7 +116,10 @@ public class PlayerActivity extends Activity implements
 		return obj.getClass().getName()
 				.compareTo(VlcMediaPlayer.class.getName()) == 0;
 	}
-
+	
+	/**
+	 * 播放过程中的事件响应的核心处理方法
+	 */
 	protected void initializeEvents() {
 		mEventHandler = new Handler() {
 			public void handleMessage(Message msg) {
@@ -130,15 +136,36 @@ public class PlayerActivity extends Activity implements
 					break;
 				}
 				case MEDIA_PLAYER_COMPLETION: {
+					/* TODO 播放结束后，如何处理 */
+					//使用通知窗口
+//					Toast.makeText(getApplicationContext(),"播放结束，请按返回键", Toast.LENGTH_LONG).show();
+					//使用警告窗口 @{
+					new AlertDialog.Builder(PlayerActivity.this)
+				    .setTitle("播放结束")
+				    .setMessage("该视频已经播放结束.")
+				    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+				        @Override
+				        public void onClick(DialogInterface dialog, int which) {
+				            //do nothing - it will close on its own
+				        	//关闭当前的PlayerActivity，退回listview的界面
+				        	finish();
+				        }
+				     })
+				   .show();
+					//@}
 					break;
 				}
+				/* FIXME 这里的处理有待进一步细化 */
 				case MEDIA_PLAYER_ERROR: {
+					Log.e(LOGTAG, "MEDIA_PLAYER_ERROR");
 					/* fall back to VlcMediaPlayer if possible */
 					if (isDefMediaPlayer(msg.obj)) {
+//						Log.i(LOGTAG, "DefMediaPlayer selectMediaPlayer（VLC）");
 						selectMediaPlayer(
 								mPlayListArray.get(mPlayListSelected), true);
 						break;
 					} else if (isVlcMediaPlayer(msg.obj)) {
+//						Log.i(LOGTAG, "VlcMediaPlayer");
 						/* update status */
 						mMediaPlayerLoaded = true;
 						/* destroy media player */
@@ -146,10 +173,27 @@ public class PlayerActivity extends Activity implements
 					}
 					/* update UI */
 					if (mMediaPlayerLoaded) {
+//						Log.i(LOGTAG, "VlcMediaPlayer update UI");
 						mProgressBarPreparing.setVisibility(View.GONE);
 						mLoadingTxt.setVisibility(View.GONE);
 					}
-					startMediaPlayer();
+					//FIXME not use it
+//					startMediaPlayer();
+					//弹出播放失败的窗口@{
+					new AlertDialog.Builder(PlayerActivity.this)
+				    .setTitle("播放失败")
+				    .setMessage("很遗憾，该视频无法播放.")
+				    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+				        @Override
+				        public void onClick(DialogInterface dialog, int which) {
+				            //do nothing - it will close on its own
+				        	//关闭当前的PlayerActivity，退回listview的界面
+				        	finish();
+				        }
+				     })
+				   .show();
+					//@}
+//					Log.i(LOGTAG, "get out of alert");
 					break;
 				}
 				case MEDIA_PLAYER_INFO: {
@@ -195,6 +239,7 @@ public class PlayerActivity extends Activity implements
 					SurfaceView surface = isDefMediaPlayer(player) ? mSurfaceViewDef
 							: mSurfaceViewVlc;
 					int ar = mAspectRatio;
+					//根据设置，改变播放界面大小和比例
 					changeSurfaceSize(player, surface, ar);
 					break;
 				}
@@ -205,6 +250,9 @@ public class PlayerActivity extends Activity implements
 		};
 	}
 
+	/**
+	 * 播放控件初始化：创建surface、获取各子控件的id
+	 */
 	protected void initializeControls() {
 		/* SufaceView used by VLC is a normal surface */
 		mSurfaceViewVlc = (SurfaceView) findViewById(R.id.player_surface_vlc);
@@ -301,6 +349,9 @@ public class PlayerActivity extends Activity implements
 		}
 	}
 
+	/**
+	 * 重新设置播放器，控制各控件界面显示与否
+	 */
 	protected void resetMediaPlayer() {
 		int resource = -1;
 		/* initial status */
@@ -328,6 +379,11 @@ public class PlayerActivity extends Activity implements
 		mLinearLayoutControlBar.setVisibility(View.GONE);
 	}
 
+	/**
+	 * TODO 选择播放器：软解（VLC）或者硬解（MP），后续可以通过设置选项让用户来选择
+	 * @param uri
+	 * @param forceVlc
+	 */
 	protected void selectMediaPlayer(String uri, boolean forceVlc) {
 		/* TODO: do this through configuration */
 		boolean useDefault = true;
@@ -356,6 +412,12 @@ public class PlayerActivity extends Activity implements
 		mSurfaceViewVlc.setVisibility(useDefault ? View.GONE : View.VISIBLE);
 	}
 
+	/**
+	 * 创建MP
+	 * @param useDefault
+	 * @param uri
+	 * @param holder
+	 */
 	protected void createMediaPlayer(boolean useDefault, String uri,
 			SurfaceHolder holder) {
 		Log.d(LOGTAG, "createMediaPlayer() " + uri);
@@ -376,6 +438,10 @@ public class PlayerActivity extends Activity implements
 		mMediaPlayer.prepareAsync();
 	}
 
+	/**
+	 * 销毁MP
+	 * @param isDefault
+	 */
 	protected void destroyMediaPlayer(boolean isDefault) {
 		boolean testDefault = isDefMediaPlayer(mMediaPlayer);
 		if (isDefault == testDefault) {
@@ -385,15 +451,28 @@ public class PlayerActivity extends Activity implements
 		}
 	}
 
+	/**
+	 * 启动播放器
+	 */
 	protected void startMediaPlayer() {
-		if (mMediaPlayerStarted || !mMediaPlayerLoaded)
+//		Log.i(LOGTAG, "startMediaPlayer() ");
+		if (mMediaPlayerStarted || !mMediaPlayerLoaded) {
+//			Log.i(LOGTAG, "(mMediaPlayerStarted || !mMediaPlayerLoaded) return");
 			return;
+		}
 		if (mMediaPlayer != null) {
+//			Log.i(LOGTAG, "mMediaPlayer.start()");
 			mMediaPlayer.start();
 			mMediaPlayerStarted = true;
 		}
 	}
 
+	/**
+	 * TODO 处理surface的界面比例
+	 * @param player
+	 * @param surface
+	 * @param ar
+	 */
 	protected void changeSurfaceSize(AbsMediaPlayer player,
 			SurfaceView surface, int ar) {
 		int videoWidth = player.getVideoWidth();
@@ -455,16 +534,26 @@ public class PlayerActivity extends Activity implements
 		surface.invalidate();
 	}
 
+	/**
+	 * 入口方法
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//播放事件初始化
 		initializeEvents();
+		//加载布局
 		setContentView(R.layout.player);
+		//播放控件初始化
 		initializeControls();
+		//缓冲环显示
 		mProgressBarPreparing.setVisibility(View.VISIBLE);
+		//缓冲提示语
 		mLoadingTxt.setVisibility(View.VISIBLE);
+		//数据初始化
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
+		//选择播放器
 		selectMediaPlayer(uri, false);
 	}
 
@@ -485,7 +574,10 @@ public class PlayerActivity extends Activity implements
 			mMediaPlayer.pause();
 		}
 	}
-
+	
+	/**
+	 * 播放过程中点击屏幕，显示相关控件
+	 */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if (!mMediaPlayerLoaded) {
@@ -504,6 +596,9 @@ public class PlayerActivity extends Activity implements
 		return false;
 	}
 
+	/**
+	 * 对上述控件的子控件的操作响应
+	 */
 	@Override
 	public void onClick(View v) {
 		if (!mMediaPlayerLoaded)
@@ -586,7 +681,11 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 	}
-
+	
+	/**
+	 * 以下：接收事件，做中间处理，再调用handleMessage方法处理之
+	 * @{
+	 */
 	@Override
 	public void onBufferingUpdate(AbsMediaPlayer mp, int percent) {
 		Message msg = new Message();
@@ -654,4 +753,5 @@ public class PlayerActivity extends Activity implements
 		msg.arg2 = height;
 		mEventHandler.sendMessage(msg);
 	}
+	/* @} */
 }
