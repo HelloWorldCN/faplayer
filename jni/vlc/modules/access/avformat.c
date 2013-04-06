@@ -513,12 +513,31 @@ static int Demux( demux_t *p_demux )
     AVPacket    pkt;
     block_t     *p_frame;
     int64_t     i_start_time;
-
+#if 0
     /* Read a frame */
     if( av_read_frame( p_sys->ic, &pkt ) )
     {
+    	msg_Warn( p_demux, "avformat [av_read_frame EOF]");
         return 0;
     }
+#else
+	 /* Read a frame */
+	int i_av_ret = av_read_frame( p_sys->ic, &pkt );
+	if( i_av_ret )
+	{
+#ifdef AVFORMAT_DEBUG
+		msg_Warn( p_demux, "avformat [av_read_frame EOF][av_read_frame return %d", i_av_ret);
+#endif
+		/* Avoid EOF if av_read_frame returns AVERROR(EAGAIN) */
+		if( i_av_ret == AVERROR(EAGAIN) )
+			return 1;
+#ifdef AVFORMAT_DEBUG
+		msg_Warn( p_demux, "avformat [av_read_frame EOF][demux return 0]");
+#endif
+		return 0;
+	}
+#endif
+
     if( pkt.stream_index < 0 || pkt.stream_index >= p_sys->i_tk )
     {
         av_free_packet( &pkt );
@@ -569,12 +588,16 @@ static int Demux( demux_t *p_demux )
             p_stream->time_base.num /
             p_stream->time_base.den;
 
-    if( pkt.dts != AV_NOPTS_VALUE && pkt.dts == pkt.pts &&
+    if( pkt.dts != (int64_t)AV_NOPTS_VALUE && pkt.dts == pkt.pts &&
         p_stream->codec->codec_type == AVMEDIA_TYPE_VIDEO )
     {
         /* Add here notoriously bugged file formats/samples regarding PTS */
-        if( !strcmp( p_sys->fmt->name, "flv" ) )
+        if( !strcmp( p_sys->fmt->name, "flv" ) ) {
             p_frame->i_pts = VLC_TS_INVALID;
+#ifdef AVFORMAT_DEBUG
+  	    msg_Warn( p_demux, "[flv]p_frame->i_pts = VLC_TS_INVALID");
+#endif
+        }
     }
 #ifdef AVFORMAT_DEBUG
     msg_Dbg( p_demux, "tk[%d] dts=%"PRId64" pts=%"PRId64,

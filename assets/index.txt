@@ -1,3 +1,4 @@
 etc/vlcrc
+channel_list_cn.list.api2
 bin/ffmpeg
 bin/.gitkeep
