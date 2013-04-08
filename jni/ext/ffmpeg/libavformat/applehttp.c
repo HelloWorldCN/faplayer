@@ -443,11 +443,12 @@ static int applehttp_read_header(AVFormatContext *s, AVFormatParameters *ap)
     /* If the playlist only contained variants, parse each individual
      * variant playlist. */
     if (c->n_variants > 1 || c->variants[0]->n_segments == 0) {
-        for (i = 0; i < c->n_variants; i++) {
-            struct variant *v = c->variants[i];
+        //for (i = 0; i < c->n_variants; i++) {
+            //struct variant *v = c->variants[i];
+            struct variant *v = c->variants[0];
             if ((ret = parse_playlist(c, v->url, v, NULL)) < 0)
                 goto fail;
-        }
+        //}
     }
 
     if (c->variants[0]->n_segments == 0) {
@@ -466,14 +467,18 @@ static int applehttp_read_header(AVFormatContext *s, AVFormatParameters *ap)
     }
 
     /* Open the demuxer for each variant */
-    for (i = 0; i < c->n_variants; i++) {
-        struct variant *v = c->variants[i];
+    //for (i = 0; i < c->n_variants; i++) {
+    if (c->n_variants) {
+        //struct variant *v = c->variants[i];
+        struct variant *v = c->variants[0];
         AVInputFormat *in_fmt = NULL;
         char bitrate_str[20];
         if (v->n_segments == 0)
-            continue;
+            //continue;
+            goto fail;
 
-        v->index  = i;
+        //v->index  = i;
+        v->index = 0;
         v->needed = 1;
         v->parent = s;
 
@@ -499,7 +504,8 @@ static int applehttp_read_header(AVFormatContext *s, AVFormatParameters *ap)
         snprintf(bitrate_str, sizeof(bitrate_str), "%d", v->bandwidth);
         /* Create new AVStreams for each stream in this variant */
         for (j = 0; j < v->ctx->nb_streams; j++) {
-            AVStream *st = av_new_stream(s, i);
+            //AVStream *st = av_new_stream(s, i);
+            AVStream *st = av_new_stream(s, 0);
             if (!st) {
                 ret = AVERROR(ENOMEM);
                 goto fail;
@@ -526,8 +532,10 @@ static int recheck_discard_flags(AVFormatContext *s, int first)
     int i, changed = 0;
 
     /* Check if any new streams are needed */
-    for (i = 0; i < c->n_variants; i++)
-        c->variants[i]->cur_needed = 0;;
+    //for (i = 0; i < c->n_variants; i++)
+        //c->variants[i]->cur_needed = 0;;
+    if (c->n_variants)
+        c->variants[0]->cur_needed = 0;
 
     for (i = 0; i < s->nb_streams; i++) {
         AVStream *st = s->streams[i];
@@ -535,8 +543,10 @@ static int recheck_discard_flags(AVFormatContext *s, int first)
         if (st->discard < AVDISCARD_ALL)
             var->cur_needed = 1;
     }
-    for (i = 0; i < c->n_variants; i++) {
-        struct variant *v = c->variants[i];
+    //for (i = 0; i < c->n_variants; i++) {
+    if (c->n_variants) {
+        //struct variant *v = c->variants[i];
+        struct variant *v = c->variants[0];
         if (v->cur_needed && !v->needed) {
             v->needed = 1;
             changed = 1;
@@ -567,8 +577,10 @@ static int applehttp_read_packet(AVFormatContext *s, AVPacket *pkt)
 
 start:
     c->end_of_segment = 0;
-    for (i = 0; i < c->n_variants; i++) {
-        struct variant *var = c->variants[i];
+    //for (i = 0; i < c->n_variants; i++) {
+    if (c->n_variants) {
+        //struct variant *var = c->variants[i];
+        struct variant *var = c->variants[0];
         /* Make sure we've got one buffered packet from each open variant
          * stream */
         if (var->needed && !var->pkt.data) {
@@ -583,7 +595,8 @@ start:
         if (var->pkt.data) {
             if (minvariant < 0 ||
                 var->pkt.dts < c->variants[minvariant]->pkt.dts)
-                minvariant = i;
+                //minvariant = i;
+                minvariant = 0;
         }
     }
     if (c->end_of_segment) {
@@ -622,9 +635,11 @@ static int applehttp_read_seek(AVFormatContext *s, int stream_index,
                                AV_TIME_BASE, flags & AVSEEK_FLAG_BACKWARD ?
                                AV_ROUND_DOWN : AV_ROUND_UP);
     ret = AVERROR(EIO);
-    for (i = 0; i < c->n_variants; i++) {
+    //for (i = 0; i < c->n_variants; i++) {
+    if (c->n_variants) {
         /* Reset reading */
-        struct variant *var = c->variants[i];
+        //struct variant *var = c->variants[i];
+        struct variant *var = c->variants[0];
         int64_t pos = 0;
         if (var->input) {
             ffurl_close(var->input);
