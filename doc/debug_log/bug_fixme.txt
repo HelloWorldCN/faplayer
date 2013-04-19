@@ -1,0 +1,13 @@
+次目录记录bug的编号，便于版本的维护，此目录是总的bug预览，各个bug目录下还有详细的readme和debug_log
+
+###time start :	2013-04-18###
+
+==========
+bug#xxxx	before	2013-04-18
+	目录http_flv和http_live以及no_video分别是http_flv视频播放失败、http_live模块选择、某些地方台只有音频无视频的bug修复
+
+==========
+bug#0001	2013-04-18
+	neon目录，主要修复faplayer在android系统上由于NEON指令加载与否造成视频延迟（音视频不同步）的bug
+
+	
