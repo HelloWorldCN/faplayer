@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/helpback_mini"
+    android:background="@drawable/back_mini"
     android:orientation="vertical" >
 
     <ImageView
@@ -10,25 +10,24 @@
         android:layout_height="120.0dip"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:src="@drawable/ic_keke" />
+        android:src="@drawable/share_renren" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
         android:layout_gravity="center_horizontal"
-        >
+        android:layout_marginTop="60dp" >
 
         <LinearLayout
             android:id="@+id/l1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <Button
                 android:id="@+id/live_media"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/sel_livetv" />
 
@@ -37,22 +36,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:textColor="#ff4b4949"
-                android:text="@string/live_btn" />
+                android:text="@string/live_btn"
+                android:textColor="#ff4b4949" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/l2"
-            android:layout_toRightOf="@id/l1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/l1"
             android:orientation="vertical" >
 
             <Button
                 android:id="@+id/local_media"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/sel_local" />
 
@@ -61,8 +60,61 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:textColor="#ff4b4949"
-                android:text="@string/local_btn" />
+                android:text="@string/local_btn"
+                android:textColor="#ff4b4949" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" >
+
+        <LinearLayout
+            android:id="@+id/l3"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/setup_media"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/sel_fav" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/mark_btn"
+                android:textColor="#ff4b4949" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/l4"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/l3"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/undef_media"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/sel_setup" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/setup_btn"
+                android:textColor="#ff4b4949" />
         </LinearLayout>
     </RelativeLayout>
 
