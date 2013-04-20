@@ -10,22 +10,32 @@ import org.stagex.danmaku.player.VlcMediaPlayer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.gesture.GestureOverlayView.OnGestureListener;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -37,10 +47,10 @@ public class PlayerActivity extends Activity implements
 		AbsMediaPlayer.OnCompletionListener, AbsMediaPlayer.OnErrorListener,
 		AbsMediaPlayer.OnInfoListener, AbsMediaPlayer.OnPreparedListener,
 		AbsMediaPlayer.OnProgressUpdateListener,
-		AbsMediaPlayer.OnVideoSizeChangedListener, OnTouchListener,
+		AbsMediaPlayer.OnVideoSizeChangedListener,
 		OnClickListener, OnSeekBarChangeListener {
 
-	static final String LOGTAG = "DANMAKU-PlayerActivity";
+	static final String LOGTAG = "PlayerActivity";
 
 	private static final int SURFACE_NONE = 0;
 	private static final int SURFACE_FILL = 1;
@@ -106,6 +116,33 @@ public class PlayerActivity extends Activity implements
 	private int mAudioTrackCount = 0;
 	private int mSubtitleTrackIndex = 0;
 	private int mSubtitleTrackCount = 0;
+	
+	/**
+	 *  增加手势控制
+	 *  @{  */
+	private View mVolumeBrightnessLayout;
+	private ImageView mOperationBg;
+	private ImageView mOperationPercent;
+	private AudioManager mAudioManager;
+	/** 最大声音 */
+	private int mMaxVolume;
+	/** 当前声音 */
+	private int mVolume = -1;
+	/** 当前亮度 */
+	private float mBrightness = -1f;
+	/** 当前缩放模式 */
+	// private int mLayout = VideoView.VIDEO_LAYOUT_ZOOM;
+	/** 响应函数是否生效的标志位 */
+	private boolean mDoHandleAll = false; 
+	private boolean mDoHandleClick= false; 
+	private boolean mDoHandleSeek = false; 
+	
+	private static final int MSG_CTL_ALL = 0;
+	private static final int MSG_CTL_CLICK = 1;
+	private static final int MSG_CTL_SEEKBAR = 2;
+	
+	private GestureDetector mGestureDetector;
+	/* @} */
 
 	private static boolean isDefMediaPlayer(Object obj) {
 		return obj.getClass().getName()
@@ -277,10 +314,8 @@ public class PlayerActivity extends Activity implements
 			}
 
 		});
-		mSurfaceViewVlc.setOnTouchListener(this);
 		/* SurfaceView used by MediaPlayer is a PUSH_BUFFERS surface */
 		mSurfaceViewDef = (SurfaceView) findViewById(R.id.player_surface_def);
-		mSurfaceViewDef.setOnTouchListener(this);
 		mSurfaceHolderDef = mSurfaceViewDef.getHolder();
 		mSurfaceHolderDef.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mSurfaceHolderDef.addCallback(new SurfaceHolder.Callback() {
@@ -328,6 +363,9 @@ public class PlayerActivity extends Activity implements
 		mProgressBarPreparing = (ProgressBar) findViewById(R.id.player_prepairing);
 		//缓冲提示语言
 		mLoadingTxt =  (TextView)findViewById(R.id.player_loading);
+		
+		//初始化手势
+		initGesture();
 	}
 
 	protected void initializeData() {
@@ -533,7 +571,7 @@ public class PlayerActivity extends Activity implements
 		surface.setLayoutParams(lp);
 		surface.invalidate();
 	}
-
+	
 	/**
 	 * 入口方法
 	 */
@@ -555,6 +593,7 @@ public class PlayerActivity extends Activity implements
 		String uri = mPlayListArray.get(mPlayListSelected);
 		//选择播放器
 		selectMediaPlayer(uri, false);
+		
 	}
 
 	@Override
@@ -574,27 +613,6 @@ public class PlayerActivity extends Activity implements
 			mMediaPlayer.pause();
 		}
 	}
-	
-	/**
-	 * 播放过程中点击屏幕，显示相关控件
-	 */
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		if (!mMediaPlayerLoaded) {
-			return true;
-		}
-		int action = event.getAction();
-		if (action == MotionEvent.ACTION_DOWN) {
-			int visibility = mLinearLayoutControlBar.getVisibility();
-			if (visibility != View.VISIBLE) {
-				mLinearLayoutControlBar.setVisibility(View.VISIBLE);
-			} else {
-				mLinearLayoutControlBar.setVisibility(View.GONE);
-			}
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * 对上述控件的子控件的操作响应
@@ -603,6 +621,13 @@ public class PlayerActivity extends Activity implements
 	public void onClick(View v) {
 		if (!mMediaPlayerLoaded)
 			return;
+		
+		//如果有click事件，也阻止控件隐藏
+		mDoHandleAll = false;
+		mDoHandleClick = true;
+		mDoHandleSeek = false;
+		endCTLGesture(MSG_CTL_CLICK);
+		
 		int id = v.getId();
 		switch (id) {
 		case R.id.player_button_switch_audio: {
@@ -656,11 +681,16 @@ public class PlayerActivity extends Activity implements
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		/* not used */
+//		Log.v(LOGTAG, "-----Progress-----");
 	}
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
 		/* not used */
+//		Log.v(LOGTAG, "-----start seek---------");
+		mDoHandleAll = false;
+		mDoHandleClick = false;
+		mDoHandleSeek = true;
 	}
 
 	@Override
@@ -674,6 +704,9 @@ public class PlayerActivity extends Activity implements
 				int position = seekBar.getProgress();
 				if (mMediaPlayer != null)
 					mMediaPlayer.seekTo(position);
+//				Log.v(LOGTAG, "-------seek end--------");
+				/* seek结束了，可做控件隐藏的相应处理 */
+				endCTLGesture(MSG_CTL_SEEKBAR);
 			}
 			break;
 		}
@@ -754,4 +787,209 @@ public class PlayerActivity extends Activity implements
 		mEventHandler.sendMessage(msg);
 	}
 	/* @} */
+	
+	/**
+	 * 初始化手势控制
+	 */
+	protected void initGesture() {
+		mVolumeBrightnessLayout = findViewById(R.id.operation_volume_brightness);
+		mOperationBg = (ImageView) findViewById(R.id.operation_bg);
+		mOperationPercent = (ImageView) findViewById(R.id.operation_percent);
+	
+		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		mMaxVolume = mAudioManager
+				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+	
+		mGestureDetector = new GestureDetector(this, new MyGestureListener());
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		/* 首先处理touch事件（因为废弃了onTouch事件了）*/
+		if (!mMediaPlayerLoaded) {
+			return true;
+		}
+		//仅在触摸按下时，响应触摸事件
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			int visibility = mLinearLayoutControlBar.getVisibility();
+			//加上判断之后可以在连续触摸的时候，到达其延时后仍可隐藏
+			if (visibility != View.VISIBLE) {
+				mLinearLayoutControlBar.setVisibility(View.VISIBLE);
+				//延时一段时间后隐藏
+				mDoHandleAll = true;
+				mDoHandleClick = false;
+				mDoHandleSeek = false;
+				endCTLGesture(MSG_CTL_ALL);
+			} else {
+				mDoHandleAll = false;
+				mDoHandleClick = false;
+				mDoHandleSeek = false;
+				mLinearLayoutControlBar.setVisibility(View.GONE);
+			}
+		}
+		
+		//处理音量和亮度调节手势事件
+		if (mGestureDetector.onTouchEvent(event))
+			return true;
+	
+		// 处理手势结束
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_UP:
+			endALGesture();			//结束音量和亮度调节手势
+			break;
+		}
+	
+		return super.onTouchEvent(event);
+	}
+	
+	/** 结束音量和亮度调节手势 */
+	private void endALGesture() {
+		mVolume = -1;
+		mBrightness = -1f;
+	
+		// 隐藏
+		mDismissALHandler.removeMessages(0);
+		mDismissALHandler.sendEmptyMessageDelayed(0, 500);
+	}
+	
+	/** 结束控制接口触摸 */
+	private void endCTLGesture(int msg) {
+		// 隐藏
+		mDismissCTLHandler.removeMessages(msg);
+		mDismissCTLHandler.sendEmptyMessageDelayed(msg, 3000);
+	}
+	
+	private class MyGestureListener extends SimpleOnGestureListener {
+	
+		 /** TODO 双击（改变分辨率） */
+		 @Override
+		 public boolean onDoubleTap(MotionEvent e) {
+//		 if (mLayout == VideoView.VIDEO_LAYOUT_ZOOM)
+//		 mLayout = VideoView.VIDEO_LAYOUT_ORIGIN;
+//		 else
+//		 mLayout++;
+//		 if (mVideoView != null)
+//		 mVideoView.setVideoLayout(mLayout, 0);
+		 return true;
+		 }
+	
+		/** 滑动 */
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2,
+				float distanceX, float distanceY) {
+//			Log.v(LOGTAG, "--------" + e1 );
+			float mOldX = e1.getX(), mOldY = e1.getY();
+			int y = (int) e2.getRawY();
+			Display disp = getWindowManager().getDefaultDisplay();
+			int windowWidth = disp.getWidth();
+			int windowHeight = disp.getHeight();
+	
+			if (mOldX > windowWidth * 4.0 / 5)// 右边滑动
+				onVolumeSlide((mOldY - y) / windowHeight);
+			else if (mOldX < windowWidth / 5.0)// 左边滑动
+				onBrightnessSlide((mOldY - y) / windowHeight);
+	
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+	}
+	
+	/** 定时隐藏音量和亮度图标 */
+	private Handler mDismissALHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			mVolumeBrightnessLayout.setVisibility(View.GONE);
+		}
+	};
+	
+	/** 定时隐藏播放控件 */
+	private Handler mDismissCTLHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+//			Log.v(LOGTAG, "-----msg.what------" + msg.what);
+			switch (msg.what) {
+			case MSG_CTL_ALL:
+				if (mDoHandleAll) {
+					mLinearLayoutControlBar.setVisibility(View.GONE);
+					mDoHandleAll = false;
+				}
+				break;
+			case MSG_CTL_CLICK:
+				if (mDoHandleClick) {
+					mLinearLayoutControlBar.setVisibility(View.GONE);
+					mDoHandleClick = false;
+				}
+				break;
+			case MSG_CTL_SEEKBAR:
+				if (mDoHandleSeek) {
+					mLinearLayoutControlBar.setVisibility(View.GONE);
+					mDoHandleSeek = false;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	};
+	
+	/**
+	 * 滑动改变声音大小
+	 * 
+	 * @param percent
+	 */
+	private void onVolumeSlide(float percent) {
+		if (mVolume == -1) {
+			mVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+			if (mVolume < 0)
+				mVolume = 0;
+	
+			// 显示
+			mOperationBg.setImageResource(R.drawable.video_volumn_bg);
+			mVolumeBrightnessLayout.setVisibility(View.VISIBLE);
+		}
+	
+		int index = (int) (percent * mMaxVolume) + mVolume;
+		if (index > mMaxVolume)
+			index = mMaxVolume;
+		else if (index < 0)
+			index = 0;
+	
+		// 变更声音
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
+	
+		// 变更进度条
+		ViewGroup.LayoutParams lp = mOperationPercent.getLayoutParams();
+		lp.width = findViewById(R.id.operation_full).getLayoutParams().width
+				* index / mMaxVolume;
+		mOperationPercent.setLayoutParams(lp);
+	}
+	
+	/**
+	 * 滑动改变亮度
+	 * 
+	 * @param percent
+	 */
+	private void onBrightnessSlide(float percent) {
+		if (mBrightness < 0) {
+			mBrightness = getWindow().getAttributes().screenBrightness;
+			if (mBrightness <= 0.00f)
+				mBrightness = 0.50f;
+			if (mBrightness < 0.01f)
+				mBrightness = 0.01f;
+	
+			// 显示
+			mOperationBg.setImageResource(R.drawable.video_brightness_bg);
+			mVolumeBrightnessLayout.setVisibility(View.VISIBLE);
+		}
+		WindowManager.LayoutParams lpa = getWindow().getAttributes();
+		lpa.screenBrightness = mBrightness + percent;
+		if (lpa.screenBrightness > 1.0f)
+			lpa.screenBrightness = 1.0f;
+		else if (lpa.screenBrightness < 0.01f)
+			lpa.screenBrightness = 0.01f;
+		getWindow().setAttributes(lpa);
+	
+		ViewGroup.LayoutParams lp = mOperationPercent.getLayoutParams();
+		lp.width = (int) (findViewById(R.id.operation_full).getLayoutParams().width * lpa.screenBrightness);
+		mOperationPercent.setLayoutParams(lp);
+	}
 }
