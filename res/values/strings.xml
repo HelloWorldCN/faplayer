@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">faplayer</string>
+    <string name="app_name">可可电视</string>
     <string name="go">go</string>
     <string name="nulltime">--:--:--</string>
     <string name="loading_txt">正在加载中...</string>

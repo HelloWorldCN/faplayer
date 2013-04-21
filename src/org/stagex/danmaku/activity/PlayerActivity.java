@@ -10,15 +10,18 @@ import org.stagex.danmaku.player.VlcMediaPlayer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.gesture.GestureOverlayView.OnGestureListener;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -30,17 +33,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PlayerActivity extends Activity implements
 		AbsMediaPlayer.OnBufferingUpdateListener,
@@ -83,6 +84,8 @@ public class PlayerActivity extends Activity implements
 	private TextView mLoadingTxt;
 
 	/* player controls */
+    private TextView mSysTime;
+    private TextView mBattery;
 	private TextView mTextViewTime;
 	private SeekBar mSeekBarProgress;
 	private TextView mTextViewLength;
@@ -94,7 +97,7 @@ public class PlayerActivity extends Activity implements
 	private ImageButton mImageButtonNext;
 	private ImageButton mImageButtonSwitchAspectRatio;
 
-	private LinearLayout mLinearLayoutControlBar;
+	private RelativeLayout mLinearLayoutControlBar;
 
 	/* player video */
 	private SurfaceView mSurfaceViewDef;
@@ -112,10 +115,10 @@ public class PlayerActivity extends Activity implements
 	private boolean mCanSeek = true;
 	private int mAspectRatio = 1;				//直接全屏
 
-	private int mAudioTrackIndex = 0;
-	private int mAudioTrackCount = 0;
-	private int mSubtitleTrackIndex = 0;
-	private int mSubtitleTrackCount = 0;
+//	private int mAudioTrackIndex = 0;
+//	private int mAudioTrackCount = 0;
+//	private int mSubtitleTrackIndex = 0;
+//	private int mSubtitleTrackCount = 0;
 	
 	/**
 	 *  增加手势控制
@@ -337,11 +340,18 @@ public class PlayerActivity extends Activity implements
 			}
 
 		});
-
+		
+		//overlay header
+		mSysTime = (TextView) findViewById(R.id.player_overlay_systime);
+		mBattery = (TextView) findViewById(R.id.player_overlay_battery);
+		
+		//seekbar和两端的岂止时间
 		mTextViewTime = (TextView) findViewById(R.id.player_text_position);
 		mSeekBarProgress = (SeekBar) findViewById(R.id.player_seekbar_progress);
 		mSeekBarProgress.setOnSeekBarChangeListener(this);
 		mTextViewLength = (TextView) findViewById(R.id.player_text_length);
+		
+		//播放控件
 		mImageButtonToggleMessage = (ImageButton) findViewById(R.id.player_button_toggle_message);
 		mImageButtonToggleMessage.setOnClickListener(this);
 		mImageButtonSwitchAudio = (ImageButton) findViewById(R.id.player_button_switch_audio);
@@ -357,7 +367,7 @@ public class PlayerActivity extends Activity implements
 		mImageButtonSwitchAspectRatio = (ImageButton) findViewById(R.id.player_button_switch_aspect_ratio);
 		mImageButtonSwitchAspectRatio.setOnClickListener(this);
 
-		mLinearLayoutControlBar = (LinearLayout) findViewById(R.id.player_control_bar);
+		mLinearLayoutControlBar = (RelativeLayout) findViewById(R.id.player_control_bar);
 
 		//缓冲进度圈
 		mProgressBarPreparing = (ProgressBar) findViewById(R.id.player_prepairing);
@@ -366,6 +376,12 @@ public class PlayerActivity extends Activity implements
 		
 		//初始化手势
 		initGesture();
+		
+		//初始化电量监测
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+//        filter.addAction(VLCApplication.SLEEP_INTENT);
+        registerReceiver(mReceiver, filter);
 	}
 
 	protected void initializeData() {
@@ -599,6 +615,8 @@ public class PlayerActivity extends Activity implements
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		//注销电量检测事件
+		unregisterReceiver(mReceiver);
 	}
 
 	@Override
@@ -631,15 +649,15 @@ public class PlayerActivity extends Activity implements
 		int id = v.getId();
 		switch (id) {
 		case R.id.player_button_switch_audio: {
-
+			//TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_switch_subtitle: {
-
+			//TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_previous: {
-
+			//TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_toggle_play: {
@@ -659,6 +677,7 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 		case R.id.player_button_next: {
+			//TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_switch_aspect_ratio: {
@@ -676,7 +695,11 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 	}
-
+	
+	/**
+	 * seekbar的响应方法
+	 * @{
+	 */
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
@@ -714,6 +737,7 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 	}
+	/** @} */	
 	
 	/**
 	 * 以下：接收事件，做中间处理，再调用handleMessage方法处理之
@@ -786,7 +810,7 @@ public class PlayerActivity extends Activity implements
 		msg.arg2 = height;
 		mEventHandler.sendMessage(msg);
 	}
-	/* @} */
+	/** @} */
 	
 	/**
 	 * 初始化手势控制
@@ -809,6 +833,10 @@ public class PlayerActivity extends Activity implements
 		if (!mMediaPlayerLoaded) {
 			return true;
 		}
+		
+		//TODO 更新当前时间信息
+		mSysTime.setText(DateFormat.format("kk:mm", System.currentTimeMillis()));
+		
 		//仅在触摸按下时，响应触摸事件
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			int visibility = mLinearLayoutControlBar.getVisibility();
@@ -992,4 +1020,28 @@ public class PlayerActivity extends Activity implements
 		lp.width = (int) (findViewById(R.id.operation_full).getLayoutParams().width * lpa.screenBrightness);
 		mOperationPercent.setLayoutParams(lp);
 	}
+	
+	//电池电量检测
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String action = intent.getAction();
+            if (action.equalsIgnoreCase(Intent.ACTION_BATTERY_CHANGED)) {
+                int batteryLevel = intent.getIntExtra("level", 0);
+//                Log.v(LOGTAG, "---->get batteryLevel = " + batteryLevel);
+                if (batteryLevel >= 50)
+                    mBattery.setTextColor(Color.GREEN);
+                else if (batteryLevel >= 30)
+                    mBattery.setTextColor(Color.YELLOW);
+                else
+                    mBattery.setTextColor(Color.RED);
+                mBattery.setText(String.format("%d%%", batteryLevel));
+            }
+//            else if (action.equalsIgnoreCase(VLCApplication.SLEEP_INTENT)) {
+//                finish();
+//            }
+        }
+    };
 }
