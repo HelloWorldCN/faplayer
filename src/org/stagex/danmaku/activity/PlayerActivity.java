@@ -608,7 +608,9 @@ public class PlayerActivity extends Activity implements
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
 		//选择播放器
-		selectMediaPlayer(uri, false);
+//		selectMediaPlayer(uri, false);
+		//强制选择VLC播放器
+		selectMediaPlayer(uri, true);
 		
 	}
 

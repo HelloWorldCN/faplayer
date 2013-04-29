@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/oplayer/!svn/ver/8/trunk/OPlayer/src/com/nmbb/oplayer/util
+END
+PinyinUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/oplayer/!svn/ver/4/trunk/OPlayer/src/com/nmbb/oplayer/util/PinyinUtils.java
+END
+StringUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/oplayer/!svn/ver/3/trunk/OPlayer/src/com/nmbb/oplayer/util/StringUtils.java
+END
+FileUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/oplayer/!svn/ver/8/trunk/OPlayer/src/com/nmbb/oplayer/util/FileUtils.java
+END
+ConvertUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/oplayer/!svn/ver/8/trunk/OPlayer/src/com/nmbb/oplayer/util/ConvertUtils.java
+END

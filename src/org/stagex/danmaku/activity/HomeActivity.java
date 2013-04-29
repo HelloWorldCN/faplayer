@@ -1,8 +1,6 @@
 package org.stagex.danmaku.activity;
 
 import org.stagex.danmaku.R;
-import org.stagex.danmaku.adapter.ChannelAdapter;
-import org.stagex.danmaku.util.ParseUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.nmbb.oplayer.ui.MainActivity;
 
 public class HomeActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -52,7 +52,9 @@ public class HomeActivity extends Activity {
 
 	private void startLocalMedia() {
 		Intent intent = new Intent();
-		intent.setClass(HomeActivity.this, FileBrowserActivity.class);
+//		intent.setClass(HomeActivity.this, FileBrowserActivity.class);
+		//启动新的媒体扫描的activity
+		intent.setClass(HomeActivity.this, MainActivity.class);
 		startActivity(intent);
 	};
 
