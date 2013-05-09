@@ -45,10 +45,10 @@ import com.nmbb.oplayer.service.MediaScannerService;
 import com.nmbb.oplayer.service.MediaScannerService.IMediaScannerObserver;
 import com.nmbb.oplayer.service.MediaScannerService.MediaScannerServiceBinder;
 import com.nmbb.oplayer.ui.base.ArrayAdapter;
-import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
+//import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
 import com.nmbb.oplayer.util.FileUtils;
 
-public class FragmentFileOld extends FragmentBase implements OnItemClickListener, IMediaScannerObserver {
+public class FragmentFile extends FragmentBase implements OnItemClickListener, IMediaScannerObserver {
 
 	private FileAdapter mAdapter;
 	private FileAdapter mDownloadAdapter;
@@ -73,7 +73,7 @@ public class FragmentFileOld extends FragmentBase implements OnItemClickListener
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mMediaScannerService = ((MediaScannerServiceBinder) service).getService();
-			mMediaScannerService.addObserver(FragmentFileOld.this);
+			mMediaScannerService.addObserver(FragmentFile.this);
 			//			Toast.makeText(ComponentServiceActivity.this, "Service绑定成功!", Toast.LENGTH_SHORT).show();
 		}
 	};
@@ -253,50 +253,50 @@ public class FragmentFileOld extends FragmentBase implements OnItemClickListener
 		}).setPositiveButton(android.R.string.no, null).show();
 	}
 
-	public Handler mDownloadHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			POMedia p;
-			String url = msg.obj.toString();
-			switch (msg.what) {
-			case FileDownloadHelper.MESSAGE_START://开始下载
-				p = new POMedia();
-				p.path = mParent.mFileDownload.mDownloadUrls.get(url);
-				p.title = new File(p.path).getName();
-				p.status = 0;
-				p.file_size = 0;
-				if (mDownloadAdapter == null) {
-					mDownloadAdapter = new FileAdapter(getActivity(), new ArrayList<POMedia>());
-					mDownloadAdapter.add(p, url);
-					mTempListView.setAdapter(mDownloadAdapter);
-					mTempListView.setVisibility(View.VISIBLE);
-				} else {
-					mDownloadAdapter.add(p, url);
-					mDownloadAdapter.notifyDataSetChanged();
-				}
-				break;
-			case FileDownloadHelper.MESSAGE_PROGRESS://正在下载
-				p = mDownloadAdapter.getItem(url);
-				p.temp_file_size = msg.arg1;
-				p.file_size = msg.arg2;
-				int status = (int) ((msg.arg1 * 1.0 / msg.arg2) * 10);
-				if (status > 10)
-					status = 10;
-				p.status = status;
-				mDownloadAdapter.notifyDataSetChanged();
-				break;
-			case FileDownloadHelper.MESSAGE_STOP://下载结束
-				p = mDownloadAdapter.getItem(url);
-				new DbHelper<POMedia>().create(p);
-				//				FileBusiness.insertFile(getActivity(), p);
-				break;
-			case FileDownloadHelper.MESSAGE_ERROR:
-				Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
-				break;
-			}
-			super.handleMessage(msg);
-		}
-	};
+//	public Handler mDownloadHandler = new Handler() {
+//		@Override
+//		public void handleMessage(Message msg) {
+//			POMedia p;
+//			String url = msg.obj.toString();
+//			switch (msg.what) {
+//			case FileDownloadHelper.MESSAGE_START://开始下载
+//				p = new POMedia();
+//				p.path = mParent.mFileDownload.mDownloadUrls.get(url);
+//				p.title = new File(p.path).getName();
+//				p.status = 0;
+//				p.file_size = 0;
+//				if (mDownloadAdapter == null) {
+//					mDownloadAdapter = new FileAdapter(getActivity(), new ArrayList<POMedia>());
+//					mDownloadAdapter.add(p, url);
+//					mTempListView.setAdapter(mDownloadAdapter);
+//					mTempListView.setVisibility(View.VISIBLE);
+//				} else {
+//					mDownloadAdapter.add(p, url);
+//					mDownloadAdapter.notifyDataSetChanged();
+//				}
+//				break;
+//			case FileDownloadHelper.MESSAGE_PROGRESS://正在下载
+//				p = mDownloadAdapter.getItem(url);
+//				p.temp_file_size = msg.arg1;
+//				p.file_size = msg.arg2;
+//				int status = (int) ((msg.arg1 * 1.0 / msg.arg2) * 10);
+//				if (status > 10)
+//					status = 10;
+//				p.status = status;
+//				mDownloadAdapter.notifyDataSetChanged();
+//				break;
+//			case FileDownloadHelper.MESSAGE_STOP://下载结束
+//				p = mDownloadAdapter.getItem(url);
+//				new DbHelper<POMedia>().create(p);
+//				//				FileBusiness.insertFile(getActivity(), p);
+//				break;
+//			case FileDownloadHelper.MESSAGE_ERROR:
+//				Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
+//				break;
+//			}
+//			super.handleMessage(msg);
+//		}
+//	};
 
 	private void startLiveMedia(String liveUrl) {
 		Intent intent = new Intent(getActivity(),
