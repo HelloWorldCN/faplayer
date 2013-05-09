@@ -186,10 +186,9 @@ public class ChannelTabActivity extends TabActivity implements
 				ChannelInfo info = (ChannelInfo) yang_shi_list
 						.getItemAtPosition(arg2);
 				Log.d("ChannelInfo",
-						"  name = " + info.getName() + "[" + info.getUrl()
-								+ "]");
+						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl());
+				startLiveMedia(info.getUrl(), info.getName());
 			}
 		});
 		yang_shi_list.setOnScrollListener(new OnScrollListener() {
@@ -225,10 +224,9 @@ public class ChannelTabActivity extends TabActivity implements
 				ChannelInfo info = (ChannelInfo) wei_shi_list
 						.getItemAtPosition(arg2);
 				Log.d("ChannelInfo",
-						"  name = " + info.getName() + "[" + info.getUrl()
-								+ "]");
+						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl());
+				startLiveMedia(info.getUrl(), info.getName());
 			}
 		});
 
@@ -265,10 +263,9 @@ public class ChannelTabActivity extends TabActivity implements
 				ChannelInfo info = (ChannelInfo) di_fang_list
 						.getItemAtPosition(arg2);
 				Log.d("ChannelInfo",
-						"  name = " + info.getName() + "[" + info.getUrl()
-								+ "]");
+						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl());
+				startLiveMedia(info.getUrl(), info.getName());
 			}
 		});
 
@@ -305,10 +302,9 @@ public class ChannelTabActivity extends TabActivity implements
 				ChannelInfo info = (ChannelInfo) ti_yu_list
 						.getItemAtPosition(arg2);
 				Log.d("ChannelInfo",
-						"  name = " + info.getName() + "[" + info.getUrl()
-								+ "]");
+						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl());
+				startLiveMedia(info.getUrl(), info.getName());
 			}
 		});
 
@@ -329,12 +325,14 @@ public class ChannelTabActivity extends TabActivity implements
 		});
 	}
 
-	private void startLiveMedia(String liveUrl) {
-		Intent intent = new Intent(this, PlayerActivity.class);
+	private void startLiveMedia(String liveUrl, String name) {
+		Intent intent = new Intent(ChannelTabActivity.this,
+				PlayerActivity.class);
 		ArrayList<String> playlist = new ArrayList<String>();
 		playlist.add(liveUrl);
 		intent.putExtra("selected", 0);
 		intent.putExtra("playlist", playlist);
+		intent.putExtra("title", name);
 		startActivity(intent);
 	}
 

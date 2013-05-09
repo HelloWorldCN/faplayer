@@ -52,11 +52,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ChannelListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
             android:name=".activity.ChannelTabActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >

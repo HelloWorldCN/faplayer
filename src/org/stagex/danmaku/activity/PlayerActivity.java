@@ -83,6 +83,7 @@ public class PlayerActivity extends Activity implements
 	private TextView mLoadingTxt;
 
 	/* player controls */
+	private TextView mTitle;
     private TextView mSysTime;
     private TextView mBattery;
 	private TextView mTextViewTime;
@@ -113,6 +114,9 @@ public class PlayerActivity extends Activity implements
 	private int mLength = -1;
 	private boolean mCanSeek = true;
 	private int mAspectRatio = 1;				//直接全屏
+	
+	/* title name */
+	private String mTitleName;
 
 //	private int mAudioTrackIndex = 0;
 //	private int mAudioTrackCount = 0;
@@ -341,6 +345,7 @@ public class PlayerActivity extends Activity implements
 		});
 		
 		//overlay header
+		mTitle = (TextView)findViewById(R.id.player_overlay_title);
 		mSysTime = (TextView) findViewById(R.id.player_overlay_systime);
 		mBattery = (TextView) findViewById(R.id.player_overlay_battery);
 		
@@ -394,6 +399,8 @@ public class PlayerActivity extends Activity implements
 		} else {
 			mPlayListSelected = intent.getIntExtra("selected", 0);
 			mPlayListArray = intent.getStringArrayListExtra("playlist");
+//			Log.d(LOGTAG, "===>>>" + mTitleName);
+			mTitleName = intent.getStringExtra("title");
 		}
 		if (mPlayListArray == null || mPlayListArray.size() == 0) {
 			Log.e(LOGTAG, "initializeData(): empty");
@@ -837,6 +844,7 @@ public class PlayerActivity extends Activity implements
 		
 		//TODO 更新当前时间信息
 		mSysTime.setText(DateFormat.format("kk:mm", System.currentTimeMillis()));
+		mTitle.setText(mTitleName);
 		
 		//仅在触摸按下时，响应触摸事件
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -885,7 +893,7 @@ public class PlayerActivity extends Activity implements
 	private void endCTLGesture(int msg) {
 		// 隐藏
 		mDismissCTLHandler.removeMessages(msg);
-		mDismissCTLHandler.sendEmptyMessageDelayed(msg, 3000);
+		mDismissCTLHandler.sendEmptyMessageDelayed(msg, 5000);
 	}
 	
 	private class MyGestureListener extends SimpleOnGestureListener {

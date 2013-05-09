@@ -18,6 +18,7 @@
             android:id="@+id/player_overlay_title"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:gravity="left|center_vertical"
             android:textColor="#ffffff"
@@ -43,52 +44,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/interface_overlay"
-        android:layout_alignParentLeft="true"
-        android:background="@color/transparent_gray"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/player_text_position"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="5"
-            android:gravity="center"
-            android:text="@string/nulltime"
-            android:textColor="#ffffff" />
-
-        <SeekBar
-            android:id="@+id/player_seekbar_progress"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dip"
-            android:layout_marginTop="4dip"
-            android:layout_weight="2"
-            android:maxHeight="6dip"
-            android:minHeight="6dip"
-            android:progressDrawable="@drawable/seekbar_style"
-            android:thumb="@drawable/ic_player_thumb" />
-
-        <TextView
-            android:id="@+id/player_text_length"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="5"
-            android:gravity="center"
-            android:text="@string/nulltime"
-            android:textColor="#ffffff" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/interface_overlay"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
+        android:layout_above="@+id/seekbar_overlay"
         android:background="@color/transparent_gray"
         android:gravity="center"
         android:orientation="horizontal" >
@@ -172,6 +131,49 @@
             android:layout_marginTop="4dip"
             android:background="@drawable/ic_screen_pressed"
             android:gravity="center_vertical" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seekbar_overlay"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="bottom"
+        android:background="@color/transparent_gray"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/player_text_position"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:text="@string/nulltime"
+            android:textColor="#ffffff" />
+
+        <SeekBar
+            android:id="@+id/player_seekbar_progress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dip"
+            android:layout_marginTop="4dip"
+            android:layout_weight="2"
+            android:maxHeight="6dip"
+            android:minHeight="6dip"
+            android:progressDrawable="@drawable/seekbar_style"
+            android:thumb="@drawable/ic_player_thumb" />
+
+        <TextView
+            android:id="@+id/player_text_length"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:text="@string/nulltime"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </RelativeLayout>

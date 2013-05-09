@@ -41,7 +41,6 @@ import com.nmbb.oplayer.scanner.MediaScannerService;
 import com.nmbb.oplayer.scanner.MediaScannerService.IMediaScannerObserver;
 import com.nmbb.oplayer.scanner.MediaScannerService.MediaScannerServiceBinder;
 import com.nmbb.oplayer.scanner.POMedia;
-//import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
 
 public class FragmentFile extends FragmentBase implements OnItemClickListener, IMediaScannerObserver {
 
@@ -293,13 +292,14 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 //		}
 //	};
 
-	private void startLiveMedia(String liveUrl) {
+	private void startLiveMedia(String liveUrl, String title) {
 		Intent intent = new Intent(getActivity(),
 				PlayerActivity.class);
 		ArrayList<String> playlist = new ArrayList<String>();
 		playlist.add(liveUrl);
 		intent.putExtra("selected", 0);
 		intent.putExtra("playlist", playlist);
+		intent.putExtra("title", title);
 		startActivity(intent);
 	}
 	
@@ -311,7 +311,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 //		intent.putExtra("path", f.path);
 //		intent.putExtra("title", f.title);
 //		startActivity(intent);
-		startLiveMedia(f.path);
+		startLiveMedia(f.path, f.title);
 	}
 
 	private class DataTask extends AsyncTask<Void, Void, List<POMedia>> {
@@ -368,18 +368,18 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 			((TextView) convertView.findViewById(R.id.file_size)).setText(file_size);
 
 			//显示进度表
-			final ImageView status = (ImageView) convertView.findViewById(R.id.status);
-			if (f.status > -1) {
-				int resStauts = getStatusImage(f.status);
-				if (resStauts > 0) {
-					if (status.getVisibility() != View.VISIBLE)
-						status.setVisibility(View.VISIBLE);
-					status.setImageResource(resStauts);
-				}
-			} else {
-				if (status.getVisibility() != View.GONE)
-					status.setVisibility(View.GONE);
-			}
+//			final ImageView status = (ImageView) convertView.findViewById(R.id.status);
+//			if (f.status > -1) {
+//				int resStauts = getStatusImage(f.status);
+//				if (resStauts > 0) {
+//					if (status.getVisibility() != View.VISIBLE)
+//						status.setVisibility(View.VISIBLE);
+//					status.setImageResource(resStauts);
+//				}
+//			} else {
+//				if (status.getVisibility() != View.GONE)
+//					status.setVisibility(View.GONE);
+//			}
 			return convertView;
 		}
 
@@ -401,45 +401,45 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 		}
 	}
 
-	private int getStatusImage(int status) {
-		int resStauts = -1;
-		switch (status) {
-		case 0:
-			resStauts = R.drawable.down_btn_0;
-			break;
-		case 1:
-			resStauts = R.drawable.down_btn_1;
-			break;
-		case 2:
-			resStauts = R.drawable.down_btn_2;
-			break;
-		case 3:
-			resStauts = R.drawable.down_btn_3;
-			break;
-		case 4:
-			resStauts = R.drawable.down_btn_4;
-			break;
-		case 5:
-			resStauts = R.drawable.down_btn_5;
-			break;
-		case 6:
-			resStauts = R.drawable.down_btn_6;
-			break;
-		case 7:
-			resStauts = R.drawable.down_btn_7;
-			break;
-		case 8:
-			resStauts = R.drawable.down_btn_8;
-			break;
-		case 9:
-			resStauts = R.drawable.down_btn_9;
-			break;
-		case 10:
-			resStauts = R.drawable.down_btn_10;
-			break;
-		}
-		return resStauts;
-	}
+//	private int getStatusImage(int status) {
+//		int resStauts = -1;
+//		switch (status) {
+//		case 0:
+//			resStauts = R.drawable.down_btn_0;
+//			break;
+//		case 1:
+//			resStauts = R.drawable.down_btn_1;
+//			break;
+//		case 2:
+//			resStauts = R.drawable.down_btn_2;
+//			break;
+//		case 3:
+//			resStauts = R.drawable.down_btn_3;
+//			break;
+//		case 4:
+//			resStauts = R.drawable.down_btn_4;
+//			break;
+//		case 5:
+//			resStauts = R.drawable.down_btn_5;
+//			break;
+//		case 6:
+//			resStauts = R.drawable.down_btn_6;
+//			break;
+//		case 7:
+//			resStauts = R.drawable.down_btn_7;
+//			break;
+//		case 8:
+//			resStauts = R.drawable.down_btn_8;
+//			break;
+//		case 9:
+//			resStauts = R.drawable.down_btn_9;
+//			break;
+//		case 10:
+//			resStauts = R.drawable.down_btn_10;
+//			break;
+//		}
+//		return resStauts;
+//	}
 
 	/**
 	 * A-Z
