@@ -62,10 +62,10 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
 
-        <service android:name="com.nmbb.oplayer.service.MediaScannerService" >
+        <service android:name="com.nmbb.oplayer.scanner.MediaScannerService" >
         </service>
 
-        <receiver android:name="com.nmbb.oplayer.receiver.MediaScannerReceiver" >
+        <receiver android:name="com.nmbb.oplayer.scanner.MediaScannerReceiver" >
         </receiver>
     </application>
 
