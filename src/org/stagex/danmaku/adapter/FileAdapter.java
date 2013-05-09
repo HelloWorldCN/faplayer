@@ -1,8 +1,9 @@
-package com.nmbb.oplayer.ui.adapter;
+package org.stagex.danmaku.adapter;
 
 import java.util.ArrayList;
 
 import org.stagex.danmaku.R;
+import org.stagex.danmaku.util.FileUtils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -13,8 +14,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nmbb.oplayer.po.PFile;
-import com.nmbb.oplayer.util.FileUtils;
+import com.nmbb.oplayer.scanner.PFile;
 
 public class FileAdapter extends CursorAdapter {
 

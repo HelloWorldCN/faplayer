@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.receiver;
+package com.nmbb.oplayer.scanner;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-
-import com.nmbb.oplayer.service.MediaScannerService;
 
 /** 文件扫描 */
 public class MediaScannerReceiver extends BroadcastReceiver {

@@ -9,7 +9,7 @@ import java.util.Comparator;
 import org.stagex.danmaku.R;
 import org.stagex.danmaku.activity.PlayerActivity;
 import org.stagex.danmaku.activity.TestActivity;
-import org.stagex.danmaku.helper.SystemUtility;
+import org.stagex.danmaku.util.SystemUtility;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,14 +1,13 @@
-package com.nmbb.oplayer.business;
+package com.nmbb.oplayer.scanner;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stagex.danmaku.util.Logger;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.nmbb.oplayer.database.SQLiteHelperOrm;
-import com.nmbb.oplayer.exception.Logger;
-import com.nmbb.oplayer.po.POMedia;
 
 public final class FileBusiness {
 

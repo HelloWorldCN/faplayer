@@ -1,8 +1,9 @@
-package com.nmbb.oplayer.database;
+package com.nmbb.oplayer.scanner;
 
 import java.sql.SQLException;
 
 import org.stagex.danmaku.OPlayerApplication;
+import org.stagex.danmaku.util.Logger;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,8 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.nmbb.oplayer.exception.Logger;
-import com.nmbb.oplayer.po.POMedia;
 
 public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "oplayer.db";

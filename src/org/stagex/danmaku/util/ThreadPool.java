@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.ui.base;
+package org.stagex.danmaku.util;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;

@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.stagex.danmaku.R;
-import org.stagex.danmaku.activity.ChannelListActivity;
 import org.stagex.danmaku.activity.PlayerActivity;
+import org.stagex.danmaku.adapter.ArrayAdapter;
+import org.stagex.danmaku.util.FileUtils;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -17,10 +18,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -37,16 +35,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nmbb.oplayer.business.FileBusiness;
-import com.nmbb.oplayer.database.DbHelper;
-import com.nmbb.oplayer.exception.Logger;
-import com.nmbb.oplayer.po.POMedia;
-import com.nmbb.oplayer.service.MediaScannerService;
-import com.nmbb.oplayer.service.MediaScannerService.IMediaScannerObserver;
-import com.nmbb.oplayer.service.MediaScannerService.MediaScannerServiceBinder;
-import com.nmbb.oplayer.ui.base.ArrayAdapter;
+import com.nmbb.oplayer.scanner.DbHelper;
+import com.nmbb.oplayer.scanner.FileBusiness;
+import com.nmbb.oplayer.scanner.MediaScannerService;
+import com.nmbb.oplayer.scanner.MediaScannerService.IMediaScannerObserver;
+import com.nmbb.oplayer.scanner.MediaScannerService.MediaScannerServiceBinder;
+import com.nmbb.oplayer.scanner.POMedia;
 //import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
-import com.nmbb.oplayer.util.FileUtils;
 
 public class FragmentFile extends FragmentBase implements OnItemClickListener, IMediaScannerObserver {
 

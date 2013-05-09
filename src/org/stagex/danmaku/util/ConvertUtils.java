@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.util;
+package org.stagex.danmaku.util;
 
 import android.content.Context;
 

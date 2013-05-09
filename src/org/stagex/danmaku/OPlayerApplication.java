@@ -1,12 +1,10 @@
 package org.stagex.danmaku;
 
+import org.stagex.danmaku.util.FileUtils;
+
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
-
-import com.nmbb.oplayer.service.MediaScannerService;
-import com.nmbb.oplayer.util.FileUtils;
 
 public class OPlayerApplication extends Application {
 

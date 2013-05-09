@@ -14,9 +14,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.RadioButton;
 
-import com.nmbb.oplayer.service.MediaScannerService;
+import com.nmbb.oplayer.scanner.MediaScannerService;
 //import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
 
 //import com.nmbb.oplayer.ui.vitamio.LibsChecker;

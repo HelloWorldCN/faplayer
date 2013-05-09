@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.util;
+package org.stagex.danmaku.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

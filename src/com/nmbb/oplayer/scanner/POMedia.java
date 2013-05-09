@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.po;
+package com.nmbb.oplayer.scanner;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.util;
+package org.stagex.danmaku.util;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;

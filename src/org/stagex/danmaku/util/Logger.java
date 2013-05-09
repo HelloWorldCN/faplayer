@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.exception;
+package org.stagex.danmaku.util;
 
 import android.util.Log;
 

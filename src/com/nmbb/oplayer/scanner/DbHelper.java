@@ -1,15 +1,16 @@
-package com.nmbb.oplayer.database;
+package com.nmbb.oplayer.scanner;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.stagex.danmaku.util.Logger;
+
 import android.content.ContentValues;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.UpdateBuilder;
-import com.nmbb.oplayer.exception.Logger;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class DbHelper<T> {

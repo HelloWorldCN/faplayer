@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.video;
+package com.nmbb.oplayer.scanner;
 
 import android.graphics.Bitmap;
 

@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.ui.base;
+package org.stagex.danmaku.adapter;
 
 import java.util.ArrayList;
 

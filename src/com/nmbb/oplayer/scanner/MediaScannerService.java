@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.service;
+package com.nmbb.oplayer.scanner;
 
 //import io.vov.vitamio.ThumbnailUtils;
 
@@ -11,6 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.stagex.danmaku.OPlayerApplication;
 import org.stagex.danmaku.OPreference;
+import org.stagex.danmaku.util.FileUtils;
+import org.stagex.danmaku.util.Logger;
+import org.stagex.danmaku.util.PinyinUtils;
+import org.stagex.danmaku.util.StringUtils;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -23,14 +27,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
-
-import com.nmbb.oplayer.database.DbHelper;
-import com.nmbb.oplayer.exception.Logger;
-import com.nmbb.oplayer.po.POMedia;
-import com.nmbb.oplayer.util.FileUtils;
-import com.nmbb.oplayer.util.PinyinUtils;
-import com.nmbb.oplayer.util.StringUtils;
 
 /** 媒体扫描 */
 @SuppressLint("NewApi")

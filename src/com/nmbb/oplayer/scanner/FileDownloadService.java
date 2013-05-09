@@ -1,4 +1,4 @@
-package com.nmbb.oplayer.service;
+package com.nmbb.oplayer.scanner;
 
 import android.app.Service;
 import android.content.Intent;
