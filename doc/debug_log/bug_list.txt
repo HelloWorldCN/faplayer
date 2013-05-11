@@ -2,14 +2,22 @@
 
 ###time start :	2013-04-18###
 
-==========
+-------------------------------
 bug#xxxx	before	2013-04-18
-	目录http_flv和http_live以及no_video分别是http_flv视频播放失败、http_live模块选择、某些地方台只有音频无视频的bug修复
-
-==========
+	【描述】目录http_flv和http_live以及no_video分别是http_flv视频播放失败、http_live模块选择、某些地方台只有音频无视频的bug修复
+	【状态】YES
+		
+-------------------------------
 bug#0001	2013-04-18
-	neon目录，主要修复faplayer在android系统上由于NEON指令加载与否造成视频延迟（音视频不同步）的bug
+	【描述】neon目录，主要修复faplayer在android系统上由于NEON指令加载与否造成视频延迟（音视频不同步）的bug
+	【状态】YES
 
-==========
+-------------------------------
 bug#0002	2013-05-11
-	bipbop目录，bipbop-gear1-all.ts视频只有声音没有画面，而原来的faplayer是能够播放的（也可能跟刷了android版本有关系）
+	【描述】bipbop目录，bipbop-gear1-all.ts视频只有声音没有画面，而原来的faplayer是能够播放的（也可能跟刷了android版本有关系）
+	【状态】NO
+		
+-------------------------------
+bug#0003	2013-05-11
+	【描述】media_scan目录，SD卡媒体初次扫描完毕之后，扫描进度条仍然会错误出现
+	【状态】YES

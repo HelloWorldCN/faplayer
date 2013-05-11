@@ -19,6 +19,7 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ import com.nmbb.oplayer.scanner.POMedia;
 
 public class FragmentFile extends FragmentBase implements OnItemClickListener, IMediaScannerObserver {
 
+	private static final String LOGTAG = "FragmentFile";
 	private FileAdapter mAdapter;
 	private FileAdapter mDownloadAdapter;
 	private TextView first_letter_overlay;
@@ -96,8 +98,10 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 		//			new ScanVideoTask().execute();
 		//		else
 		new DataTask().execute();
-
-		getActivity().bindService(new Intent(getActivity().getApplicationContext(), MediaScannerService.class), mMediaScannerServiceConnection, Context.BIND_AUTO_CREATE);
+		
+		Log.d(LOGTAG, "===>bind Service");
+		getActivity().bindService(new Intent(getActivity().getApplicationContext(), MediaScannerService.class), 
+				mMediaScannerServiceConnection, Context.BIND_AUTO_CREATE);
 		return v;
 	}
 
@@ -108,6 +112,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 
 	@Override
 	public void onDestroy() {
+		Log.d(LOGTAG, "===>Fragment unbindService");
 		getActivity().unbindService(mMediaScannerServiceConnection);
 		super.onDestroy();
 	}
@@ -120,14 +125,33 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 	@Override
 	public void update(int flag, POMedia media) {
 //		Logger.i(flag + " " + media.path);
+//		Log.d(LOGTAG, "===>scan progress update flag = " + flag );
 		switch (flag) {
 		case MediaScannerService.SCAN_STATUS_START:
-
+			if (mProgress != null) {
+//				Log.d(LOGTAG, "===>scan progress set visible1");
+				mProgress.setVisibility(View.VISIBLE);
+			}
+			//FIXME 这个分支在首次扫描、MainActivity启动 service时不会被调用，因为Fragment的对象是在bindService
+			//之后才传入Observer中的，此时MediaScannerService里面的s为空，不会发送这个消息
 			break;
 		case MediaScannerService.SCAN_STATUS_END://扫描完成
-			if (mProgress != null)
+			if (mProgress != null) {
+//				Log.d(LOGTAG, "===>scan progress set gone1");
 				mProgress.setVisibility(View.GONE);
+			}
+			//FIXME 因为bindService的存在，这里销毁service是无效的？
+			//或者是在FragmentFile View起来时，仍然会通过bindService再次启动Service
+//			/* FIXME 在这里用activity来关闭媒体扫描的服务 */
+//			mParent.getApplicationContext().stopService(
+//					new Intent(mParent.getApplicationContext(),
+//							MediaScannerService.class));
+//			/* end */
+			Toast.makeText((MainActivity) getActivity(), "SD卡扫描完毕", Toast.LENGTH_LONG).show();
+			
+			/* ？？？ */
 			new DataTask().execute();
+			
 			break;
 		case MediaScannerService.SCAN_STATUS_RUNNING://扫到一个文件
 			if (mAdapter != null && media != null) {
@@ -138,18 +162,27 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 		}
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-
+	/** 显示状态栏信息 */
+	private void displayStatusBar() {
 		//SD卡剩余数量
 		mSDAvailable.setText(FileUtils.showFileAvailable());
 		
 		//TODO 移植的时候，这里会报空指针（要在manifest中添加这个服务）
-		if (MediaScannerService.isRunning())
+		//FIXME 由于扫描服务无法关闭，暂且加上标志位来区分
+		if (MediaScannerService.isRunning()) {
+//			Log.d(LOGTAG, "===>scan progress set visible2");
 			mProgress.setVisibility(View.VISIBLE);
-		else
+		} else {
+//			Log.d(LOGTAG, "===>scan progress set gone2");
 			mProgress.setVisibility(View.GONE);
+		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		//显示状态栏信息
+		displayStatusBar();
 	}
 
 	ListView.OnCreateContextMenuListener OnListViewMenu = new ListView.OnCreateContextMenuListener() {

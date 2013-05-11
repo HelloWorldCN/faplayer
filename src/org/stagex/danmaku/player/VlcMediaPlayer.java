@@ -12,7 +12,7 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 		System.loadLibrary("vlccore");
 	}
 
-	private static final String LOGTAG = "DANMAKU-VlcMediaPlayer";
+	private static final String LOGTAG = "VlcMediaPlayer";
 
 	protected AbsMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = null;
 	protected AbsMediaPlayer.OnCompletionListener mOnCompletionListener = null;

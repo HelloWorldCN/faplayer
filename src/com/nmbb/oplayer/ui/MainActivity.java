@@ -14,6 +14,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.nmbb.oplayer.scanner.MediaScannerService;
 //import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
@@ -22,11 +24,16 @@ import com.nmbb.oplayer.scanner.MediaScannerService;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
+	private static final String LOGTAG = "MainActivity";
 	private ViewPager mPager;
 //	private RadioButton mRadioFile;
 //	private RadioButton mRadioOnline;
 //	public FileDownloadHelper mFileDownload;
 
+	private Button button_home;
+	private Button button_back;
+	private Button button_refresh;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,18 +42,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// if (!LibsChecker.checkVitamioLibs(this, R.string.init_decoders))
 		// return;
 
-//		Log.v("jgf", "------mainActivity onCreate-------------");
+//		Log.v(LOGTAG, "===>mainActivity onCreate");
 
 		OPreference pref = new OPreference(this);
 		// 首次运行，扫描SD卡
 		if (pref.getBoolean(OPlayerApplication.PREF_KEY_FIRST, true)) {
-			Log.v("jgf", "------首次运行，扫描SD卡-------------");
-			getApplicationContext().startService(
-					new Intent(getApplicationContext(),
-							MediaScannerService.class).putExtra(
-							MediaScannerService.EXTRA_DIRECTORY, Environment
-									.getExternalStorageDirectory()
-									.getAbsolutePath()));
+			Log.v(LOGTAG, "===>首次运行，扫描SD卡媒体内容");
+			startMediaScannerService();
 		}
 
 		setContentView(R.layout.fragment_pager);
@@ -55,16 +57,58 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mPager = (ViewPager) findViewById(R.id.pager);
 //		mRadioFile = (RadioButton) findViewById(R.id.radio_file);
 //		mRadioOnline = (RadioButton) findViewById(R.id.radio_online);
-
+		button_home = (Button) findViewById(R.id.home_btn);
+		button_back = (Button) findViewById(R.id.back_btn);
+		button_refresh = (Button) findViewById(R.id.refresh_btn);
+		
+		
 		// ~~~~~~ 绑定事件
 //		mRadioFile.setOnClickListener(this);
 //		mRadioOnline.setOnClickListener(this);
 		mPager.setOnPageChangeListener(mPagerListener);
+		setListensers();
 
 		// ~~~~~~ 绑定数据
 		mPager.setAdapter(mAdapter);
 	}
 
+	/** 启动媒体扫描服务 */
+	private void startMediaScannerService() {
+		getApplicationContext().startService(
+				new Intent(getApplicationContext(),
+						MediaScannerService.class).putExtra(
+						MediaScannerService.EXTRA_DIRECTORY, Environment
+								.getExternalStorageDirectory()
+								.getAbsolutePath()));
+	}
+	
+	// Listen for button clicks
+	private void setListensers() {
+		button_home.setOnClickListener(goListener);
+		button_back.setOnClickListener(goListener);
+		button_refresh.setOnClickListener(goListener);
+	}
+	
+	private Button.OnClickListener goListener = new Button.OnClickListener() {
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.home_btn:
+//				startLocalMedia();
+				break;
+			case R.id.back_btn:
+//				startLiveMedia();
+				break;
+			case R.id.refresh_btn:
+				Log.v(LOGTAG, "===>重新扫描SD卡媒体内容");
+				Toast.makeText(MainActivity.this, "重新扫描SD卡媒体内容", Toast.LENGTH_LONG).show();
+				startMediaScannerService();
+				break;
+			default:
+				Log.d(LOGTAG, "not supported btn id");
+			}
+		}
+	};
+	
 	@Override
 	public void onBackPressed() {
 		if (getFragmentByPosition(mPager.getCurrentItem()).onBackPressed())
