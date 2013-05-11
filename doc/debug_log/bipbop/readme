@@ -1,0 +1,12 @@
+bipbop-gear1-all.ts视频只有声音没有画面，而原生的faplayer是能够播放的
+
+	faplayer-err.txt为目前不能播放的log信息
+	
+	方法：
+		1、将版本退回原来的faplayer，抓取该log对比，看看什么模块错误了
+			faplayer-err2.txt也是不能播放
+		2、再将版本退回到不强制使用avformat解析ts之前的，即使用VLC自身的TS解析，仍然不能播放出画面
+			怀疑手机刷机之后产生了影响
+			
+		3、togic.txt为能够播放正确的log信息，做对比
+	

@@ -8,3 +8,6 @@
 		
 	手段：
 		单独拿出faplayer的ffmpeg，本地编译，看看是否可以播放，以确认ffmpeg的功能
+		
+	解决方法：
+		modify access/avformat.c[Avoid EOF if av_read_frame returns AVERROR(EAGAIN)]

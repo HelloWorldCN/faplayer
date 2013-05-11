@@ -10,4 +10,6 @@ bug#xxxx	before	2013-04-18
 bug#0001	2013-04-18
 	neon目录，主要修复faplayer在android系统上由于NEON指令加载与否造成视频延迟（音视频不同步）的bug
 
-	
+==========
+bug#0002	2013-05-11
+	bipbop目录，bipbop-gear1-all.ts视频只有声音没有画面，而原来的faplayer是能够播放的（也可能跟刷了android版本有关系）
