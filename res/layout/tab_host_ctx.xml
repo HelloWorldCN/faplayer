@@ -11,7 +11,6 @@
         android:layout_gravity="center_horizontal"
         android:drawableBottom="@drawable/sel_tab_line"
         android:gravity="center"
-        android:textColor="@drawable/tab_host_ctx_color"
-        android:textStyle="bold" />
+        android:textColor="@drawable/tab_host_ctx_color" />
 
 </RelativeLayout>

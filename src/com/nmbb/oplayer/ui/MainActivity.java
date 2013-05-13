@@ -3,6 +3,7 @@ package com.nmbb.oplayer.ui;
 import org.stagex.danmaku.OPlayerApplication;
 import org.stagex.danmaku.OPreference;
 import org.stagex.danmaku.R;
+import org.stagex.danmaku.activity.HomeActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +19,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.nmbb.oplayer.scanner.MediaScannerService;
-//import com.nmbb.oplayer.ui.helper.FileDownloadHelper;
-
-//import com.nmbb.oplayer.ui.vitamio.LibsChecker;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
@@ -29,7 +27,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 //	private RadioButton mRadioFile;
 //	private RadioButton mRadioOnline;
 //	public FileDownloadHelper mFileDownload;
-
+	
+	/* 顶部标题栏的控件 */
 	private Button button_home;
 	private Button button_back;
 	private Button button_refresh;
@@ -93,10 +92,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.home_btn:
-//				startLocalMedia();
+				//退回主界面(homeActivity)
+				finish();
+				Intent intent = new Intent(MainActivity.this,
+						HomeActivity.class);
+				startActivity(intent);
 				break;
 			case R.id.back_btn:
-//				startLiveMedia();
+				//回到上一个界面(Activity)
+				finish();
 				break;
 			case R.id.refresh_btn:
 				Log.v(LOGTAG, "===>重新扫描SD卡媒体内容");

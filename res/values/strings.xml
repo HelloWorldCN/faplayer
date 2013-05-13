@@ -25,5 +25,9 @@
     <string name="VideoView_error_text_unknown">对不起,这个视频不能播放。</string>
     <string name="VideoView_error_button">OK</string>
     <string name="mediacontroller_play_pause">Play/Pause</string>
+    <string name="prompt">退出确认</string>
+    <string name="quit_desc">确认退出程序？</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
 
 </resources>

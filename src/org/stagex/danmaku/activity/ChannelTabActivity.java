@@ -8,6 +8,8 @@ import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.util.ParseUtil;
 
+import com.nmbb.oplayer.ui.MainActivity;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,9 +22,11 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
@@ -30,6 +34,8 @@ import android.widget.TextView;
 public class ChannelTabActivity extends TabActivity implements
 		OnTabChangeListener {
 
+	private static final String LOGTAG = "ChannelTabActivity";
+	
 	List<ChannelInfo> allinfos = null;
 
 	List<ChannelInfo> yangshi_infos = null;
@@ -46,12 +52,23 @@ public class ChannelTabActivity extends TabActivity implements
 
 	TextView view0, view1, view2, view3;
 
+	/* 顶部标题栏的控件 */
+	private Button button_home;
+	private Button button_back;
+	private Button button_refresh;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.tab_channel);
 
+		/* 顶部标题栏的控件 */
+		button_home = (Button) findViewById(R.id.home_btn);
+		button_back = (Button) findViewById(R.id.back_btn);
+		button_refresh = (Button) findViewById(R.id.refresh_btn);
+		setListensers();
+		
 		myTabhost = this.getTabHost();
 		myTabhost.setup();
 
@@ -167,7 +184,6 @@ public class ChannelTabActivity extends TabActivity implements
 			view3.setTextSize(25);
 			// setTiyuView();
 		}
-
 	}
 
 	/*
@@ -398,4 +414,34 @@ public class ChannelTabActivity extends TabActivity implements
 		return info;
 	}
 
+	// Listen for button clicks
+	private void setListensers() {
+		button_home.setOnClickListener(goListener);
+		button_back.setOnClickListener(goListener);
+		button_refresh.setOnClickListener(goListener);
+	}
+	
+	private Button.OnClickListener goListener = new Button.OnClickListener() {
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.home_btn:
+				//退回主界面(homeActivity)
+				finish();
+				Intent intent = new Intent(ChannelTabActivity.this,
+						HomeActivity.class);
+				startActivity(intent);
+				break;
+			case R.id.back_btn:
+				//回到上一个界面(Activity)
+				finish();
+				break;
+			case R.id.refresh_btn:
+				//TODO 重新刷新电视界面列表
+				break;
+			default:
+				Log.d(LOGTAG, "not supported btn id");
+			}
+		}
+	};
+	
 }

@@ -147,6 +147,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 //					new Intent(mParent.getApplicationContext(),
 //							MediaScannerService.class));
 //			/* end */
+			/* FIXME 这个Toast在当前Activity不是MainActivity时，会报空指针错误 */
 			Toast.makeText((MainActivity) getActivity(), "SD卡扫描完毕", Toast.LENGTH_LONG).show();
 			
 			/* ？？？ */

@@ -44,7 +44,7 @@
             android:name=".activity.HomeActivity"
             android:label="@string/home_title"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,12 +54,12 @@
         <activity
             android:name=".activity.ChannelTabActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTask">
         </activity>
         <activity
             android:name="com.nmbb.oplayer.ui.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTask">
         </activity>
 
         <service android:name="com.nmbb.oplayer.scanner.MediaScannerService" >
