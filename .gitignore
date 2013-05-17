@@ -5,3 +5,7 @@ obj/*
 assets/bin/*
 
 !libs/*.jar
+
+jni/arm-linux-androideabi/bin/*
+jni/arm-linux-androideabi/share/*
+jni/arm-linux-androideabi/lib/pkgconfig/*

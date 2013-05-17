@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm -rf libs
+rm -rf libs/armeabi*
 ruby pre-build.rb
 ndk-build $@ || exit 1
 rm -rf assets/lib
