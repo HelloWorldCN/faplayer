@@ -11,3 +11,15 @@ T959的手机刷了几个系统，有的时候运行faplayer播放本地的ts文
 	
 	之前：		./build.sh ABI=armeabi	采用这个版本，系统检测不到（系统为CM10的android4.0）
 	修改后：	./build.sh ABI=armeabi-v7a FPU=vfpv3-d16 TUNE=cortex-a9		这个就可以让系统识别到NEON
+	
+	
+	
+==============================
+重新修复：	2013-05-18
+	之前的修复方式是错误的
+	如果要编译NEON版本，直接./build.sh ABI=armeabi	（但是，这样只能保证VLC是NEON的，由于将ffmpeg的版本更新了，并且
+				不采用之前的NDK编译，可能导致ffmpeg没有经过neon优化，需要特别注意，该commit会作出修复，下一个commit
+				会给出编译方式）
+	
+	并且做了一个重大修改，改变ffmpeg的编译方式，采用的是实现编译好的ffmpeg-0.10.7版本
+
