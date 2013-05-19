@@ -9,3 +9,8 @@ assets/bin/*
 jni/arm-linux-androideabi/bin/*
 jni/arm-linux-androideabi/share/*
 jni/arm-linux-androideabi/lib/pkgconfig/*
+
+jni/arm-linux-androideabi/include/libav*
+jni/arm-linux-androideabi/include/libsw*
+jni/arm-linux-androideabi/lib/libav*
+jni/arm-linux-androideabi/lib/libsw*
