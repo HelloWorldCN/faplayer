@@ -7,6 +7,7 @@ echo "===>start compiling ffmpeg"
 
 if [ ! -d "android/ffmpeg" ]; then
 	tar xvf tarballs/ffmpeg-0.10.7.tar.bz2
+	mkdir android
 	mv ffmpeg-0.10.7/ android/ffmpeg
 	cp patch/ffmpeg/ffmpeg-0.10.7.patch android/ffmpeg/
 	cd android/ffmpeg
