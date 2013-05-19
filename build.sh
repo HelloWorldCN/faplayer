@@ -1,6 +1,13 @@
 #!/bin/sh
 
 rm -rf libs/armeabi*
+
+#build cross-compile lib first
+cd jni/cross-compile
+sh compile.sh
+cd ../../
+#back for VLC complie#
+
 ruby pre-build.rb
 ndk-build $@ || exit 1
 rm -rf assets/lib
