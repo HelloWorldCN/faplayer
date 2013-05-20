@@ -6,10 +6,9 @@
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv1&type=ipad",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413116",
       "http://live.gslb.letv.com/gslb?stream_id=cctv1&tag=live&ext=m3u8&sign=live_ipad",
-      "http://119.4.250.55:1935/SRT_Live/CCTV1_M.stream/playlist.m3u8",
-      "http://v.hdplay.cn/live/53357A52616B5A3862797A734233564E"
+      "http://liveipad.wasu.cn/cctv1_ipad/z.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137317C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -21,8 +20,7 @@
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv2&type=ipad",
     "second_url": [
       "http://live.gslb.letv.com/gslb?stream_id=cctv2&tag=live&ext=m3u8&sign=live_ipad",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413101",
-      "http://119.4.250.55:1935/SRT_Live/CCTV2_M.stream/playlist.m3u8"
+      "http://liveipad.wasu.cn/cctv2_ipad/z.m3u8"
     ],
     "types": "1"
   },
@@ -31,11 +29,10 @@
     "channel_name": "CCTV-3 综艺",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctv3&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv3&type=ipad",
     "second_url": [
-      "http://v.hdplay.cn/live/53357A52616B5A326245723242335669",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv3&type=ipad",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413102"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv3&tag=live&ext=m3u8&sign=live_ipad",
+      "http://liveipad.wasu.cn/cctv3_ipad/z.m3u8"
     ],
     "types": "1"
   },
@@ -44,11 +41,11 @@
     "channel_name": "CCTV-4 (亚洲)",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctv4&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv4&type=ipad",
     "second_url": [
-      "http://119.4.250.55:1935/SRT_Live/CCTV4_M.stream/playlist.m3u8",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413103",
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctv4.m3u8"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv4&tag=live&ext=m3u8&sign=live_ipad",
+      "http://liveipad.wasu.cn/cctv4_ipad/z.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137347C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -77,13 +74,9 @@
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv5&type=ipad",
     "second_url": [
-      "http://so.52itv.cn/live/53357A52616B5A3862327A6942335669",
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctv5.m3u8",
-      "http://main.gslb.ku6.com/broadcast/sub?channel=832",
-      "http://live.gslb.letv.com/gslb?stream_id=cctv5_800&tag=live&ext=m3u8&sign=live_ipad",
-      "http://tvie01.ucatv.com.cn/channels/xjyx/CCTV5-Suma/flv:500k_flv",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413104",
-      "http://live.jsntv.com.cn/channels/jstv/cctv5/flv:800k/live"
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137357C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
+      "http://liveipad.wasu.cn/cctv5_ipad/z.m3u8",
+      "http://live.gslb.letv.com/gslb?stream_id=cctv5_800&tag=live&ext=m3u8&sign=live_ipad"
     ],
     "types": "1|4"
   },
@@ -92,10 +85,11 @@
     "channel_name": "CCTV-6 电影",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctv6&tag=live&ext=m3u8",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv6&type=ipad",
     "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv6&type=ipad",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413105"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv6&tag=live&ext=m3u8",
+      "http://liveipad.wasu.cn/cctv6_ipad/z.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137367C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -106,10 +100,8 @@
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv7&type=ipad",
     "second_url": [
-      "http://119.4.250.55:1935/SRT_Live/CCTV7_M.stream/playlist.m3u8",
       "http://live.gslb.letv.com/gslb?stream_id=cctv7&tag=live&ext=m3u8&sign=live_ipad",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413106",
-      "http://123.147.124.8/PLTV/88888888/224/3221226046/10000100000000060000000000083634_0.smil"
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137377C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -118,11 +110,11 @@
     "channel_name": "CCTV-8 电视剧",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctv8&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv8&type=ipad",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctv8.m3u8",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv8&type=ipad",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413107"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv8&tag=live&ext=m3u8&sign=live_ipad",
+      "http://liveipad.wasu.cn/cctv8_ipad/z.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137387C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -131,11 +123,10 @@
     "channel_name": "CCTV-9 纪录",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctv9&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvjilu&type=ipad",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctvjilu.m3u8",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvjilu&type=ipad",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413113"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv9&tag=live&ext=m3u8&sign=live_ipad",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333137397C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -155,10 +146,8 @@
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv10&type=ipad",
     "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=cctv10&tag=live&ext=m3u8&sign=live_tv",
-      "http://119.4.250.55:1935/SRT_Live/CCTV10_M.stream/playlist.m3u8",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413109",
-      "http://123.147.124.8/PLTV/88888888/224/3221226040/10000100000000060000000000083628_0.smil"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv10&tag=live&ext=m3u8&sign=live_ipad",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333138307C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -169,9 +158,7 @@
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv11&type=ipad",
     "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=cctv11&tag=live&ext=m3u8&sign=live_ipad",
-      "http://119.4.250.55:1935/SRT_Live/CCTV11_M.stream/playlist.m3u8",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413110"
+      "http://live.gslb.letv.com/gslb?stream_id=cctv11&tag=live&ext=m3u8&sign=live_ipad"
     ],
     "types": "1"
   },
@@ -180,12 +167,11 @@
     "channel_name": "CCTV-12 社会与法",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctv12&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv12&type=ipad",
     "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv12&type=ipad",
-      "http://119.4.250.55:1935/SRT_Live/CCTV12_M.stream/playlist.m3u8",
+      "http://live.gslb.letv.com/gslb?stream_id=cctv12&tag=live&ext=m3u8&sign=live_ipad",
       "http://hls15.cntv.chinacache.net/cache/4_/seg0/index.m3u8",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413111"
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333234357C317C313030307C6C6235302E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -194,15 +180,11 @@
     "channel_name": "CCTV-13 新闻",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctvnew&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv13&type=ipad",
     "second_url": [
-      "http://qqlive.dnion.com:1863/1641251988.flv",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413115",
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctv13.m3u",
-      "http://zb.v.qq.com:1863/?progid=1641251988",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv13&type=ipad",
-      "http://119.4.250.55:1935/SRT_Live/CCTV13_M.stream/playlist.m3u8",
-      "http://74.82.62.53:1935/liverepeater/1.stream/playlist.m3u8"
+      "http://live.gslb.letv.com/gslb?stream_id=cctvnew&tag=live&ext=m3u8&sign=live_ipad",
+      "http://js.55556.com/rd/ifeng/?vid=5435BFA3-210B-4F4F-A90F-BCB1C4C40D59",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C333234377C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -211,11 +193,10 @@
     "channel_name": "CCTV-14 少儿",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctvshaoer&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvchild&type=ipad",
     "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvchild&type=ipad",
-      "http://119.4.250.55:1935/SRT_Live/CCTV14_M.stream/playlist.m3u8",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413114"
+      "http://live.gslb.letv.com/gslb?stream_id=cctvshaoer&tag=live&ext=m3u8&sign=live_ipad",
+      "http://liveipad.wasu.cn/zyse_ipad/z.m3u8"
     ],
     "types": "1"
   },
@@ -224,12 +205,11 @@
     "channel_name": "CCTV-15 音乐",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=cctvmusic&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv15&type=ipad",
     "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv15&type=ipad",
+      "http://live.gslb.letv.com/gslb?stream_id=cctvmusic&tag=live&ext=m3u8&sign=live_ipad",
       "http://hls15.cntv.chinacache.net/cache/6_/seg0/index.m3u8",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413112",
-      "http://119.4.250.55:1935/SRT_Live/CCTV15_M.stream/playlist.m3u8"
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343537337C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -239,10 +219,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "HD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvgaoqing&type=ipad",
-    "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413125",
-      "http://v.hdplay.cn/live/53357A52616B5A6B5745626942336E69"
-    ],
+    "second_url": [],
     "types": "1"
   },
   {
@@ -251,9 +228,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctv9&type=ipad",
-    "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=413108"
-    ],
+    "second_url": [],
     "types": "1"
   },
   {
@@ -271,9 +246,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdxiyu&type=ipad",
-    "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdxiyu.m3u8"
-    ],
+    "second_url": [],
     "types": "1"
   },
   {
@@ -291,9 +264,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdrussian&type=ipad",
-    "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdrussian.m3u8"
-    ],
+    "second_url": [],
     "types": "1"
   },
   {
@@ -302,7 +273,9 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://live.gslb.letv.com/gslb?stream_id=golfwangqiu&tag=live&ext=m3u8&sign=live_ipad",
-    "second_url": [],
+    "second_url": [
+      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvgaowang&type=ipad"
+    ],
     "types": "1|4"
   },
   {
@@ -312,7 +285,9 @@
     "mode": "SD",
     "url": "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdzhinan&type=ipad",
     "second_url": [
-      "http://tvhd.ak.live.cntv.cn/cache/29_/seg0/index.m3u8"
+      "http://itv.hdpfans.com/ty/ts.php?tsid=464550",
+      "http://tvhd.ak.live.cntv.cn/cache/29_/seg0/index.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343535307C317C313030307C54545A582E54567C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "1"
   },
@@ -323,7 +298,7 @@
     "mode": "SD",
     "url": "http://live.gslb.letv.com/gslb?stream_id=hjjc&tag=live&ext=m3u8&sign=live_ipad",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctvhjjc.m3u8"
+      "http://ipad.vsdn.tv380.com/5B63686E5D445830303030303034367C343535317C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00/1.m3u8"
     ],
     "types": "1"
   },
@@ -341,9 +316,9 @@
     "channel_name": "CCTV-风云剧场",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdcctvfyjc.m3u8",
+    "url": "http://ipad.vsdn.tv380.com/5B63686E5D445830303030303034367C343535337C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00/1.m3u8",
     "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvfyjc&type=ipad"
+      "http://ims.veryhd.net/ty/ts.php?tsid=464553"
     ],
     "types": "1"
   },
@@ -352,11 +327,10 @@
     "channel_name": "CCTV-风云音乐",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=fyyy&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://hls15.cntv.chinacache.net/cache/27_/seg0/index.m3u8",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdcctvfyyy.m3u8",
-      "http://hls15.cntv.chinacache.net/cache/27_/seg0/index.m3u8",
-      "http://live.gslb.letv.com/gslb?stream_id=fyyy&tag=live&ext=m3u8"
+      "http://live.gslb.letv.com/gslb?stream_id=fyyy&tag=live&ext=m3u8",
+      "http://live.gslb.letv.com/gslb?stream_id=fyyy&tag=live&ext=m3u8&sign=live_ipad"
     ],
     "types": "1"
   },
@@ -366,7 +340,9 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://live.gslb.letv.com/gslb?stream_id=fyzq&tag=live&ext=m3u8&sign=live_ipad",
-    "second_url": [],
+    "second_url": [
+      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdcctvfyzq&type=ipad"
+    ],
     "types": "1|4"
   },
   {
@@ -384,9 +360,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://live.gslb.letv.com/gslb?stream_id=guofangjunshi&tag=live&ext=m3u8&sign=live_ipad",
-    "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdguofang.m3u8"
-    ],
+    "second_url": [],
     "types": "1"
   },
   {
@@ -395,9 +369,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
     "url": "http://live.gslb.letv.com/gslb?stream_id=shijiedili&tag=live&ext=m3u8&sign=live_ipad",
-    "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hddili.m3u8"
-    ],
+    "second_url": [],
     "types": "1"
   },
   {
@@ -405,8 +377,10 @@
     "channel_name": "CCTV-央视台球",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdtaiqiu.m3u8",
-    "second_url": [],
+    "url": "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343639317C317C313030307C54545A582E54567C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
+    "second_url": [
+      "http://ims.veryhd.net/ty/ts.php?tsid=464691"
+    ],
     "types": "1|4"
   },
   {
@@ -414,10 +388,8 @@
     "channel_name": "CCTV-女性时尚",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdshishang.m3u8",
-    "second_url": [
-      "http://123.147.124.8/PLTV/88888888/224/3221225999/10000100000000060000000000083512_0.smil"
-    ],
+    "url": "http://ims.veryhd.net/ty/ts.php?tsid=464547",
+    "second_url": [],
     "types": "1"
   },
   {
@@ -425,28 +397,10 @@
     "channel_name": "CCTV-央视文化精品",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdjingpin.m3u8",
+    "url": "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343534367C317C313030307C54545A582E54567C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
     "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdjingpin&type=ipad"
+      "http://itv.hdpfans.com/ty/ts.php?tsid=464546"
     ],
-    "types": "1"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "CCTV-证券资讯",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
-    "mode": "SD",
-    "url": "http://live122.cnlive.com:1935/live/cctvzhengquan/playlist.m3u8",
-    "second_url": [],
-    "types": "1"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "CCTV-发现之旅",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
-    "mode": "SD",
-    "url": "http://v.hdplay.cn/live/53357A52616B5A326233514D42336E69",
-    "second_url": [],
     "types": "1"
   },
   {
@@ -454,14 +408,9 @@
     "channel_name": "湖南卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/182.png",
     "mode": "HD",
-    "url": "http://v.hdplay.cn/live/53357A52616B5A3262794C4D42335669",
+    "url": "http://live.gslb.letv.com/gslb?stream_id=hunan&tag=live&ext=m3u8&sign=live_ipad",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805403",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805530",
-      "http://live122.cnlive.com:1935/live/hunan/playlist.m3u8",
-      "http://live.gslb.letv.com/gslb?stream_id=hunan&tag=live&ext=m3u8",
-      "http://v.hdplay.cn/live/53357A52616B5A4D6279656A42336E6A",
-      "http://tvie01.ucatv.com.cn/channels/xjyx/HuNan-HD-Suma/flv:HUN_HD_Suma/live.flv",
+      "http://live.64ma.com/livePlay.asp?imgoId=7",
       "http://121.12.254.140/PLTV/88888888/224/0/3221225582/0000000006ah.smil"
     ],
     "types": "2"
@@ -471,12 +420,13 @@
     "channel_name": "江苏卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/160.png",
     "mode": "HD",
-    "url": "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805402",
+    "url": "http://live.gslb.letv.com/gslb?stream_id=jiangsu&tag=live&ext=m3u8",
     "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=jiangsu&tag=live&ext=m3u8",
-      "http://sw.live.cntv.cn/cctv_p2p_hdjiangsutv.m3u8",
       "http://liveipad.wasu.cn/jsws_ipad/z.m3u8",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdjiangsutv&type=ipad"
+      "http://ims.veryhd.net/ty/play?sinaid=45",
+      "http://gslb.tv.sohu.com/live?cid=8&type=hls",
+      "http://zb.v.qq.com:1863/?progid=2674956498&ostype=ios",
+      "http://play.api.pptv.com/web-m3u8-300163.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
   },
@@ -485,16 +435,12 @@
     "channel_name": "东方卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/74.png",
     "mode": "HD",
-    "url": "http://live-cdn1.smgbb.tv/channels/bbtv/dfws/flv:sd/live",
+    "url": "http://gslb.tv.sohu.com/live?cid=3&type=hls",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805407",
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805531",
-      "http://so.52itv.cn/live/53357A52616B5A3262794C3242335669",
-      "http://so.52itv.cn/live/53357A52616B5A387645626A42335669",
+      "http://live-cdn1.smgbb.tv/channels/bbtv/dfws/flv:sd/live",
+      "http://liveipad.wasu.cn/dfws_ipad/z.m3u8",
       "http://zb.v.qq.com:1863/?progid=3900155972",
-      "http://gslb.tv.sohu.com/live?cid=3&type=hls",
       "http://live.gslb.letv.com/gslb?stream_id=dongfang&tag=live&ext=m3u8&sign=live_ipad",
-      "http://119.4.250.55:1935/SRT_Live/SHTV_M.stream/playlist.m3u8",
       "http://web-play.pptv.com/web-m3u8-300145.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -504,10 +450,10 @@
     "channel_name": "广东卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/329.png",
     "mode": "HD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=guangdong&tag=live&ext=m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=60&type=hls",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805404",
-      "http://zb.v.qq.com:1863/?progid=857894899",
+      "http://qqlive.rec.hdl.lxdns.com/2084914015.flv",
+      "http://live.gslb.letv.com/gslb?stream_id=guangdong&tag=live&ext=m3u8",
       "http://play.api.pptv.com/web-m3u8-300179.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -517,15 +463,13 @@
     "channel_name": "深圳卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/03.png",
     "mode": "HD",
-    "url": "http://tsl6.hls.cutv.com/cutvChannelLive/a0e9Nwu.m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=45&type=hls",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805406",
+      "http://qqlive.rec.hdl.lxdns.com/2309309351.flv",
+      "http://tsl6.hls.cutv.com/cutvChannelLive/a0e9Nwu.m3u8",
       "http://liveipad.wasu.cn/szws_ipad/z.m3u8",
-      "http://v.hdplay.cn/live/53357A52616B5A387633517342335669",
-      "http://v.hdplay.cn/live/53357A52616B5A3862797A384233564E",
       "http://play.api.pptv.com/web-m3u8-300188.m3u8?type=m3u8.web.pad",
-      "http://zb.v.qq.com:1863/?progid=2220552576",
-      "http://v.hdplay.cn/live/53357A52616B5A3862796E4E4233564E"
+      "http://live.gslb.letv.com/gslb?stream_id=shenzhen&tag=live&ext=m3u8&sign=live_ipad"
     ],
     "types": "2"
   },
@@ -534,12 +478,10 @@
     "channel_name": "浙江卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/147.png",
     "mode": "HD",
-    "url": "http://r1.cztv.com/channels/101/500.flv/live",
+    "url": "http://gslb.tv.sohu.com/live?cid=31&type=hls",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805401",
-      "http://qqlive.dnion.com:1863/1975434150.flv",
-      "http://gslb.tv.sohu.com/live?cid=31&type=hls",
       "http://zb.v.qq.com:1863/?progid=1975434150&ostype=ios",
+      "http://r1.cztv.com/channels/101/500.flv/live",
       "http://liveipad.wasu.cn/zjws_ipad/z.m3u8",
       "http://play.api.pptv.com/web-m3u8-300164.m3u8?type=m3u8.web.pad"
     ],
@@ -550,14 +492,12 @@
     "channel_name": "北京卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "HD",
-    "url": "http://119.4.250.55:1935/SRT_Live/BTV_M.stream/playlist.m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=36&type=hls",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805405",
-      "http://so.52itv.cn/live/53357A52616B5A326279425042335669",
-      "http://sw.live.cntv.cn/cctv_p2p_hdbtv1.m3u8",
       "http://liveipad.wasu.cn/bjws_ipad/z.m3u8",
-      "http://gslb.tv.sohu.com/live?cid=36&type=hls",
       "http://live.gslb.letv.com/gslb?stream_id=bjws&tag=live&ext=m3u8&sign=live_ipad",
+      "http://zb.v.qq.com:1863/?progid=2414742998&ostype=ios",
+      "http://hls.cntv.lxdns.com/approve/live?type=ipad&channel=BTV1&&suffix=.m3u8",
       "http://play.api.pptv.com/web-m3u8-300166.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -567,12 +507,9 @@
     "channel_name": "黑龙江卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/16.png",
     "mode": "HD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=heilongjiang&tag=live&ext=m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=59&type=hls",
     "second_url": [
-      "http://ims.veryhd.net/ty/kbr_ty.php?uuid=805408",
-      "http://sw.live.cntv.cn/cctv_p2p_hdheilongjiangtv.m3u8",
-      "http://119.4.250.55:1935/SRT_Live/HLJTV_M.stream/playlist.m3u8",
-      "http://gslb.tv.sohu.com/live?cid=59&type=hls",
+      "http://live.gslb.letv.com/gslb?stream_id=heilongjiang&tag=live&ext=m3u8",
       "http://hls15.cntv.chinacache.net/cache/43_/seg0/index.m3u8"
     ],
     "types": "2"
@@ -582,12 +519,8 @@
     "channel_name": "凤凰资讯",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/512.png",
     "mode": "SD",
-    "url": "http://qqlive.dnion.com:1863/1258215255.flv",
-    "second_url": [
-      "http://v.hdplay.cn/live/53357A52616B5A6A7679626B4233426B",
-      "http://zb.v.qq.com:1863/?progid=2674956498&ostype=ios",
-      "http://live.3gv.ifeng.com/live/zixun.m3u8?fmt=x264_0k_mpegts&size=320x240"
-    ],
+    "url": "http://live.3gv.ifeng.com/live/zixun.m3u8?fmt=x264_0k_mpegts&size=320x240",
+    "second_url": [],
     "types": "2"
   },
   {
@@ -595,20 +528,11 @@
     "channel_name": "凤凰中文",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/512.png",
     "mode": "SD",
-    "url": "http://v.hdplay.cn/live/53357A52616B5A6A76796E504233426B",
+    "url": "http://live.3gv.ifeng.com/live/zhongwen.m3u8?fmt=x264_0k_mpegts&size=320x240",
     "second_url": [
-      "http://live.3gv.ifeng.com/live/zhongwen.m3u8?fmt=x264_0k_mpegts&size=320x240",
-      "http://112.231.23.20/live/fhzw/playlist.m3u8"
+      "http://live.gslb.letv.com/gslb?stream_id=fenghuang&tag=live&ext=m3u8&sign=live_ipad",
+      "http://live.3gv.ifeng.com/live/2256?file=livestream"
     ],
-    "types": "2"
-  },
-  {
-    "channel_id": 20125,
-    "channel_name": "凤凰卫视香港台",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/512.png",
-    "mode": "SD",
-    "url": "http://so.52itv.cn/live/53357A52616B5A6A76796E4E4233426B",
-    "second_url": [],
     "types": "2"
   },
   {
@@ -617,9 +541,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/xianggangweishi.png",
     "mode": "SD",
     "url": "http://qqlive.rec.hdl.lxdns.com/2584831218.flv",
-    "second_url": [
-      "http://qqlive.dnion.com:1863/2584831218.flv"
-    ],
+    "second_url": [],
     "types": "2"
   },
   {
@@ -627,12 +549,12 @@
     "channel_name": "山东卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/131.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=shandong&tag=live&ext=m3u8&sign=live_ipad",
+    "url": "http://gslb.tv.sohu.com/live?cid=14&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=14&type=hls",
+      "http://live.gslb.letv.com/gslb?stream_id=shandong&tag=live&ext=m3u8&sign=live_ipad",
       "http://zb.v.qq.com:1863/?progid=3660187036&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/3660187036.flv",
-      "http://web-play.pptv.com/web-m3u8-300161.m3u8"
+      "http://play.api.pptv.com/web-m3u8-300161.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
   },
@@ -650,13 +572,11 @@
     "channel_name": "辽宁卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/92.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=liaoning&tag=live&ext=m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=10&type=hls",
     "second_url": [
-      "http://qqlive.dnion.com:1863/3006271240.flv",
       "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdliaoningtv&type=ipad",
-      "http://gslb.tv.sohu.com/live?cid=10&type=hls",
       "http://zb.v.qq.com:1863/?progid=3006271240&ostype=ios",
-      "http://119.4.250.55:1935/SRT_Live/LNTV_M.stream/playlist.m3u8",
+      "http://live.gslb.letv.com/gslb?stream_id=liaoning&tag=live&ext=m3u8",
       "http://liveipad.wasu.cn/lnws_ipad/z.m3u8"
     ],
     "types": "2"
@@ -666,13 +586,12 @@
     "channel_name": "安徽卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/140.png",
     "mode": "SD",
-    "url": "http://zb.v.qq.com:1863/?progid=623043810&ostype=ios",
+    "url": "http://gslb.tv.sohu.com/live?cid=13&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=13&type=hls",
+      "http://zb.v.qq.com:1863/?progid=623043810&ostype=ios",
       "http://live.gslb.letv.com/gslb?stream_id=anhui&tag=live&ext=m3u8&sign=live_ipad",
       "http://liveipad.wasu.cn/ahws_ipad/z.m3u8",
       "http://livecdn.ahtv.cn/channels/1501/500.flv/live",
-      "http://so.52itv.cn/live/53357A52616B5A3262794C3842335669",
       "http://play.api.pptv.com/web-m3u8-300162.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -682,11 +601,11 @@
     "channel_name": "东南卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/224.png",
     "mode": "SD",
-    "url": "http://qqlive.rec.hdl.lxdns.com/1000637964.flv",
+    "url": "http://gslb.tv.sohu.com/live?cid=7&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=7&type=hls",
       "http://live.gslb.letv.com/gslb?stream_id=dongnan&tag=live&ext=m3u8&sign=live_ipad",
       "http://zb.v.qq.com:1863/?progid=1000637964&ostype=ios",
+      "http://qqlive.rec.hdl.lxdns.com/1000637964.flv",
       "http://play.api.pptv.com/web-m3u8-300175.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -696,9 +615,10 @@
     "channel_name": "厦门卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/630.png",
     "mode": "SD",
-    "url": "http://hls15.cntv.chinacache.net/cache/54_/seg0/index.m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=6&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=6&type=hls",
+      "http://hls15.cntv.chinacache.net/cache/54_/seg0/index.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343532347C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
       "http://play.api.pptv.com/web-m3u8-300169.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -712,8 +632,8 @@
     "second_url": [
       "http://zb.v.qq.com:1863/?progid=877636586&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/877636586.flv",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdqinghaitv&type=ipad",
       "http://live.gslb.letv.com/gslb?stream_id=qinghai&tag=live&ext=m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C343130347C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
       "http://play.api.pptv.com/web-m3u8-300180.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -723,11 +643,11 @@
     "channel_name": "天津卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/274.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=tianjin&tag=live&ext=m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=15&type=hls",
     "second_url": [
-      "http://qqlive.dnion.com:1863/830075195.flv",
-      "http://gslb.tv.sohu.com/live?cid=15&type=hls",
-      "http://web-play.pptv.com/web-m3u8-300160.m3u8"
+      "http://live.gslb.letv.com/gslb?stream_id=tianjin&tag=live&ext=m3u8",
+      "http://hls.cntv.lxdns.com/approve/live?type=ipad&channel=TianJinTV&&suffix=.m3u8",
+      "http://play.api.pptv.com/web-m3u8-300160.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
   },
@@ -754,7 +674,7 @@
     "second_url": [
       "http://live.gslb.letv.com/gslb?stream_id=jiangxi&tag=live&ext=m3u8",
       "http://hls15.cntv.chinacache.net/cache/48_/seg0/index.m3u8",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdjiangxitv&type=ipad",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C343039387C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
       "http://play.api.pptv.com/web-m3u8-300168.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -769,7 +689,6 @@
       "http://zb.v.qq.com:1863/?progid=4172356212&ostype=ios",
       "http://live.gslb.letv.com/gslb?stream_id=henan&tag=live&ext=m3u8",
       "http://qqlive.rec.hdl.lxdns.com/4172356212.flv",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdhenantv&type=ipad",
       "http://play.api.pptv.com/web-m3u8-300159.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -784,8 +703,7 @@
       "http://zb.v.qq.com:1863/?progid=2739752321&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/2739752321.flv",
       "http://live.gslb.letv.com/gslb?stream_id=shanxi1&tag=live&ext=m3u8&sign=live_ipad",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdshan3xitv&type=ipad",
-      "http://so.52itv.cn/live/53357A52616B5A4D62337A6B42335669",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C343039327C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
       "http://play.api.pptv.com/web-m3u8-300170.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -798,7 +716,6 @@
     "url": "http://gslb.tv.sohu.com/live?cid=21&type=hls",
     "second_url": [
       "http://live.gslb.letv.com/gslb?stream_id=jilin&tag=live&ext=m3u8",
-      "http://119.4.250.55:1935/SRT_Live/JLTV_M.stream/playlist.m3u8",
       "http://play.api.pptv.com/web-m3u8-300176.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -808,14 +725,13 @@
     "channel_name": "湖北卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
-    "url": "http://qqlive.dnion.com:1863/1128831868.flv",
+    "url": "http://gslb.tv.sohu.com/live?cid=22&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=22&type=hls",
       "http://live.gslb.letv.com/gslb?stream_id=hubei&tag=live&ext=m3u8",
       "http://zb.v.qq.com:1863/?progid=1128831868&ostype=ios",
       "http://live9.hbtv.com.cn/channels/zbk/hbws/flv:sd/live.flv",
       "http://tsl5.hls.cutv.com/cutvChannelLive/hw2bvyV.m3u8",
-      "http://web-play.pptv.com/web-m3u8-300146.m3u8"
+      "http://play.api.pptv.com/web-m3u8-300146.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
   },
@@ -829,8 +745,6 @@
       "http://zb.v.qq.com:1863/?progid=974433428&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/974433428.flv",
       "http://live.gslb.letv.com/gslb?stream_id=guangxi&tag=live&ext=m3u8",
-      "http://so.52itv.cn/live/53357A52616B5A386245726A42335669",
-      "http://222.216.111.87:5100/nn_live.flv?id=1004&begin=133008&end=173000&timezone=8&day=20130425",
       "http://play.api.pptv.com/web-m3u8-300178.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -840,15 +754,10 @@
     "channel_name": "河北卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/100.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=hebei&tag=live&ext=m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=24&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=24&type=hls",
+      "http://live.gslb.letv.com/gslb?stream_id=hebei&tag=live&ext=m3u8",
       "http://hls15.cntv.chinacache.net/cache/41_/seg0/index.m3u8",
-      "http://live01.hebtv.com/channels/hebtv/video_channel_04/flv:800k/live",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdhebeitv&type=ipad",
-      "http://so.52itv.cn/live/53357A52616B5A4D62337A4E42335669",
-      "http://119.4.250.55:1935/SRT_Live/HeBTV_M.stream/playlist.m3u8",
-      "http://live01.hebtv.com/channels/hebtv/video_channel_04/flv:2000k/live",
       "http://play.api.pptv.com/web-m3u8-300143.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -861,8 +770,6 @@
     "url": "http://gslb.tv.sohu.com/live?cid=25&type=hls",
     "second_url": [
       "http://live.gslb.letv.com/gslb?stream_id=xizang&tag=live&ext=m3u8",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdxizangtv&type=ipad",
-      "http://sw.live.cntv.cn/cctv_p2p_hdxizangtv.m3u8",
       "http://hls15.cntv.chinacache.net/cache/61_/seg0/index.m3u8",
       "http://play.api.pptv.com/web-m3u8-300412.m3u8?type=m3u8.web.pad"
     ],
@@ -879,7 +786,6 @@
       "http://qqlive.rec.hdl.lxdns.com/2342060367.flv",
       "http://live.gslb.letv.com/gslb?stream_id=neimenggu&tag=live&ext=m3u8",
       "http://hls15.cntv.chinacache.net/cache/51_/seg0/index.m3u8",
-      "http://sw.live.cntv.cn/cctv_p2p_hdneimenggutv.m3u8",
       "http://play.api.pptv.com/web-m3u8-300173.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -889,12 +795,11 @@
     "channel_name": "四川卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/08.png",
     "mode": "SD",
-    "url": "http://zb.v.qq.com:1863/?progid=2453801339&ostype=ios",
+    "url": "http://gslb.tv.sohu.com/live?cid=27&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=27&type=hls",
+      "http://zb.v.qq.com:1863/?progid=2453801339&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/2453801339.flv",
       "http://live.gslb.letv.com/gslb?stream_id=sichuan&tag=live&ext=m3u8",
-      "http://so.52itv.cn/live/53357A52616B5A3862456E5042335669",
       "http://play.api.pptv.com/web-m3u8-300177.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -904,8 +809,10 @@
     "channel_name": "康巴卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/08.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdkangba.m3u8",
-    "second_url": [],
+    "url": "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343534357C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
+    "second_url": [
+      "http://hls17.cntv.chinacache.net/cache/2_/seg0/index.m3u8"
+    ],
     "types": "2"
   },
   {
@@ -915,7 +822,6 @@
     "mode": "SD",
     "url": "http://gslb.tv.sohu.com/live?cid=30&type=hls",
     "second_url": [
-      "http://so.52itv.cn/live/53357A52616B5A386232723842335669",
       "http://play.api.pptv.com/web-m3u8-300165.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
@@ -943,9 +849,9 @@
     "channel_name": "贵州卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/523.png",
     "mode": "SD",
-    "url": "http://zb.v.qq.com:1863/?progid=3051487004&ostype=ios",
+    "url": "http://gslb.tv.sohu.com/live?cid=32&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=32&type=hls",
+      "http://zb.v.qq.com:1863/?progid=3051487004&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/3051487004.flv",
       "http://live.gslb.letv.com/gslb?stream_id=guizhou&tag=live&ext=m3u8",
       "http://play.api.pptv.com/web-m3u8-300174.m3u8?type=m3u8.web.pad"
@@ -959,8 +865,7 @@
     "mode": "SD",
     "url": "http://gslb.tv.sohu.com/live?cid=33&type=hls",
     "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=ningxia&tag=live&ext=m3u8",
-      "http://qqlive.dnion.com:1863/3778086045.flv"
+      "http://live.gslb.letv.com/gslb?stream_id=ningxia&tag=live&ext=m3u8"
     ],
     "types": "2"
   },
@@ -973,7 +878,6 @@
     "second_url": [
       "http://zb.v.qq.com:1863/?progid=3444760127&ostype=ios",
       "http://qqlive.rec.hdl.lxdns.com/3444760127.flv",
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdgansutv&type=ipad",
       "http://live.gslb.letv.com/gslb?stream_id=gansu&tag=live&ext=m3u8",
       "http://hls15.cntv.chinacache.net/cache/37_/seg0/index.m3u8"
     ],
@@ -1001,22 +905,19 @@
     "second_url": [
       "http://live.gslb.letv.com/gslb?stream_id=xinjiang&tag=live&ext=m3u8",
       "http://hls15.cntv.chinacache.net/cache/62_/seg0/index.m3u8",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303038307C343130327C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
       "http://play.api.pptv.com/web-m3u8-300411.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
   },
   {
-    "channel_id": 71,
-    "channel_name": "旅游卫视",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/lvyoutv.png",
+    "channel_id": 204,
+    "channel_name": "腾讯体育台",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
     "mode": "SD",
-    "url": "http://live.gslb.letv.com/gslb?stream_id=lvyou&tag=live&ext=m3u8&sign=live_ipad",
-    "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=28&type=hls",
-      "http://119.4.250.55:1935/SRT_Live/HaiNTV_M.stream/playlist.m3u8",
-      "http://web-play.pptv.com/web-m3u8-300158.m3u8?type=m3u8.web.pad"
-    ],
-    "types": "2"
+    "url": "http://zb.v.qq.com:1863/?progid=403651632&ostype=ios",
+    "second_url": [],
+    "types": "4"
   },
   {
     "channel_id": 20116,
@@ -1028,15 +929,25 @@
     "types": "4"
   },
   {
+    "channel_id": 323,
+    "channel_name": "广东体育",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/28.png",
+    "mode": "SD",
+    "url": "http://live.gslb.letv.com/gslb?stream_id=guangdongtiyu&tag=live&ext=m3u8&sign=live_ipad",
+    "second_url": [
+      "http://livehttp.wasu.cn:18080/guangdongsports.flv",
+      "http://58.248.254.11:1935/live/gdty-i.stream/playlist.m3u8"
+    ],
+    "types": "3|4"
+  },
+  {
     "channel_id": 815,
     "channel_name": "BTV-体育",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdbtv6.m3u8",
+    "url": "http://live.gslb.letv.com/gslb?stream_id=btv6_800&tag=live&ext=m3u8",
     "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=btv6_800&tag=live&ext=m3u8",
-      "http://hls15.cntv.chinacache.net/cache/70_/seg0/index.m3u8",
-      "http://hlslive1.cntv.wscdns.com/cache/70_/seg0/index.m3u8"
+      "http://hls15.cntv.chinacache.net/cache/70_/seg0/index.m3u8"
     ],
     "types": "3|4"
   },
@@ -1045,9 +956,11 @@
     "channel_name": "BTV-2文艺",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdbtv2.m3u8",
+    "url": "http://gslb.tv.sohu.com/live?cid=37&type=hls",
     "second_url": [
-      "http://gslb.tv.sohu.com/live?cid=37&type=hls"
+      "http://live.gslb.letv.com/gslb?stream_id=bjwy&tag=live&ext=m3u8&sign=live_ipad",
+      "http://itv.hdpfans.com/live?vid=3",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343530397C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "3"
   },
@@ -1058,7 +971,8 @@
     "mode": "SD",
     "url": "http://gslb.tv.sohu.com/live?cid=38&type=hls",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdbtv3.m3u8"
+      "http://itv.hdpfans.com/live?vid=4",
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343530357C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
     ],
     "types": "3"
   },
@@ -1068,9 +982,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "SD",
     "url": "http://hls15.cntv.chinacache.net/cache/68_/seg0/index.m3u8",
-    "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdbtv4.m3u8"
-    ],
+    "second_url": [],
     "types": "3"
   },
   {
@@ -1080,7 +992,7 @@
     "mode": "SD",
     "url": "http://gslb.tv.sohu.com/live?cid=40&type=hls",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdbtv5.m3u8"
+      "http://itv.hdpfans.com/live?vid=180"
     ],
     "types": "3"
   },
@@ -1089,7 +1001,7 @@
     "channel_name": "BTV-7生活",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "SD",
-    "url": "http://sw.live.cntv.cn/cctv_p2p_hdbtv7.m3u8",
+    "url": "http://itv.hdpfans.com/live?vid=8",
     "second_url": [
       "http://hls15.cntv.chinacache.net/cache/71_/seg0/index.m3u8"
     ],
@@ -1100,8 +1012,10 @@
     "channel_name": "BTV-8青年",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "SD",
-    "url": "http://hls15.cntv.chinacache.net/cache/72_/seg0/index.m3u8",
-    "second_url": [],
+    "url": "http://itv.hdpfans.com/live?vid=9",
+    "second_url": [
+      "http://hls15.cntv.chinacache.net/cache/72_/seg0/index.m3u8"
+    ],
     "types": "3"
   },
   {
@@ -1109,22 +1023,11 @@
     "channel_name": "BTV-9新闻",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
     "mode": "SD",
-    "url": "http://hls15.cntv.chinacache.net/cache/74_/seg0/index.m3u8",
+    "url": "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343530347C317C313030307C35326974762E636E7C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
     "second_url": [
-      "http://sw.live.cntv.cn/cctv_p2p_hdbtv9.m3u8"
+      "http://hls15.cntv.chinacache.net/cache/74_/seg0/index.m3u8"
     ],
     "types": "3"
-  },
-  {
-    "channel_id": 323,
-    "channel_name": "广东体育",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/28.png",
-    "mode": "SD",
-    "url": "http://livehttp.wasu.cn:18080/guangdongsports.flv",
-    "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=guangdongtiyu&tag=live&ext=m3u8&sign=live_ipad"
-    ],
-    "types": "3|4"
   },
   {
     "channel_id": 1545,
@@ -1133,8 +1036,8 @@
     "mode": "SD",
     "url": "http://zb.v.qq.com:1863/?progid=1926463423&ostype=ios",
     "second_url": [
-      "http://master.anewtv.com/real/3.m3u8",
       "http://qqlive.rec.hdl.lxdns.com/1926463423.flv",
+      "http://58.248.254.11:1935/live/gdzj-i.stream/playlist.m3u8",
       "http://web-play.pptv.com/web-m3u8-300453.m3u8?type=m3u8.web.pad"
     ],
     "types": "3"
@@ -1155,7 +1058,6 @@
     "mode": "SD",
     "url": "http://zb.v.qq.com:1863/?progid=4035478592&ostype=ios",
     "second_url": [
-      "http://qqlive.dnion.com:1863/4035478592.flv",
       "http://web-play.pptv.com/web-m3u8-300458.m3u8?type=m3u8.web.pad"
     ],
     "types": "3"
@@ -1217,7 +1119,10 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/370.png",
     "mode": "SD",
     "url": "http://web-play.pptv.com/web-m3u8-300451.m3u8?type=m3u8.web.pad",
-    "second_url": [],
+    "second_url": [
+      "http://58.248.254.11:1935/live/gzys-i.stream/playlist.m3u8",
+      "http://58.248.254.11:1935/live/gzys-i.stream/chunklist.m3u8?wowzasessionid=255469268"
+    ],
     "types": "3"
   },
   {
@@ -1248,19 +1153,8 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/370.png",
     "mode": "SD",
     "url": "http://59.32.212.201:80/live/5/45/f4d0581f87354f0db45c82dcc05edb26.m3u8?chid=300409&pre=ikan&",
-    "second_url": [
-      "http://web-play.pptv.com/web-m3u8-300409.m3u8"
-    ],
-    "types": "3"
-  },
-  {
-    "channel_id": 372,
-    "channel_name": "广州竞赛",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/370.png",
-    "mode": "SD",
-    "url": "http://58.248.254.11/tvlive/gzjs-h.stream/chunklist.m3u8",
     "second_url": [],
-    "types": "3|4"
+    "types": "3"
   },
   {
     "channel_id": 796,
@@ -1354,9 +1248,9 @@
     "channel_name": "南方经视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/332.png",
     "mode": "SD",
-    "url": "http://master.anewtv.com/real/8.m3u8",
+    "url": "http://58.248.254.11/tvlive/tvs1-h.stream/playlist.m3u8",
     "second_url": [
-      "http://58.248.254.11/tvlive/tvs1-h.stream/playlist.m3u8"
+      "http://58.248.254.11:1935/live/tvs1-i.stream/chunklist.m3u8?wowzasessionid=899504838"
     ],
     "types": "3"
   },
@@ -1367,8 +1261,7 @@
     "mode": "SD",
     "url": "http://live.gslb.letv.com/gslb?stream_id=nanfang&tag=live&ext=m3u8&sign=live_ipad",
     "second_url": [
-      "http://58.248.254.11/tvlive/tvs2-h.stream/playlist.m3u8",
-      "http://61.67.123.93/live/tvs_1200k.stream/playlist.m3u8"
+      "http://58.248.254.11/tvlive/tvs2-h.stream/playlist.m3u8"
     ],
     "types": "2"
   },
@@ -1377,11 +1270,8 @@
     "channel_name": "南方综艺",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/332.png",
     "mode": "SD",
-    "url": "http://master.anewtv.com/real/12.m3u8",
-    "second_url": [
-      "http://so.52itv.cn/live/7235784D53793768613262696233366A6265787570486F3061324C6876334C686E414C326E327269764559747645654F76337269626765696267424E57676E6B6F474C6A574731305767424B7145763857515151",
-      "http://14.22.0.15:80/live/5/45/be3c7058b5184700a00d78f2ee19ee8d.m3u8"
-    ],
+    "url": "http://cdn.anewtv.com/real/12.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -1390,16 +1280,9 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/332.png",
     "mode": "SD",
     "url": "http://58.248.254.11/tvlive/tvs4-h.stream/playlist.m3u8",
-    "second_url": [],
-    "types": "3"
-  },
-  {
-    "channel_id": 336,
-    "channel_name": "南方少儿",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/332.png",
-    "mode": "SD",
-    "url": "http://183.61.172.151:80/live/5/45/54c852d900ba4b14a8c4817d79cea82a.m3u8",
-    "second_url": [],
+    "second_url": [
+      "http://58.248.254.11:1935/live/tvs4-i.stream/chunklist.m3u8?wowzasessionid=460157041"
+    ],
     "types": "3"
   },
   {
@@ -1416,7 +1299,7 @@
     "channel_name": "东方财经",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/74.png",
     "mode": "SD",
-    "url": "http://edgews.yicai.com/channels/602/400.flv",
+    "url": "http://edgews.yicai.com/channels/602/400.flv/live?file=livestream",
     "second_url": [
       "http://web-play.pptv.com/web-m3u8-300446.m3u8?type=m3u8.web.pad"
     ],
@@ -1430,7 +1313,6 @@
     "url": "http://live.bestvcdn.net/live/dycj/04.m3u8",
     "second_url": [
       "http://live-cdn1.smgbb.tv/channels/bbtv/dycj/flv:sd/live",
-      "http://api.yicai.com/channels/601/400.flv/live",
       "http://edgews.yicai.com/channels/601/400.flv/live?1353476842962"
     ],
     "types": "3"
@@ -1555,10 +1437,26 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/346.png",
     "mode": "SD",
     "url": "http://live-cdn1.smgbb.tv/channels/bbtv/ssty/flv:sd",
-    "second_url": [
-      "http://livehttp.wasu.cn:18080/shanghaisports.flv"
-    ],
+    "second_url": [],
     "types": "3|4"
+  },
+  {
+    "channel_id": 20087,
+    "channel_name": "上海导视",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/346.png",
+    "mode": "SD",
+    "url": "http://live-cdn1.smgbb.tv/channels/bbtv/shds/flv:sd/live.flv",
+    "second_url": [],
+    "types": "3"
+  },
+  {
+    "channel_id": 20124,
+    "channel_name": "哈哈少儿频道",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
+    "mode": "SD",
+    "url": "http://hls1-live.itv.ocn.net.cn/EAC/VGA/800K.m3u8",
+    "second_url": [],
+    "types": "3"
   },
   {
     "channel_id": 106,
@@ -1625,9 +1523,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/08.png",
     "mode": "SD",
     "url": "http://itv.hdpfans.com/play?cdtvid=party",
-    "second_url": [
-      "http://so.52itv.cn/live/6E736C4D53793768614E785972436C50"
-    ],
+    "second_url": [],
     "types": "3"
   },
   {
@@ -1840,6 +1736,17 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/274.png",
     "mode": "SD",
     "url": "http://hls17.cntv.chinacache.net/cache/6_/seg0/index.m3u8",
+    "second_url": [
+      "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343730317C317C313030307C54545A582E54567C687474707C74735B2F63686E5DVSDNSOOONERCOM00"
+    ],
+    "types": "3"
+  },
+  {
+    "channel_id": 20052,
+    "channel_name": "天津滨海二台",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/274.png",
+    "mode": "SD",
+    "url": "http://biz.vsdn.tv380.com/playlive.php?5B63686E5D445830303030303034367C343636387C317C313030307C54545A582E54567C687474707C74735B2F63686E5DVSDNSOOONERCOM00",
     "second_url": [],
     "types": "3"
   },
@@ -1850,7 +1757,6 @@
     "mode": "SD",
     "url": "http://tvie01.ucatv.com.cn/channels/xjyx/YouXiFengYun-Suma/flv:500k_flv/live.flv",
     "second_url": [
-      "http://web-play.pptv.com/web-m3u8-300355.m3u8",
       "http://121.12.254.140/PLTV/88888888/224/0/3221225761/000000000nce.smil"
     ],
     "types": "3"
@@ -1884,10 +1790,10 @@
     "mode": "SD",
     "url": "http://zb.v.qq.com:1863/?progid=1424066668&ostype=ios",
     "second_url": [
+      "http://qqlive.dnion.com:1863/1424066668.flv",
       "http://live.gslb.letv.com/gslb?stream_id=jykt&tag=live&ext=m3u8&sign=live_ipad",
-      "http://so.52itv.cn/live/53357A52616B5A386245727342335669",
-      "http://itv.hdpfans.com/mg?id=15",
-      "http://liveipad.wasu.cn/jykt_ipad/z.m3u8"
+      "http://liveipad.wasu.cn/jykt_ipad/z.m3u8",
+      "http://qqlive.rec.hdl.lxdns.com/1424066668.flv"
     ],
     "types": "3"
   },
@@ -1896,9 +1802,10 @@
     "channel_name": "嘉佳卡通",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/jiajiakatong.png",
     "mode": "SD",
-    "url": "http://qqlive.dnion.com:1863/1249794075.flv",
+    "url": "http://zb.v.qq.com:1863/?progid=1249794075&ostype=ios&rid=4d563a3fe165368a36e16ffa759bb633",
     "second_url": [
-      "http://zb.v.qq.com:1863/?progid=1249794075"
+      "http://58.248.254.11:1935/live/jjkt-i.stream/playlist.m3u8",
+      "http://qqlive.dnion.com:1863/1249794075.flv"
     ],
     "types": "3"
   },
@@ -2058,8 +1965,10 @@
     "channel_name": "海峡卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/haixiatv.png",
     "mode": "SD",
-    "url": "http://play.api.pptv.com/web-m3u8-300403.m3u8?type=m3u8.web.pad",
-    "second_url": [],
+    "url": "http://hls.cntv.lxdns.com/approve/live?type=ipad&channel=HaiXiaTV&&suffix=.m3u8",
+    "second_url": [
+      "http://play.api.pptv.com/web-m3u8-300403.m3u8?type=m3u8.web.pad"
+    ],
     "types": "2"
   },
   {
@@ -2067,10 +1976,9 @@
     "channel_name": "兵团卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/bintuantv.png",
     "mode": "SD",
-    "url": "http://v.hdplay.cn/live/53357A52616B5A6B5745426942336E69",
+    "url": "http://web-play.pptv.com/web-m3u8-300157.m3u8?type=m3u8.web.pad",
     "second_url": [
-      "http://so.52itv.cn/live/53357A52616B5A386245723842335669",
-      "http://web-play.pptv.com/web-m3u8-300157.m3u8?type=m3u8.web.pad"
+      "http://play.api.pptv.com/web-m3u8-300157.m3u8?type=m3u8.web.pad"
     ],
     "types": "2"
   },
@@ -2304,6 +2212,18 @@
     "types": "3"
   },
   {
+    "channel_id": 71,
+    "channel_name": "旅游卫视",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/lvyoutv.png",
+    "mode": "SD",
+    "url": "http://live.gslb.letv.com/gslb?stream_id=lvyou&tag=live&ext=m3u8&sign=live_ipad",
+    "second_url": [
+      "http://gslb.tv.sohu.com/live?cid=28&type=hls",
+      "http://web-play.pptv.com/web-m3u8-300158.m3u8?type=m3u8.web.pad"
+    ],
+    "types": "2"
+  },
+  {
     "channel_id": 143,
     "channel_name": "安徽影视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/140.png",
@@ -2462,17 +2382,6 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/16.png",
     "mode": "SD",
     "url": "http://125.211.216.198/channels/hljtv/daoshi/flv:sd/live?1348477654763",
-    "second_url": [
-      "http://live2.hljtv.com/channels/hljtv/daoshi/flv:hd/live.flv"
-    ],
-    "types": "3"
-  },
-  {
-    "channel_id": 84,
-    "channel_name": "黑龙江手机",
-	"icon_url": "http://tv.togic.com:8080/ShowTimeService/images/16.png",
-    "mode": "SD",
-    "url": "http://125.211.216.198/channels/hljtv/shoujii/flv:sd/live.flv",
     "second_url": [],
     "types": "3"
   },
@@ -2562,32 +2471,17 @@
     "channel_name": "宁波新闻综合",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/ningbo.png",
     "mode": "SD",
-    "url": "http://ming-live.nbtv.cn/channels/nbtv/nbtv1/flv:sd1/live?1368521853837",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/J4tN33f.m3u8"
-    ],
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/J4tN33f.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
     "channel_id": 820,
-    "channel_name": "宁波社会生活",
+    "channel_name": "宁波社会综合",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/ningbo.png",
     "mode": "SD",
-    "url": "http://ming-live.nbtv.cn/channels/nbtv/nbtv2/flv:sd/live?1368521949407",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/gTsqhV4.m3u8"
-    ],
-    "types": "3"
-  },
-  {
-    "channel_id": 821,
-    "channel_name": "宁波文化娱乐",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/ningbo.png",
-    "mode": "SD",
-    "url": "http://ming-live.nbtv.cn/channels/nbtv/nbtv3/flv:sd/live?1368522027167",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/Qg929n9.m3u8"
-    ],
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/gTsqhV4.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -2595,10 +2489,17 @@
     "channel_name": "宁波影视频道",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/ningbo.png",
     "mode": "SD",
-    "url": "http://ming-live.nbtv.cn/channels/nbtv/nbtv4/flv:sd/live?1368522113190",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/3ZksQyS.m3u8"
-    ],
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/3ZksQyS.m3u8",
+    "second_url": [],
+    "types": "3"
+  },
+  {
+    "channel_id": 821,
+    "channel_name": "宁波文化娱乐",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/ningbo.png",
+    "mode": "SD",
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/Qg929n9.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -2606,10 +2507,8 @@
     "channel_name": "宁波少儿频道",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/ningbo.png",
     "mode": "SD",
-    "url": "http://ming-live.nbtv.cn/channels/nbtv/nbtv5/flv:sd/live",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/2yhc2Sy.m3u8"
-    ],
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/2yhc2Sy.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -2742,7 +2641,7 @@
     "channel_name": "山东齐鲁",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/131.png",
     "mode": "SD",
-    "url": "http://zb.allook.cn/live/sdql/playlist.m3u8",
+    "url": "http://119.164.219.215:80/live/sdql/playlist.m3u8",
     "second_url": [],
     "types": "3"
   },
@@ -2856,9 +2755,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
     "url": "http://tsl5.hls.cutv.com/cutvChannelLive/nQ8zN75.m3u8",
-    "second_url": [
-      "http://live9.hbtv.com.cn/channels/zbk/hbtv/flv:sd/live"
-    ],
+    "second_url": [],
     "types": "3"
   },
   {
@@ -2866,9 +2763,8 @@
     "channel_name": "湖北公共",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
-    "url": "http://live9.hbtv.com.cn/channels/zbk/hbgg/flv:sd/live",
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/t2F4G9B.m3u8",
     "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/t2F4G9B.m3u8",
       "http://web-play.pptv.com/web-m3u8-300413.m3u8?type=m3u8.web.pad"
     ],
     "types": "3"
@@ -2878,9 +2774,8 @@
     "channel_name": "湖北经济",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
-    "url": "http://live9.hbtv.com.cn/channels/zbk/jingshi2/flv:sd/live",
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/BQ3qwlQ.m3u8",
     "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/BQ3qwlQ.m3u8",
       "http://web-play.pptv.com/web-m3u8-300447.m3u8?type=m3u8.web.pad"
     ],
     "types": "3"
@@ -2890,10 +2785,8 @@
     "channel_name": "湖北影视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
-    "url": "http://live9.hbtv.com.cn/channels/zbk/hbys/flv:sd/live",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/8cinuTa.m3u8"
-    ],
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/8cinuTa.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -2901,9 +2794,9 @@
     "channel_name": "湖北体育生活",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
-    "url": "http://live9.hbtv.com.cn/channels/zbk/hbty/flv:sd/live.flv",
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/tjiVQ2w.m3u8",
     "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/tjiVQ2w.m3u8"
+      "http://live9.hbtv.com.cn/channels/zbk/hbty/flv:sd/live.flv"
     ],
     "types": "3|4"
   },
@@ -2912,10 +2805,8 @@
     "channel_name": "湖北教育",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
-    "url": "http://live9.hbtv.com.cn/channels/zbk/hbjy/flv:sd/live",
-    "second_url": [
-      "http://tsl5.hls.cutv.com/cutvChannelLive/18sExUc.m3u8"
-    ],
+    "url": "http://tsl5.hls.cutv.com/cutvChannelLive/18sExUc.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -2924,15 +2815,6 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
     "mode": "SD",
     "url": "http://live9.hbtv.com.cn/channels/zbk/gspd/flv:sd/live",
-    "second_url": [],
-    "types": "3"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "睛彩湖北",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
-    "mode": "SD",
-    "url": "http://live9.hbtv.com.cn/channels/zbk/sjpd/flv:sd/live",
     "second_url": [],
     "types": "3"
   },
@@ -2991,15 +2873,6 @@
     "types": "3"
   },
   {
-    "channel_id": 5154,
-    "channel_name": "襄阳精彩",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/xiangyang.png",
-    "mode": "SD",
-    "url": "http://tsl6.hls.cutv.com/cutvChannelLive/uWanG2g.m3u8",
-    "second_url": [],
-    "types": "3"
-  },
-  {
     "channel_id": 1019,
     "channel_name": "泰州新闻综合",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/jiangsu_taizhou.png",
@@ -3010,11 +2883,13 @@
   },
   {
     "channel_id": 442,
-    "channel_name": "绍兴文化影视",
+    "channel_name": "绍兴影视娱乐",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/shaoxing.png",
     "mode": "SD",
-    "url": "http://live.sxtv.com.cn/channels/shaoxing/movie2/flv:500k/live",
-    "second_url": [],
+    "url": "http://tsl4.hls.cutv.com/cutvChannelLive/24yG85b.m3u8",
+    "second_url": [
+      "http://live.sxtv.com.cn/channels/shaoxing/movie2/flv:700k_stream_2/live"
+    ],
     "types": "3"
   },
   {
@@ -3022,9 +2897,9 @@
     "channel_name": "绍兴公共",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/shaoxing.png",
     "mode": "SD",
-    "url": "http://live.sxtv.com.cn/channels/shaoxing/public2/flv:500k/live",
+    "url": "http://tsl4.hls.cutv.com/cutvChannelLive/kSpsAae.m3u8",
     "second_url": [
-      "http://tsl4.hls.cutv.com/cutvChannelLive/kSpsAae.m3u8"
+      "http://live.sxtv.com.cn/channels/shaoxing/public2/flv:700k_stream_3/live"
     ],
     "types": "3"
   },
@@ -3033,9 +2908,9 @@
     "channel_name": "绍兴新闻综合",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/shaoxing.png",
     "mode": "SD",
-    "url": "http://live.sxtv.com.cn/channels/shaoxing/news/flv:500k/live",
+    "url": "http://tsl4.hls.cutv.com/cutvChannelLive/4IzgShp.m3u8",
     "second_url": [
-      "http://tsl4.hls.cutv.com/cutvChannelLive/4IzgShp.m3u8"
+      "http://live.sxtv.com.cn/channels/shaoxing/news/flv:700k_stream_4/live"
     ],
     "types": "3"
   },
@@ -3220,17 +3095,15 @@
     "mode": "SD",
     "url": "http://122.192.35.76:554/live/tv05/playlist.m3u8",
     "second_url": [],
-    "types": "3|4"
+    "types": "3"
   },
   {
     "channel_id": 20080,
     "channel_name": "江苏影视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/160.png",
     "mode": "SD",
-    "url": "http://74.82.62.53:1935/liverepeater/22.stream/playlist.m3u8",
-    "second_url": [
-      "http://122.192.35.76:554/live/tv04/playlist.m3u8"
-    ],
+    "url": "http://122.192.35.76:554/live/tv04/playlist.m3u8",
+    "second_url": [],
     "types": "3"
   },
   {
@@ -3239,9 +3112,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/160.png",
     "mode": "SD",
     "url": "http://122.192.35.80:554/live/tv51/playlist.m3u8",
-    "second_url": [
-      "http://74.82.62.53:1935/liverepeater/6401.stream/playlist.m3u8"
-    ],
+    "second_url": [],
     "types": "3"
   },
   {
@@ -3268,9 +3139,7 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nanjing.png",
     "mode": "SD",
     "url": "http://live.xwei.tv/channels/njtv/video_xwzh/flv:500k/live",
-    "second_url": [
-      "http://vdn.apps.cntv.cn/api/getLiveUrlCommonRedirectApi.do?channel=pa://cctv_p2p_hdnanjingnews&type=ipad"
-    ],
+    "second_url": [],
     "types": "3"
   },
   {
@@ -3301,15 +3170,6 @@
     "types": "3"
   },
   {
-    "channel_id": 20126,
-    "channel_name": "南京少儿",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nanjing.png",
-    "mode": "SD",
-    "url": "http://live.xwei.tv/channels/njtv/video_shaoer/flv:250k/live.flv",
-    "second_url": [],
-    "types": "3"
-  },
-  {
     "channel_id": 390,
     "channel_name": "南京教科",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nanjing.png",
@@ -3323,7 +3183,7 @@
     "channel_name": "南通新闻综合",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nantong.png",
     "mode": "SD",
-    "url": "http://media.ntjoy.com/channels/nttv/news/flv:TV1SD/live?1368518886788",
+    "url": "http://media.ntjoy.com/channels/nttv/news/flv:sd/live",
     "second_url": [
       "http://122.192.35.80:554/live/tv63/playlist.m3u8"
     ],
@@ -3334,7 +3194,7 @@
     "channel_name": "南通社教",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nantong.png",
     "mode": "SD",
-    "url": "http://media.ntjoy.com/channels/nttv/society/flv:TV2HD/live?1368518824884",
+    "url": "http://media.ntjoy.com/channels/nttv/society/flv:sd/live",
     "second_url": [
       "http://tsl3.hls.cutv.com/cutvChannelLive/18Vmk78.m3u8"
     ],
@@ -3345,7 +3205,7 @@
     "channel_name": "南通生活",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nantong.png",
     "mode": "SD",
-    "url": "http://media.ntjoy.com/channels/nttv/life/flv:TV3SD/live?1368518763778",
+    "url": "http://media.ntjoy.com/channels/nttv/life/flv:sd/live",
     "second_url": [
       "http://tsl3.hls.cutv.com/cutvChannelLive/SQ5Wj2s.m3u8"
     ],
@@ -3356,7 +3216,7 @@
     "channel_name": "南通信息",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nantong.png",
     "mode": "SD",
-    "url": "http://media.ntjoy.com/channels/nttv/information/flv:TV4SD/live?1368518411656",
+    "url": "http://media.ntjoy.com/channels/nttv/information/flv:sd/live",
     "second_url": [
       "http://tsl3.hls.cutv.com/cutvChannelLive/48zw6yd.m3u8"
     ],
@@ -3367,7 +3227,7 @@
     "channel_name": "南通江海明珠",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nantong.png",
     "mode": "SD",
-    "url": "http://media.ntjoy.com/channels/nttv/JHMZ/flv:jhmz2/live?1368518260799",
+    "url": "http://media.ntjoy.com/channels/nttv/JHMZ/flv:mz/live",
     "second_url": [],
     "types": "3"
   },
@@ -3428,33 +3288,6 @@
     "types": "3"
   },
   {
-    "channel_id": 0,
-    "channel_name": "扬州综合",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
-    "mode": "SD",
-    "url": "http://218.91.157.69:1935/yztv/yztv_1/500k/playlist.m3u8",
-    "second_url": [],
-    "types": "3"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "扬州城市",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
-    "mode": "SD",
-    "url": "http://218.91.157.69:1935/yztv/yztv_2/500k/playlist.m3u8",
-    "second_url": [],
-    "types": "3"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "扬州生活",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
-    "mode": "SD",
-    "url": "http://218.91.157.69:1935/yztv/yztv_3/500k/playlist.m3u8",
-    "second_url": [],
-    "types": "3"
-  },
-  {
     "channel_id": 20106,
     "channel_name": "淮安新闻综合",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
@@ -3464,7 +3297,16 @@
     "types": "3"
   },
   {
-    "channel_id": 166,
+    "channel_id": 20031,
+    "channel_name": "财富天下",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/160.png",
+    "mode": "SD",
+    "url": "http://itv.hdpfans.com/play?sinaid=51273",
+    "second_url": [],
+    "types": "3"
+  },
+  {
+    "channel_id": 20032,
     "channel_name": "靓装频道",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/160.png",
     "mode": "SD",
@@ -3545,6 +3387,15 @@
     "types": "3"
   },
   {
+    "channel_id": 5154,
+    "channel_name": "襄阳精彩",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/xiangyang.png",
+    "mode": "SD",
+    "url": "http://tsl6.hls.cutv.com/cutvChannelLive/uWanG2g.m3u8",
+    "second_url": [],
+    "types": "3"
+  },
+  {
     "channel_id": 20019,
     "channel_name": "魅力音乐",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/meiliyinyue.png",
@@ -3567,7 +3418,7 @@
     "channel_name": "四海钓鱼",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/sihaidiaoyu.png",
     "mode": "SD",
-    "url": "http://v.hdplay.cn/live/70473843713237686132364D",
+    "url": "http://live122.cnlive.com:1935/live/sihaidiaoyu/playlist.m3u8",
     "second_url": [],
     "types": "4"
   },
@@ -3576,10 +3427,8 @@
     "channel_name": "星空卫视",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/xingkongweishi.png",
     "mode": "SD",
-    "url": "http://221.236.24.101:1755/36017/15189/4240?swax_k=_ver_tm_ar_sig&swax_v=_1.0_1368617982_318_624227949f",
-    "second_url": [
-      "http://112.231.23.20/live/xkws/playlist.m3u8"
-    ],
+    "url": "http://live.gslb.letv.com/gslb?stream_id=xingkongweishi&tag=live&ext=m3u8&sign=live_ipad",
+    "second_url": [],
     "types": "2"
   },
   {
@@ -3606,26 +3455,6 @@
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
     "mode": "SD",
     "url": "http://gslb.tv.sohu.com/live?cid=55&sig=8cePOdIsKBXNAgO138c4Qw..&type=hls",
-    "second_url": [
-      "http://so.52itv.cn/live/72733437534537686132623862565151"
-    ],
-    "types": "3"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "中国气象频道",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
-    "mode": "SD",
-    "url": "http://live122.cnlive.com:1935/live/zhongguoqixiang/playlist.m3u8",
-    "second_url": [],
-    "types": "3"
-  },
-  {
-    "channel_id": 0,
-    "channel_name": "英语辅导",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/liveTV_default.png",
-    "mode": "SD",
-    "url": "http://zb.v.qq.com:1863/?progid=2136314174",
     "second_url": [],
     "types": "3"
   }

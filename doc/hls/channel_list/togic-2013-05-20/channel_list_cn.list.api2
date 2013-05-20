@@ -434,7 +434,7 @@
   {
     "channel_id": 0,
     "channel_name": "CCTV-证券资讯",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
+    "icon_url": "/upload/channels/136852520173836.png",
     "mode": "SD",
     "url": "http://live122.cnlive.com:1935/live/cctvzhengquan/playlist.m3u8",
     "second_url": [],
@@ -443,7 +443,7 @@
   {
     "channel_id": 0,
     "channel_name": "CCTV-发现之旅",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
+    "icon_url": "/upload/channels/136860147341036.png",
     "mode": "SD",
     "url": "http://v.hdplay.cn/live/53357A52616B5A326233514D42336E69",
     "second_url": [],
@@ -605,7 +605,7 @@
   {
     "channel_id": 20125,
     "channel_name": "凤凰卫视香港台",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/512.png",
+    "icon_url": "/upload/channels/1368525312294512.png",
     "mode": "SD",
     "url": "http://so.52itv.cn/live/53357A52616B5A6A76796E4E4233426B",
     "second_url": [],
@@ -1028,6 +1028,17 @@
     "types": "4"
   },
   {
+    "channel_id": 323,
+    "channel_name": "广东体育",
+    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/28.png",
+    "mode": "SD",
+    "url": "http://livehttp.wasu.cn:18080/guangdongsports.flv",
+    "second_url": [
+      "http://live.gslb.letv.com/gslb?stream_id=guangdongtiyu&tag=live&ext=m3u8&sign=live_ipad"
+    ],
+    "types": "3|4"
+  },
+  {
     "channel_id": 815,
     "channel_name": "BTV-体育",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/307.png",
@@ -1114,17 +1125,6 @@
       "http://sw.live.cntv.cn/cctv_p2p_hdbtv9.m3u8"
     ],
     "types": "3"
-  },
-  {
-    "channel_id": 323,
-    "channel_name": "广东体育",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/28.png",
-    "mode": "SD",
-    "url": "http://livehttp.wasu.cn:18080/guangdongsports.flv",
-    "second_url": [
-      "http://live.gslb.letv.com/gslb?stream_id=guangdongtiyu&tag=live&ext=m3u8&sign=live_ipad"
-    ],
-    "types": "3|4"
   },
   {
     "channel_id": 1545,
@@ -2470,7 +2470,7 @@
   {
     "channel_id": 84,
     "channel_name": "黑龙江手机",
-	"icon_url": "http://tv.togic.com:8080/ShowTimeService/images/16.png",
+    "icon_url": "/upload/channels/136757678785616.png",
     "mode": "SD",
     "url": "http://125.211.216.198/channels/hljtv/shoujii/flv:sd/live.flv",
     "second_url": [],
@@ -2930,7 +2930,7 @@
   {
     "channel_id": 0,
     "channel_name": "睛彩湖北",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/192.png",
+    "icon_url": "/upload/channels/1368279534491192.png",
     "mode": "SD",
     "url": "http://live9.hbtv.com.cn/channels/zbk/sjpd/flv:sd/live",
     "second_url": [],
@@ -3303,7 +3303,7 @@
   {
     "channel_id": 20126,
     "channel_name": "南京少儿",
-    "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/nanjing.png",
+    "icon_url": "/upload/channels/1367832847379nanjing.png",
     "mode": "SD",
     "url": "http://live.xwei.tv/channels/njtv/video_shaoer/flv:250k/live.flv",
     "second_url": [],
