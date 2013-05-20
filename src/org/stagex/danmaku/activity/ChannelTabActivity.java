@@ -204,7 +204,8 @@ public class ChannelTabActivity extends TabActivity implements
 				Log.d("ChannelInfo",
 						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl(), info.getName());
+//				startLiveMedia(info.getUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName());
 			}
 		});
 		yang_shi_list.setOnScrollListener(new OnScrollListener() {
@@ -242,7 +243,8 @@ public class ChannelTabActivity extends TabActivity implements
 				Log.d("ChannelInfo",
 						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl(), info.getName());
+//				startLiveMedia(info.getUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName());
 			}
 		});
 
@@ -281,7 +283,8 @@ public class ChannelTabActivity extends TabActivity implements
 				Log.d("ChannelInfo",
 						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl(), info.getName());
+//				startLiveMedia(info.getUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName());
 			}
 		});
 
@@ -320,7 +323,8 @@ public class ChannelTabActivity extends TabActivity implements
 				Log.d("ChannelInfo",
 						"name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				startLiveMedia(info.getUrl(), info.getName());
+//				startLiveMedia(info.getUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName());
 			}
 		});
 
@@ -340,7 +344,18 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 	}
-
+	
+	/**
+	 * 	显示所有的台源
+	 */
+	private void showAllSource(ArrayList<String> all_url, String name) {
+		Intent intent = new Intent(ChannelTabActivity.this,
+				ChannelSourceActivity.class);
+		intent.putExtra("all_url", all_url);
+		intent.putExtra("title", name);
+		startActivity(intent);
+	}
+	
 	private void startLiveMedia(String liveUrl, String name) {
 		Intent intent = new Intent(ChannelTabActivity.this,
 				PlayerActivity.class);

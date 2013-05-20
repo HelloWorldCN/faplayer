@@ -43,8 +43,9 @@
         <activity
             android:name=".activity.HomeActivity"
             android:label="@string/home_title"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTask">
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,13 +54,15 @@
         </activity>
         <activity
             android:name=".activity.ChannelTabActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTask">
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name="com.nmbb.oplayer.ui.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleTask">
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
 
         <service android:name="com.nmbb.oplayer.scanner.MediaScannerService" >
@@ -67,6 +70,12 @@
 
         <receiver android:name="com.nmbb.oplayer.scanner.MediaScannerReceiver" >
         </receiver>
+
+        <activity
+            android:name=".activity.ChannelSourceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
