@@ -17,14 +17,17 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ChannelSourceActivity extends Activity {
 	/** Called when the activity is first created. */
 
+	private static final String LOGTAG = "ChannelSourceActivity";
 	private ListView mFileList;
 	private ChannelSourceAdapter mSourceAdapter;
 	private  ArrayList<String> infos;
+	private String channel_name;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,11 @@ public class ChannelSourceActivity extends Activity {
 		mFileList = (ListView) findViewById(R.id.channel_source);
 		//防止滑动黑屏
 		mFileList.setCacheColorHint(Color.TRANSPARENT);
+		
+		TextView text = (TextView) findViewById(R.id.channel_name);
+
+		
+		//设置监听事件
 		mFileList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -43,7 +51,7 @@ public class ChannelSourceActivity extends Activity {
 				String info = (String)mFileList
 						.getItemAtPosition(arg2);
 
-				startLiveMedia(info, "");
+				startLiveMedia(info, channel_name);
 			}
 		});
 //		mFileList.setOnItemLongClickListener(mSourceAdapter);
@@ -51,8 +59,10 @@ public class ChannelSourceActivity extends Activity {
 		Intent intent = getIntent();
 		infos = intent.getStringArrayListExtra("all_url");
 		if (infos == null)
-			Log.e("jgf", "infos is null");
-			
+			Log.e(LOGTAG, "infos is null");
+		channel_name = intent.getStringExtra("channel_name");
+		text.setText(channel_name);
+		
 		mSourceAdapter = new ChannelSourceAdapter(this, infos);
 		mFileList.setAdapter(mSourceAdapter);
 	}

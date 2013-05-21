@@ -352,7 +352,7 @@ public class ChannelTabActivity extends TabActivity implements
 		Intent intent = new Intent(ChannelTabActivity.this,
 				ChannelSourceActivity.class);
 		intent.putExtra("all_url", all_url);
-		intent.putExtra("title", name);
+		intent.putExtra("channel_name", name);
 		startActivity(intent);
 	}
 	
