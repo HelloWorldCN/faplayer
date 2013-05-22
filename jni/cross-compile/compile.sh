@@ -12,11 +12,11 @@ fi
 if [ ! -d "android/ffmpeg-0.8.14" ]; then
 	tar xf tarballs/ffmpeg-0.8.14.tar.bz2
 	mv ffmpeg-0.8.14 android/
-	cp patch/ffmpeg/applehttp.patch android/ffmpeg-0.8.14
+	cp patch/ffmpeg/ffmpeg-0.8.14.patch android/ffmpeg-0.8.14
 	cd android/ffmpeg-0.8.14
-	patch -p1 < applehttp.patch
-	rm applehttp.patch
-	./configure  --prefix=../../../arm-linux-androideabi --enable-cross-compile --target-os=linux --arch=arm --cpu=cortex-a8 --enable-neon --cross-prefix=arm-linux-androideabi-
+	patch -p1 < ffmpeg-0.8.14.patch
+	rm ffmpeg-0.8.14.patch
+	./configure  --prefix=../../../arm-linux-androideabi --enable-cross-compile --target-os=linux --arch=arm --cpu=cortex-a8 --enable-neon --cross-prefix=arm-linux-androideabi- --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver
 else
 	cd android/ffmpeg-0.8.14
 fi
