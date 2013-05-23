@@ -4,6 +4,8 @@ libs/*
 obj/*
 assets/bin/*
 
+local.properties
+
 !libs/*.jar
 
 jni/arm-linux-androideabi/bin/*

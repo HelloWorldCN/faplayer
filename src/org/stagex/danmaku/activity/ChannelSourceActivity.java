@@ -51,7 +51,7 @@ public class ChannelSourceActivity extends Activity {
 				String info = (String)mFileList
 						.getItemAtPosition(arg2);
 
-				startLiveMedia(info, channel_name);
+				startLiveMedia(info, channel_name + "    ===>[" + "地址" + Integer.toString(arg2 + 1) + "]");
 			}
 		});
 //		mFileList.setOnItemLongClickListener(mSourceAdapter);

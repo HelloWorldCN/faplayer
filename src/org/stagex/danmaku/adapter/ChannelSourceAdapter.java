@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ChannelSourceAdapter extends BaseAdapter {
+	private static final String LOGTAG = "ChannelSourceAdapter";
 	private ArrayList<String> infos;
 	private Context mContext;
 
@@ -41,14 +42,14 @@ public class ChannelSourceAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.d("jgf", infos.get(position));
+		//Log.d(LOGTAG, infos.get(position));
 		// TODO Auto-generated method stub
 		View view = View.inflate(mContext, R.layout.channel_source_list_item, null);
-//		TextView text = (TextView) view.findViewById(R.id.channel_name);
 		TextView text = (TextView) view.findViewById(R.id.channel_name);
-		text.setText(infos.get(position));
-//		ImageView imageView = (ImageView) view.findViewById(R.id.channel_icon);
-//		text.setText(infos.get(position).getName());
+		//text.setText(infos.get(position));
+		text.setText("地址" + Integer.toString(position + 1) + "    ===>[" + infos.get(position) + "]");
+
+		//Log.d(LOGTAG, "地址" + Integer.toString(position));
 		
 		return view;
 	}
