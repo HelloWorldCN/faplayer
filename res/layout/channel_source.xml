@@ -66,10 +66,16 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
+        android:background="@drawable/text_line"
         android:gravity="center"
         android:textColor="#3197FF"
-        android:background="@drawable/text_line"
         android:textSize="25sp" />
+
+    <LinearLayout
+        android:id="@+id/AdLinearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
 
     <ListView
         android:id="@+id/channel_source"

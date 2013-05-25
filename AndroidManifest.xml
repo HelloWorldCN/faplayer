@@ -76,6 +76,17 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:name="cn.waps.OffersWebView"
+            android:configChanges="keyboardHidden|orientation" />
+        <!-- 以下属性为应用ID,从万普后台获取 -->
+        <meta-data
+            android:name="WAPS_ID"
+            android:value="6ef317103c68b2eefefcd141e01a6460" />
+        <!-- 以下属性为分发渠道ID,编码表参见本文档末附表 -->
+        <meta-data
+            android:name="WAPS_PID"
+            android:value="WAPS" />
     </application>
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />

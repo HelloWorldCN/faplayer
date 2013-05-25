@@ -12,6 +12,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 
+import cn.waps.AppConnect;
+
 import com.nmbb.oplayer.ui.MainActivity;
 
 public class HomeActivity extends Activity {
@@ -20,6 +22,10 @@ public class HomeActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
+		
+		//启动广告
+		AppConnect.getInstance(this); 
+		
 		findViews();
 		setListensers();
 	}
@@ -101,6 +107,8 @@ public class HomeActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		//关闭广告
+		AppConnect.getInstance(this).finalize(); 
 //		System.exit(0);
 		// 或者下面这种方式
 		 android.os.Process.killProcess(android.os.Process.myPid());

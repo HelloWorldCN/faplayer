@@ -7,6 +7,8 @@ import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 import org.stagex.danmaku.util.SystemUtility;
 
+import cn.waps.AdView;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -40,6 +43,9 @@ public class ChannelSourceActivity extends Activity {
 		
 		TextView text = (TextView) findViewById(R.id.channel_name);
 
+		/* 广告栏控件 */
+		LinearLayout container =(LinearLayout)findViewById(R.id.AdLinearLayout);
+		new AdView(this,container).DisplayAd();
 		
 		//设置监听事件
 		mFileList.setOnItemClickListener(new OnItemClickListener() {
