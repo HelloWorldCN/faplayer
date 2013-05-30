@@ -8,7 +8,7 @@ import java.util.Comparator;
 
 import org.stagex.danmaku.R;
 import org.stagex.danmaku.activity.PlayerActivity;
-import org.stagex.danmaku.activity.TestActivity;
+import org.stagex.danmaku.activity.UserDefActivity;
 import org.stagex.danmaku.util.SystemUtility;
 
 import android.content.Context;
@@ -145,7 +145,7 @@ public class FileBrowserAdapter extends BaseAdapter implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		Intent intent = new Intent(mContext, TestActivity.class);
+		Intent intent = new Intent(mContext, UserDefActivity.class);
 		mContext.startActivity(intent);
 		return true;
 	}

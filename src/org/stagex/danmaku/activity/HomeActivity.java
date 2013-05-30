@@ -17,6 +17,13 @@ import cn.waps.AppConnect;
 import com.nmbb.oplayer.ui.MainActivity;
 
 public class HomeActivity extends Activity {
+	private static final String LOGTAG = "HomeActivity";
+
+	private Button button_local;
+	private Button button_live;
+	private Button button_userdef;
+	private Button button_about;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,18 +37,19 @@ public class HomeActivity extends Activity {
 		setListensers();
 	}
 
-	private Button button_local;
-	private Button button_live;
-
 	private void findViews() {
 		button_local = (Button) findViewById(R.id.local_media);
 		button_live = (Button) findViewById(R.id.live_media);
+		button_userdef = (Button)findViewById(R.id.userdef_media);
+		button_about = (Button)findViewById(R.id.about_media);
 	}
 
 	// Listen for button clicks
 	private void setListensers() {
 		button_local.setOnClickListener(goListener);
 		button_live.setOnClickListener(goListener);
+		button_userdef.setOnClickListener(goListener);
+		button_about.setOnClickListener(goListener);
 	}
 
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
@@ -53,12 +61,21 @@ public class HomeActivity extends Activity {
 			case R.id.live_media:
 				startLiveMedia();
 				break;
+			case R.id.userdef_media:
+				startUserdefMedia();
+				break;
+			case R.id.about_media:
+				startAboutMedia();
+				break;
 			default:
-				Log.d("HOME_TAG", "not supported btn id");
+				Log.d(LOGTAG, "not supported btn id");
 			}
 		}
 	};
 
+	/**
+	 * 本地媒体界面
+	 */
 	private void startLocalMedia() {
 		Intent intent = new Intent();
 		// intent.setClass(HomeActivity.this, FileBrowserActivity.class);
@@ -67,10 +84,38 @@ public class HomeActivity extends Activity {
 		startActivity(intent);
 	};
 
+	/**
+	 * 直播电视视频界面
+	 */
 	private void startLiveMedia() {
 		Intent intent = new Intent();
 		intent.setClass(HomeActivity.this, ChannelTabActivity.class);
 		startActivity(intent);
+	};
+	
+	/**
+	 * 用户自定义网络视频播放界面
+	 */
+	private void startUserdefMedia() {
+		Intent intent = new Intent();
+		intent.setClass(HomeActivity.this, UserDefActivity.class);
+		startActivity(intent);
+	};
+	
+	/**
+	 * 程序关于界面
+	 */
+	private void startAboutMedia() {
+		new AlertDialog.Builder(HomeActivity.this)
+	    .setTitle("关于")
+	    .setMessage("版本：可可电视v0.3.1\n作者：可可工作室\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
+	    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+	        @Override
+	        public void onClick(DialogInterface dialog, int which) {
+	            //do nothing - it will close on its own
+	        }
+	     })
+	   .show();
 	};
 
 	/**
@@ -81,7 +126,7 @@ public class HomeActivity extends Activity {
 		// 按下键盘上返回按钮
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			new AlertDialog.Builder(this)
-					.setIcon(R.drawable.ic_decode)
+//					.setIcon(R.drawable.ic_decode)
 					.setTitle(R.string.prompt)
 					.setMessage(R.string.quit_desc)
 					.setNegativeButton(R.string.cancel,

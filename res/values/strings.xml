@@ -29,5 +29,9 @@
     <string name="quit_desc">确认退出程序？</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
+    <string name="user_def">自定义视频</string>
+    <string name="user_def_note">请输入网络MRL：如http://、mms//或rtsp://</string>
+    <string name="user_def_hint">请输入网络地址...</string>
+    <string name="user_def_open">打开</string>
 
 </resources>

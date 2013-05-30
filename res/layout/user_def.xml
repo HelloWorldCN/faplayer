@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_home"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_list_item_selected" >
+
+        <LinearLayout
+            android:id="@+id/t1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="@string/user_def"
+                android:textColor="#ff4b4949"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/t2"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/t1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/home_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="25dp"
+                android:background="@drawable/sel_home" />
+
+            <Button
+                android:id="@+id/refresh_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/ic_refresh" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/user_def_note"
+        android:textColor="#ff4b4949"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/test_uri"
+        android:layout_marginTop="20dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/user_def_hint"/>
+
+    <Button
+        android:id="@+id/test_play"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/user_def_open" />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="#ff4b4949"
+        android:textSize="15sp" />
+</LinearLayout>

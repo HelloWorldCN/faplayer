@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class TestActivity extends Activity {
+public class UserDefActivity extends Activity {
 	/** Called when the activity is first created. */
 
 	EditText mTextUri = null;
@@ -21,7 +21,7 @@ public class TestActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.test);
+		setContentView(R.layout.user_def);
 		mTextUri = (EditText) findViewById(R.id.test_uri);
 		mButtonPlay = (Button) findViewById(R.id.test_play);
 		mButtonPlay.setOnClickListener(new OnClickListener() {
@@ -29,7 +29,7 @@ public class TestActivity extends Activity {
 			public void onClick(View view) {
 				String uri = mTextUri.getText().toString();
 				if (uri.length() > 0) {
-					Intent intent = new Intent(TestActivity.this,
+					Intent intent = new Intent(UserDefActivity.this,
 							PlayerActivity.class);
 					ArrayList<String> playlist = new ArrayList<String>();
 					playlist.add(uri);

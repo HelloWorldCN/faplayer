@@ -10,7 +10,7 @@
         android:layout_height="120.0dip"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:src="@drawable/share_renren" />
+        android:src="@drawable/television" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
             android:orientation="vertical" >
 
             <Button
-                android:id="@+id/setup_media"
+                android:id="@+id/userdef_media"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="@string/mark_btn"
+                android:text="@string/selfdef_btn"
                 android:textColor="#ff4b4949" />
         </LinearLayout>
 
@@ -102,7 +102,7 @@
             android:orientation="vertical" >
 
             <Button
-                android:id="@+id/undef_media"
+                android:id="@+id/about_media"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="@string/setup_btn"
+                android:text="@string/about_btn"
                 android:textColor="#ff4b4949" />
         </LinearLayout>
     </RelativeLayout>
