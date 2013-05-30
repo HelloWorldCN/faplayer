@@ -48,23 +48,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="25dp"
-                android:background="@drawable/sel_home" />
-
-            <Button
-                android:id="@+id/refresh_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/ic_refresh" />
+                android:background="@drawable/sel_home" />
         </LinearLayout>
     </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
+        android:layout_gravity="center_horizontal"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
@@ -74,25 +66,65 @@
 
     <EditText
         android:id="@+id/test_uri"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/user_def_hint"/>
+        android:hint="@string/user_def_hint" />
 
-    <Button
-        android:id="@+id/test_play"
-        android:layout_marginTop="10dp"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/user_def_open" />
-    
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/test_play"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/user_def_open" />
+
+        <Button
+            android:id="@+id/clear_play"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_toRightOf="@id/test_play"
+            android:text="@string/user_def_clear" />
+    </RelativeLayout>
+
     <TextView
+        android:id="@+id/example1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
+        android:layout_gravity="left"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="20dp"
-        android:gravity="center"
+        android:text="@string/example1"
         android:textColor="#ff4b4949"
         android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/example2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/example2"
+        android:textColor="#ff4b4949"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/example3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/example3"
+        android:textColor="#ff4b4949"
+        android:textSize="15sp" />
+
 </LinearLayout>

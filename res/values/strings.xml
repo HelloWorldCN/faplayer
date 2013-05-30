@@ -30,8 +30,12 @@
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="user_def">自定义视频</string>
-    <string name="user_def_note">请输入网络MRL：如http://、mms//或rtsp://</string>
+    <string name="user_def_note">请输入网络MRL：\n如http://、mms://或rtsp://</string>
     <string name="user_def_hint">请输入网络地址...</string>
     <string name="user_def_open">打开</string>
+    <string name="user_def_clear">清除</string>
+    <string name="example1">例如：\n\nhttp://devimages.apple.com/iphone/samples/bipbop/gear1/prog_index.m3u8</string>
+    <string name="example2">mms://live.cri.cn/pop</string>
+    <string name="example3">rtsp://av1.jiaodong.net/tv1</string>
 
 </resources>

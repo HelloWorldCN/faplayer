@@ -108,7 +108,7 @@ public class HomeActivity extends Activity {
 	private void startAboutMedia() {
 		new AlertDialog.Builder(HomeActivity.this)
 	    .setTitle("关于")
-	    .setMessage("版本：可可电视v0.3.1\n作者：可可工作室\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
+	    .setMessage("版本：可可电视v0.3.2\n作者：可可工作室\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
 	    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
 	        @Override
 	        public void onClick(DialogInterface dialog, int which) {
