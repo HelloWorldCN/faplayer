@@ -71,16 +71,17 @@
         android:textColor="#3197FF"
         android:textSize="25sp" />
 
-    <LinearLayout
-        android:id="@+id/AdLinearLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal" />
-
     <ListView
         android:id="@+id/channel_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000" />
+
+    <LinearLayout
+        android:id="@+id/AdLinearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal" />
 
 </LinearLayout>
