@@ -428,7 +428,7 @@ public class PlayerActivity extends Activity implements
 				.setVisibility((mPlayListArray.size() == 1) ? View.GONE
 						: View.VISIBLE);
 		mImageButtonTogglePlay.setVisibility(View.VISIBLE);
-		resource = SystemUtility.getDrawableId("btn_play_0");
+		resource = SystemUtility.getDrawableId("btn_play_1");
 		mImageButtonTogglePlay.setBackgroundResource(resource);
 		mImageButtonNext.setVisibility((mPlayListArray.size() == 1) ? View.GONE
 				: View.VISIBLE);
