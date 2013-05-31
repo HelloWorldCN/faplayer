@@ -3,7 +3,7 @@ package org.stagex.danmaku.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.util.ParseUtil;

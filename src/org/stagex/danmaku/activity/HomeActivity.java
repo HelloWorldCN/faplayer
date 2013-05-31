@@ -1,6 +1,6 @@
 package org.stagex.danmaku.activity;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

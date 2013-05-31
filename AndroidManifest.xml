@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.stagex.danmaku"
+    package="org.keke.player"
     android:versionCode="1"
     android:versionName="1.0.0" >
 
     <application
-        android:name=".OPlayerApplication"
+        android:name="org.stagex.danmaku.OPlayerApplication"
         android:debuggable="true"
         android:icon="@drawable/television"
         android:label="@string/app_name" >
         <activity
-            android:name=".activity.UserDefActivity"
+            android:name="org.stagex.danmaku.activity.UserDefActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.FileBrowserActivity"
+            android:name="org.stagex.danmaku.activity.FileBrowserActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".activity.PlayerActivity"
+            android:name="org.stagex.danmaku.activity.PlayerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.HomeActivity"
+            android:name="org.stagex.danmaku.activity.HomeActivity"
             android:label="@string/home_title"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -53,7 +53,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ChannelTabActivity"
+            android:name="org.stagex.danmaku.activity.ChannelTabActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
@@ -72,7 +72,7 @@
         </receiver>
 
         <activity
-            android:name=".activity.ChannelSourceActivity"
+            android:name="org.stagex.danmaku.activity.ChannelSourceActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>

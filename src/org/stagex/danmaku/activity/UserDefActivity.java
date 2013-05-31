@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

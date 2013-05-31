@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.activity.PlayerActivity;
 import org.stagex.danmaku.activity.UserDefActivity;
 import org.stagex.danmaku.util.SystemUtility;

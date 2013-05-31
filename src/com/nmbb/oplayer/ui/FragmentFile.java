@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.activity.PlayerActivity;
 import org.stagex.danmaku.adapter.ArrayAdapter;
 import org.stagex.danmaku.util.FileUtils;

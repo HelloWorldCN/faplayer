@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 

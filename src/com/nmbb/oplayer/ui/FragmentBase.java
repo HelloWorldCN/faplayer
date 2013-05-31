@@ -1,6 +1,6 @@
 package com.nmbb.oplayer.ui;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;

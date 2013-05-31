@@ -2,7 +2,7 @@ package com.nmbb.oplayer.ui;
 
 import org.stagex.danmaku.OPlayerApplication;
 import org.stagex.danmaku.OPreference;
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.activity.HomeActivity;
 
 import android.content.Intent;

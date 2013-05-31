@@ -1,6 +1,6 @@
 package org.stagex.danmaku.activity;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.adapter.FileBrowserAdapter;
 import org.stagex.danmaku.util.SystemUtility;
 

@@ -2,7 +2,7 @@ package org.stagex.danmaku.activity;
 
 import java.util.ArrayList;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.player.AbsMediaPlayer;
 import org.stagex.danmaku.player.DefMediaPlayer;
 import org.stagex.danmaku.player.VlcMediaPlayer;

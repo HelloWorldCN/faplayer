@@ -2,7 +2,7 @@ package org.stagex.danmaku.adapter;
 
 import java.util.ArrayList;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.util.FileUtils;
 
 import android.content.Context;

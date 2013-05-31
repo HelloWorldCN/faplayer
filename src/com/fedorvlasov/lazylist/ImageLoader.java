@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.WeakHashMap;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 
 import android.app.Activity;
 import android.content.Context;

@@ -2,7 +2,7 @@ package org.stagex.danmaku.activity;
 
 import java.util.ArrayList;
 
-import org.stagex.danmaku.R;
+import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 import org.stagex.danmaku.util.SystemUtility;
