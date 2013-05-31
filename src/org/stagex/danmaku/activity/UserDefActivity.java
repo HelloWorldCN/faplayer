@@ -1,10 +1,14 @@
 package org.stagex.danmaku.activity;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.stagex.danmaku.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,18 +54,66 @@ public class UserDefActivity extends Activity {
 		mButtonPlay.setOnClickListener(goListener);
 	}
 	
+	/**
+	 * 检查URL的合法性
+	 * @param str
+	 * @return
+	 *  ftp的user@
+	 *  IP形式的URL- 199.194.52.184
+	 *  允许IP和DOMAIN（域名）
+	 *  域名- www.
+	 *  二级域名
+	 *  first level domain- .com or .museum
+	 *  端口- :80
+	 *  a slash isn't required if there is no file name
+	 */
+	private static boolean isURL(String str){
+        //转换为小写
+        str = str.toLowerCase();
+        
+        String regex = "^((https|http|ftp|rtsp|mms)?://)"  
+               + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?"
+               + "(([0-9]{1,3}\\.){3}[0-9]{1,3}"
+               + "|"
+               + "([0-9a-z_!~*'()-]+\\.)*"
+               + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\."
+               + "[a-z]{2,6})"
+               + "(:[0-9]{1,4})?"
+               + "((/?)|"
+               + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";  
+
+        Pattern p = Pattern.compile(regex);
+        Matcher matcher = p.matcher(str);
+        
+        return matcher.matches();
+    }
+	
 	//打开网络媒体
 	private void startMedia() {
 		String uri = mTextUri.getText().toString();
-		//TODO 判断url的合法性
 		if (uri.length() > 0) {
-			Intent intent = new Intent(UserDefActivity.this,
-					PlayerActivity.class);
-			ArrayList<String> playlist = new ArrayList<String>();
-			playlist.add(uri);
-			intent.putExtra("selected", 0);
-			intent.putExtra("playlist", playlist);
-			startActivity(intent);
+			//判断url的合法性
+			if (isURL(uri)) {
+				Intent intent = new Intent(UserDefActivity.this,
+						PlayerActivity.class);
+				ArrayList<String> playlist = new ArrayList<String>();
+				playlist.add(uri);
+				intent.putExtra("selected", 0);
+				intent.putExtra("playlist", playlist);
+				intent.putExtra("title", uri);
+				startActivity(intent);
+			}	else {
+				new AlertDialog.Builder(UserDefActivity.this)
+			    .setTitle("警告")
+			    .setMessage("请检查URL的合法性\n" + uri)
+			    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+			        @Override
+			        public void onClick(DialogInterface dialog, int which) {
+			            //do nothing - it will close on its own
+			        }
+			     })
+			   .show();
+			}
 		}
 	}
 
