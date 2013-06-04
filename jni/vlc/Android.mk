@@ -187,7 +187,7 @@ LOCAL_SRC_FILES := \
 LOCAL_LDLIBS += -ldl -llog -lz
 
 LOCAL_LDLIBS += -L$(LOCALLIBROOT)/lib -L$(LOCALEABILIBROOT)/lib \
-	-lgcrypt -lgpg-error -lavformat -lavfilter -lavcodec -lswscale -lavutil
+	-lavformat -lavfilter -lavcodec -lswscale -lavutil
 
 include $(LOCAL_PATH)/Modules.mk
 
