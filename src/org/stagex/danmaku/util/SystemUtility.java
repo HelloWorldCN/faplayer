@@ -23,14 +23,15 @@ import android.os.Environment;
 
 public class SystemUtility {
 
-	static {
-		System.loadLibrary("vlccore");
-	}
-
 	public static native int setenv(String name, String value, boolean overwrite);
 
 	private static int sArmArchitecture = -1;
+	private static int mHasNeon = 0;
 
+	/**
+	 * 获取CPU的架构 ARMV7还是ARMV6
+	 * @return
+	 */
 	public static int getArmArchitecture() {
 		if (sArmArchitecture != -1)
 			return sArmArchitecture;
@@ -64,6 +65,40 @@ public class SystemUtility {
 			sArmArchitecture = 6;
 		}
 		return sArmArchitecture;
+	}
+	
+	/**
+	 * 检测是否支持NEON、VFP
+	 * @return
+	 */
+	public static int getArmFeatures() {
+		try {
+			InputStream is = new FileInputStream("/proc/cpuinfo");
+			InputStreamReader ir = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(ir);
+			try {
+				String name = "Features";
+				while (true) {
+					String line = br.readLine();
+					String[] pair = line.split(":");
+					if (pair.length != 2)
+						continue;
+					String key = pair[0].trim();
+					String val = pair[1].trim();
+					if (key.compareToIgnoreCase(name) == 0) {
+						mHasNeon = val.indexOf("neon");
+						break;
+					}
+				}
+			} finally {
+				br.close();
+				ir.close();
+				is.close();
+			}
+		} catch (Exception e) {
+			mHasNeon = -1;
+		}
+		return mHasNeon;
 	}
 
 	public static int getSDKVersionCode() {

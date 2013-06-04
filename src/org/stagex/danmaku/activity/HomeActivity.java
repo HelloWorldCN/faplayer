@@ -1,6 +1,7 @@
 package org.stagex.danmaku.activity;
 
 import org.keke.player.R;
+import org.stagex.danmaku.util.SystemUtility;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,22 @@ public class HomeActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
+		
+		//判断CPU类型，如果低于ARMV6，则不让其运行
+		if (SystemUtility.getArmArchitecture() < 6) {
+			new AlertDialog.Builder(HomeActivity.this)
+		    .setTitle("警告")
+//		    .setMessage("抱歉！软件解码库暂时不支持您的CPU，请到设置中选择硬解模式")
+		    .setMessage("抱歉！软件解码库暂时不支持您的CPU")
+		    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+		        @Override
+		        public void onClick(DialogInterface dialog, int which) {
+		            //do nothing - it will close on its own
+		        	android.os.Process.killProcess(android.os.Process.myPid());
+		        }
+		     })
+		   .show();
+		}
 		
 		//启动广告
 		AppConnect.getInstance(this); 

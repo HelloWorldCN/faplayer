@@ -1,5 +1,7 @@
 package org.stagex.danmaku.player;
 
+import org.stagex.danmaku.util.SystemUtility;
+
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -7,12 +9,26 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 
 public class VlcMediaPlayer extends AbsMediaPlayer {
-
-	static {
-		System.loadLibrary("vlccore");
-	}
-
 	private static final String LOGTAG = "VlcMediaPlayer";
+	
+	static {
+		if (SystemUtility.getArmArchitecture() == 7) {
+			/* armv7 */
+			if(SystemUtility.getArmFeatures() >= 0) {
+				/* neon */
+				System.loadLibrary("vlccore_neon");
+				Log.d(LOGTAG, "检测到ARMV7-NEON的CPU架构");
+			} else {
+				/* armv7 NO neon*/
+				System.loadLibrary("vlccore_armv7a");
+				Log.d(LOGTAG, "检测到ARMV7的CPU架构");
+			}
+		} else {
+			/* armv6 */
+			System.loadLibrary("vlccore_vfp");
+			Log.e(LOGTAG, "检测到ARMV6的CPU架构");
+		}
+	}
 
 	protected AbsMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = null;
 	protected AbsMediaPlayer.OnCompletionListener mOnCompletionListener = null;
