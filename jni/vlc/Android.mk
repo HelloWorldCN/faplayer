@@ -8,7 +8,15 @@ ifeq ($(BUILD_WITH_NEON),1)
 LOCAL_ARM_NEON := true
 endif
 
-LOCAL_MODULE := libvlccore
+ifeq ($(APP_ABI),armeabi-v7a)
+    ifeq ($(FPU),neon)
+        LOCAL_MODULE := libvlccore_neon
+    else
+        LOCAL_MODULE := libvlccore_armv7a
+    endif
+else
+    LOCAL_MODULE := libvlccore_vfp
+endif
 
 LOCAL_CFLAGS += \
     -std=c99 \
@@ -178,8 +186,8 @@ LOCAL_SRC_FILES := \
 
 LOCAL_LDLIBS += -ldl -llog -lz
 
-LOCAL_LDLIBS += -L$(LOCALLIBROOT)/lib \
-	-lgcrypt -lgpg-error -lavformat -lavfilter -lavcodec -lavdevice -lswscale -lavutil
+LOCAL_LDLIBS += -L$(LOCALLIBROOT)/lib -L$(LOCALEABILIBROOT)/lib \
+	-lgcrypt -lgpg-error -lavformat -lavfilter -lavcodec -lswscale -lavutil
 
 include $(LOCAL_PATH)/Modules.mk
 

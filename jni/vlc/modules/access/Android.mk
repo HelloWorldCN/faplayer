@@ -20,7 +20,8 @@ LOCAL_C_INCLUDES += \
     $(VLCROOT) \
     $(VLCROOT)/include \
     $(VLCROOT)/src \
-    $(LOCALLIBROOT)/include
+    $(LOCALLIBROOT)/include \
+    $(LOCALEABILIBROOT)/include
 
 LOCAL_SRC_FILES := \
     avformat.c
@@ -46,7 +47,8 @@ LOCAL_C_INCLUDES += \
     $(VLCROOT) \
     $(VLCROOT)/include \
     $(VLCROOT)/src \
-    $(LOCALLIBROOT)/include
+    $(LOCALLIBROOT)/include \
+    $(LOCALEABILIBROOT)/include
 
 LOCAL_SRC_FILES := \
     avio.c

@@ -9,5 +9,5 @@ ifeq ($(APP_STL),gnustl_static)
 LOCAL_STATIC_LIBRARIES += gnustl_static
 endif
 
-LOCAL_WHOLE_STATIC_LIBRARIES += libavformat libavfilter libavcodec libavdevice libavutil libswscale
+LOCAL_WHOLE_STATIC_LIBRARIES += libavformat libavfilter libavcodec libavutil libswscale
 
