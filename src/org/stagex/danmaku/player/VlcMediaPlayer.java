@@ -25,8 +25,9 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 			}
 		} else {
 			/* armv6 */
-			System.loadLibrary("vlccore_vfp");
-			Log.e(LOGTAG, "检测到ARMV6的CPU架构");
+//			System.loadLibrary("vlccore_vfp");
+//			Log.d(LOGTAG, "检测到ARMV6的CPU架构");
+			Log.e(LOGTAG, "暂时不支持ARMV6的CPU架构");
 		}
 	}
 

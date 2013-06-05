@@ -7,7 +7,7 @@
 ==================
 2013-04-29 v0.2.0
 	实现了本地媒体扫描功能，但尚且存在问题，例如不会自动更新SD卡的媒体列表
-	1)参照OPlayer的相关代码
+	1）参照OPlayer的相关代码
 	2）强制使用VLC的media player接口
 	
 ==================
@@ -21,3 +21,15 @@
 	发布一个带万普广告和用户自定义URL的版本，准备发布到万普官网
 	1）该版本还存在一些bug，例如有些视频播放没有画面，然后不能停止播放
 	2）功能还不完善，还需要添加频道收藏功能
+	
+==================
+2013-06-05 v1.1.0
+	增加对armv7和neon类型CPU的支持，代码中动态加载so库
+	1）再次改变了ffmpeg的编译方式，参照vplayer的ffmpeg-android工程的编译脚本
+	2）编译so库时，先编译jni下面的ffmpeg，然后编译VLC时，armv7和neon最好之间要clean重新编译
+		【NOTE-1】	vlc neon   ===> sh build.sh
+				注意先到libs下将armeabi-v7a/libvlccore_neon.so拷贝至别处备份
+		【NOTE-2】	sh build clean
+		【NOTE-3】	vlc armv7a ===> sh build.sh ABI=armeabi-v7a FPU=vfpv3-d16 TUNE=cortex-a8
+				生成libvlccore_armv7a.so，然后将前一个库拷贝至此处，然后在用eclipse编译android apk
+	3）有些地址源失效了，后续准备将播放列表放到申请的服务器上

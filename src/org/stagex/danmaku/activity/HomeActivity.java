@@ -32,7 +32,7 @@ public class HomeActivity extends Activity {
 		setContentView(R.layout.home);
 		
 		//判断CPU类型，如果低于ARMV6，则不让其运行
-		if (SystemUtility.getArmArchitecture() < 6) {
+		if (SystemUtility.getArmArchitecture() <= 6) {
 			new AlertDialog.Builder(HomeActivity.this)
 		    .setTitle("警告")
 //		    .setMessage("抱歉！软件解码库暂时不支持您的CPU，请到设置中选择硬解模式")
@@ -125,7 +125,7 @@ public class HomeActivity extends Activity {
 	private void startAboutMedia() {
 		new AlertDialog.Builder(HomeActivity.this)
 	    .setTitle("关于")
-	    .setMessage("版本：可可电视v1.0.0\n作者：可可工作室\n企鹅：1956733072\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
+	    .setMessage("版本：可可电视v1.1.0\n作者：可可工作室\n企鹅：1956733072\n鹅群：336809417\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
 	    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
 	        @Override
 	        public void onClick(DialogInterface dialog, int which) {
