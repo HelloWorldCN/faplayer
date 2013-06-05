@@ -102,7 +102,7 @@
             android:orientation="vertical" >
 
             <Button
-                android:id="@+id/about_media"
+                android:id="@+id/setup_media"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="@string/about_btn"
+                android:text="@string/setup_btn"
                 android:textColor="#ff4b4949" />
         </LinearLayout>
     </RelativeLayout>

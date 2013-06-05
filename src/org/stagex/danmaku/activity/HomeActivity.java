@@ -35,8 +35,8 @@ public class HomeActivity extends Activity {
 		if (SystemUtility.getArmArchitecture() <= 6) {
 			new AlertDialog.Builder(HomeActivity.this)
 		    .setTitle("警告")
-//		    .setMessage("抱歉！软件解码库暂时不支持您的CPU，请到设置中选择硬解模式")
-		    .setMessage("抱歉！软件解码库暂时不支持您的CPU")
+		    .setMessage("抱歉！软件解码库暂时不支持您的CPU\n请到设置中选择【硬解码】模式")
+//		    .setMessage("抱歉！软件解码库暂时不支持您的CPU")
 		    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
 		        @Override
 		        public void onClick(DialogInterface dialog, int which) {
@@ -58,7 +58,7 @@ public class HomeActivity extends Activity {
 		button_local = (Button) findViewById(R.id.local_media);
 		button_live = (Button) findViewById(R.id.live_media);
 		button_userdef = (Button)findViewById(R.id.userdef_media);
-		button_about = (Button)findViewById(R.id.about_media);
+		button_about = (Button)findViewById(R.id.setup_media);
 	}
 
 	// Listen for button clicks
@@ -81,8 +81,8 @@ public class HomeActivity extends Activity {
 			case R.id.userdef_media:
 				startUserdefMedia();
 				break;
-			case R.id.about_media:
-				startAboutMedia();
+			case R.id.setup_media:
+				startSetupMedia();
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
@@ -120,20 +120,13 @@ public class HomeActivity extends Activity {
 	};
 	
 	/**
-	 * 程序关于界面
+	 * 用户设置界面
 	 */
-	private void startAboutMedia() {
-		new AlertDialog.Builder(HomeActivity.this)
-	    .setTitle("关于")
-	    .setMessage("版本：可可电视v1.1.0\n作者：可可工作室\n企鹅：1956733072\n鹅群：336809417\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
-	    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
-	        @Override
-	        public void onClick(DialogInterface dialog, int which) {
-	            //do nothing - it will close on its own
-	        }
-	     })
-	   .show();
-	};
+	private void startSetupMedia() {
+		Intent intent = new Intent();
+		intent.setClass(HomeActivity.this, SetupActivity.class);
+		startActivity(intent);
+	}
 
 	/**
 	 * 在主界面按下返回键，提示用户是否退出应用
