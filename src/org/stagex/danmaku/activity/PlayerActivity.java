@@ -204,40 +204,51 @@ public class PlayerActivity extends Activity implements
 					/* fall back to VlcMediaPlayer if possible */
 					if (isDefMediaPlayer(msg.obj)) {
 //						Log.i(LOGTAG, "DefMediaPlayer selectMediaPlayer（VLC）");
-						selectMediaPlayer(
-								mPlayListArray.get(mPlayListSelected), true);
+//						selectMediaPlayer(
+//								mPlayListArray.get(mPlayListSelected), true);
+//						break;
+						mProgressBarPreparing.setVisibility(View.GONE);
+						mLoadingTxt.setVisibility(View.GONE);
+						/* TODO 用在硬解解码模式，判断不支持的源 */
+						new AlertDialog.Builder(PlayerActivity.this)
+					    .setTitle("播放失败【硬解码】")
+					    .setMessage("很遗憾，该视频无法播放\n请尝试该节目【其他源】\n或切换至【软解码】模式再次尝试")
+					    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+					        @Override
+					        public void onClick(DialogInterface dialog, int which) {
+					            //do nothing - it will close on its own
+					        	//关闭当前的PlayerActivity，退回listview的界面
+					        	finish();
+					        }
+					     })
+					   .show();
+						//@}
+//						Log.i(LOGTAG, "get out of alert");
 						break;
 					} else if (isVlcMediaPlayer(msg.obj)) {
 //						Log.i(LOGTAG, "VlcMediaPlayer");
-						/* update status */
-						mMediaPlayerLoaded = true;
 						/* destroy media player */
 						mSurfaceViewVlc.setVisibility(View.GONE);
-					}
-					/* update UI */
-					if (mMediaPlayerLoaded) {
 //						Log.i(LOGTAG, "VlcMediaPlayer update UI");
 						mProgressBarPreparing.setVisibility(View.GONE);
 						mLoadingTxt.setVisibility(View.GONE);
+						//弹出播放失败的窗口@{
+						new AlertDialog.Builder(PlayerActivity.this)
+					    .setTitle("播放失败【软解码】")
+					    .setMessage("很遗憾，该视频无法播放\n请切换该频道【其他地址源】\n或观看【其他频道】")
+					    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+					        @Override
+					        public void onClick(DialogInterface dialog, int which) {
+					            //do nothing - it will close on its own
+					        	//关闭当前的PlayerActivity，退回listview的界面
+					        	finish();
+					        }
+					     })
+					   .show();
+						//@}
+//						Log.i(LOGTAG, "get out of alert");
+						break;
 					}
-					//FIXME not use it
-//					startMediaPlayer();
-					//弹出播放失败的窗口@{
-					new AlertDialog.Builder(PlayerActivity.this)
-				    .setTitle("播放失败")
-				    .setMessage("很遗憾，该视频无法播放.")
-				    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
-				        @Override
-				        public void onClick(DialogInterface dialog, int which) {
-				            //do nothing - it will close on its own
-				        	//关闭当前的PlayerActivity，退回listview的界面
-				        	finish();
-				        }
-				     })
-				   .show();
-					//@}
-//					Log.i(LOGTAG, "get out of alert");
-					break;
 				}
 				case MEDIA_PLAYER_INFO: {
 					if (msg.arg1 == MediaPlayer.MEDIA_INFO_NOT_SEEKABLE) {
@@ -447,24 +458,25 @@ public class PlayerActivity extends Activity implements
 	protected void selectMediaPlayer(String uri, boolean forceVlc) {
 		/* TODO: do this through configuration */
 		boolean useDefault = true;
-		int indexOfDot = uri.lastIndexOf('.');
-		if (indexOfDot != -1) {
-			String extension = uri.substring(indexOfDot).toLowerCase();
-			/* used for mms network radio */
-			boolean mms_radio_flag = uri.contains("mms://");
-			boolean http_live_flag = uri.contains("http://");
-			if (extension.compareTo(".flv") == 0
-					|| extension.compareTo(".hlv") == 0
-					|| extension.compareTo(".m3u8") == 0
-					|| extension.compareTo(".mkv") == 0
-					|| extension.compareTo(".rm") == 0
-					|| extension.compareTo(".rmvb") == 0
-					|| extension.compareTo(".ts") == 0
-					|| mms_radio_flag 
-					|| http_live_flag) {
-				useDefault = false;
-			}
-		}
+//		int indexOfDot = uri.lastIndexOf('.');
+//		if (indexOfDot != -1) {
+//			String extension = uri.substring(indexOfDot).toLowerCase();
+//			/* used for mms network radio */
+//			boolean mms_radio_flag = uri.contains("mms://");
+//			boolean http_live_flag = uri.contains("http://");
+//			if (extension.compareTo(".flv") == 0
+//					|| extension.compareTo(".hlv") == 0
+//					|| extension.compareTo(".m3u8") == 0
+//					|| extension.compareTo(".mkv") == 0
+//					|| extension.compareTo(".rm") == 0
+//					|| extension.compareTo(".rmvb") == 0
+//					|| extension.compareTo(".ts") == 0
+//					|| mms_radio_flag 
+//					|| http_live_flag) {
+//				useDefault = false;
+//			}
+//		}
+		
 		if (forceVlc) {
 			useDefault = false;
 		}
@@ -494,7 +506,24 @@ public class PlayerActivity extends Activity implements
 		mMediaPlayer.setOnVideoSizeChangedListener(this);
 		mMediaPlayer.reset();
 		mMediaPlayer.setDisplay(holder);
-		mMediaPlayer.setDataSource(uri);
+		if (mMediaPlayer.setDataSource(uri) == false)  {
+			/* 隐藏缓冲圈 */
+			mProgressBarPreparing.setVisibility(View.GONE);
+			mLoadingTxt.setVisibility(View.GONE);
+			/* TODO 用在硬解解码模式，判断不支持的源 */
+			new AlertDialog.Builder(PlayerActivity.this)
+		    .setTitle("播放失败【硬解码】")
+		    .setMessage("很遗憾，您的硬件解码器无法播放该视频\n请切换至【软解码】再次尝试")
+		    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+		        @Override
+		        public void onClick(DialogInterface dialog, int which) {
+		            //do nothing - it will close on its own
+		        	//关闭当前的PlayerActivity，退回listview的界面
+		        	finish();
+		        }
+		     })
+		   .show();
+		}
 		mMediaPlayer.prepareAsync();
 	}
 
@@ -617,7 +646,8 @@ public class PlayerActivity extends Activity implements
 //		selectMediaPlayer(uri, false);
 		//强制选择VLC播放器
 		selectMediaPlayer(uri, true);
-		
+		//选择系统硬解码
+//		selectMediaPlayer(uri, false);
 	}
 
 	@Override

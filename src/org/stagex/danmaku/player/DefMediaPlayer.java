@@ -15,26 +15,26 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 		MediaPlayer.OnSeekCompleteListener,
 		MediaPlayer.OnVideoSizeChangedListener {
 
-	private static final String LOGTAG = "DANMAKU-DefMediaPlayer";
+	private static final String LOGTAG = "DefMediaPlayer";
 
 	protected static DefMediaPlayer sInstance = null;
 
 	private MediaPlayer mMediaPlayer = null;
 
-	private Timer mTimer = null;
-	private TimerTask mTimerTask = new TimerTask() {
-		@Override
-		public void run() {
-			if (mMediaPlayer == null || mOnProgressUpdateListener == null)
-				return;
-			if (mMediaPlayer.isPlaying()) {
-				int time = mMediaPlayer.getCurrentPosition();
-				int length = mMediaPlayer.getDuration();
-				mOnProgressUpdateListener.onProgressUpdate(
-						(AbsMediaPlayer) DefMediaPlayer.this, time, length);
-			}
-		}
-	};
+//	private Timer mTimer = null;
+//	private TimerTask mTimerTask = new TimerTask() {
+//		@Override
+//		public void run() {
+//			if (mMediaPlayer == null || mOnProgressUpdateListener == null)
+//				return;
+//			if (mMediaPlayer.isPlaying()) {
+//				int time = mMediaPlayer.getCurrentPosition();
+//				int length = mMediaPlayer.getDuration();
+//				mOnProgressUpdateListener.onProgressUpdate(
+//						(AbsMediaPlayer) DefMediaPlayer.this, time, length);
+//			}
+//		}
+//	};
 
 	private AbsMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = null;
 	private AbsMediaPlayer.OnCompletionListener mOnCompletionListener = null;
@@ -52,6 +52,7 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 
 	protected DefMediaPlayer() {
 		mMediaPlayer = new MediaPlayer();
+		Log.d(LOGTAG, "create MediaPlayer");
 		mMediaPlayer.setOnBufferingUpdateListener(this);
 		mMediaPlayer.setOnCompletionListener(this);
 		mMediaPlayer.setOnErrorListener(this);
@@ -159,12 +160,14 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 		} catch (Exception e) {
 			Log.e(LOGTAG, "release()");
 		}
+		mMediaPlayer = null;
 		sInstance = null;
 	}
 
 	@Override
 	public void reset() {
-		stop();
+		/* FIXME 注释掉这一行，避免报错 2013-06-05 */
+//		stop();
 		try {
 			mMediaPlayer.reset();
 		} catch (Exception e) {
@@ -182,16 +185,20 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 	}
 
 	@Override
-	public void setDataSource(String uri) {
+	public Boolean setDataSource(String uri) {
 		try {
 			/* MediaPlayer doen't accept file:// prefix */
 			if (uri.startsWith("file://"))
 				uri = uri.substring(7);
 			mMediaPlayer.setDataSource(uri);
-			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		} catch (Exception e) {
+			/* TODO 视频可能无法播放，应上报错误的事件 */
 			Log.e(LOGTAG, "setDataSource()");
+			return false;
 		}
+		
+		return true;
 	}
 
 	@Override
@@ -255,12 +262,12 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 	public void start() {
 		try {
 			mMediaPlayer.start();
-			if (mTimer != null) {
-				mTimer.purge();
-			} else {
-				mTimer = new Timer();
-			}
-			mTimer.schedule(mTimerTask, 0, 250);
+//			if (mTimer != null) {
+//				mTimer.purge();
+//			} else {
+//				mTimer = new Timer();
+//			}
+//			mTimer.schedule(mTimerTask, 0, 250);
 		} catch (Exception e) {
 			Log.e(LOGTAG, "start()");
 		}
@@ -269,10 +276,10 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 	@Override
 	public void stop() {
 		try {
-			if (mTimer != null) {
-				mTimer.purge();
-				mTimer = null;
-			}
+//			if (mTimer != null) {
+//				mTimer.purge();
+//				mTimer = null;
+//			}
 			mMediaPlayer.stop();
 		} catch (Exception e) {
 			Log.e(LOGTAG, "stop()");

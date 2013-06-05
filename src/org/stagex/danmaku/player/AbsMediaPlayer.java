@@ -5,7 +5,7 @@ import android.view.SurfaceHolder;
 
 public abstract class AbsMediaPlayer {
 
-	private static final String LOGTAG = "DANMAKU-AbsMediaPlayer";
+	private static final String LOGTAG = "AbsMediaPlayer";
 
 	public interface OnBufferingUpdateListener {
 		public void onBufferingUpdate(AbsMediaPlayer mp, int percent);
@@ -60,7 +60,7 @@ public abstract class AbsMediaPlayer {
 
 	public abstract void seekTo(int msec);
 
-	public abstract void setDataSource(String path);
+	public abstract Boolean setDataSource(String path);
 
 	public abstract void setDisplay(SurfaceHolder holder);
 

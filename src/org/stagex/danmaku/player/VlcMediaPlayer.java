@@ -265,8 +265,9 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 	}
 
 	@Override
-	public void setDataSource(String path) {
+	public Boolean setDataSource(String path) {
 		nativeSetDataSource(path);
+		return true;
 	}
 
 	@Override
