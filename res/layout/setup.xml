@@ -81,6 +81,7 @@
 	      <ImageView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
 	        android:layout_gravity="left|center_vertical"
 	        android:src="@drawable/ic_decode" />
 
@@ -90,7 +91,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
-                android:text="选择硬解码模式"
+                android:text="开启硬解码模式"
                 android:textColor="#ff4b4949"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -109,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/sel_codec_mode" />
+                android:background="@drawable/mini_operate_unselected" />
         </LinearLayout>
     </RelativeLayout>
     
@@ -141,8 +142,9 @@
 	      <ImageView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
 	        android:layout_gravity="left|center_vertical"
-	        android:src="@drawable/ic_decode" />
+	        android:src="@drawable/ic_about" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -168,7 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/sel_arrow" />
         </LinearLayout>
     </RelativeLayout>

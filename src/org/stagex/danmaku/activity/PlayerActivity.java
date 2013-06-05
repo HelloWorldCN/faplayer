@@ -15,6 +15,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -87,6 +89,7 @@ public class PlayerActivity extends Activity implements
     private TextView mSysTime;
     private TextView mBattery;
 	private TextView mTextViewTime;
+	private TextView mCodecMode;
 	private SeekBar mSeekBarProgress;
 	private TextView mTextViewLength;
 	private ImageButton mImageButtonToggleMessage;
@@ -150,6 +153,16 @@ public class PlayerActivity extends Activity implements
 	private GestureDetector mGestureDetector;
 	/* @} */
 
+	/* 记录硬解码与软解码的状态 */
+	private SharedPreferences sharedPreferences;
+	private Editor editor;
+	private boolean isHardDec;
+	
+	/**
+	 * 判断使用的解码接口
+	 * @param obj
+	 * @return
+	 */
 	private static boolean isDefMediaPlayer(Object obj) {
 		return obj.getClass().getName()
 				.compareTo(DefMediaPlayer.class.getName()) == 0;
@@ -359,6 +372,7 @@ public class PlayerActivity extends Activity implements
 		mTitle = (TextView)findViewById(R.id.player_overlay_title);
 		mSysTime = (TextView) findViewById(R.id.player_overlay_systime);
 		mBattery = (TextView) findViewById(R.id.player_overlay_battery);
+		mCodecMode = (TextView) findViewById(R.id.player_codec_mode);
 		
 		//seekbar和两端的岂止时间
 		mTextViewTime = (TextView) findViewById(R.id.player_text_position);
@@ -643,11 +657,20 @@ public class PlayerActivity extends Activity implements
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
 		//选择播放器
-//		selectMediaPlayer(uri, false);
-		//强制选择VLC播放器
-		selectMediaPlayer(uri, true);
-		//选择系统硬解码
-//		selectMediaPlayer(uri, false);
+
+		/* 判断解码器状态 */
+	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+	    isHardDec = sharedPreferences.getBoolean("isHardDec", false);
+	    if (isHardDec)
+	    {
+			//选择系统硬解码
+			selectMediaPlayer(uri, false);
+	    }  else
+	    {
+			//强制选择VLC播放器
+			selectMediaPlayer(uri, true);
+	    }
 	}
 
 	@Override
@@ -875,6 +898,7 @@ public class PlayerActivity extends Activity implements
 		//TODO 更新当前时间信息
 		mSysTime.setText(DateFormat.format("kk:mm", System.currentTimeMillis()));
 		mTitle.setText(mTitleName);
+		mCodecMode.setText(isHardDec ? "【硬解码】" :"【软解码】");
 		
 		//仅在触摸按下时，响应触摸事件
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {

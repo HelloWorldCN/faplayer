@@ -1,11 +1,14 @@
 package org.stagex.danmaku.activity;
 
 import org.keke.player.R;
+import org.stagex.danmaku.util.SystemUtility;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +24,10 @@ public class SetupActivity  extends Activity {
 	/* 设置控件 */
 	private Button button_codec;
 	private Button button_about;
+	/* 记录硬解码与软解码的状态 */
+	private SharedPreferences sharedPreferences;
+	private Editor editor;
+	private boolean isHardDec;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,23 @@ public class SetupActivity  extends Activity {
 		button_codec = (Button) findViewById(R.id.codec_mode);
 		button_about = (Button) findViewById(R.id.about);
 		
+		/* 判断解码器状态 */
+	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+	    isHardDec = sharedPreferences.getBoolean("isHardDec", false);
+	    if (isHardDec)
+	    {
+	        int resource = SystemUtility.getDrawableId("mini_operate_selected");
+			button_codec.setBackgroundResource(resource);
+	        Log.d(LOGTAG, "检测到为硬解码模式");
+	    }
+	    else
+	    {
+			int resource = SystemUtility.getDrawableId("mini_operate_unselected");
+			button_codec.setBackgroundResource(resource);
+	        Log.d(LOGTAG, "检测到为软解码模式");
+	    }
+	    
 		/* 设置监听 */
 		setListensers();
 	}
@@ -62,6 +86,23 @@ public class SetupActivity  extends Activity {
 				finish();
 				break;
 			case R.id.codec_mode:
+				isHardDec = sharedPreferences.getBoolean("isHardDec", false);
+			    if (isHardDec)  
+			    {
+			        int resource = SystemUtility.getDrawableId("mini_operate_unselected");
+					button_codec.setBackgroundResource(resource);
+			        editor.putBoolean("isHardDec", false);
+			        editor.commit();
+			        Log.d(LOGTAG, "设置为软解码模式");
+			    }
+			    else
+			    {
+					int resource = SystemUtility.getDrawableId("mini_operate_selected");
+					button_codec.setBackgroundResource(resource);
+			        editor.putBoolean("isHardDec", true);  
+			        editor.commit();
+			        Log.d(LOGTAG, "设置为硬解码模式");
+			    }
 				break;
 			case R.id.about:
 				startAboutMedia();

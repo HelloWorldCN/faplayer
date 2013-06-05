@@ -25,6 +25,15 @@
             android:textSize="15sp" />
 
         <TextView
+            android:id="@+id/player_codec_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="10dp"
+            android:textColor="#ffffff"
+            android:textSize="15sp" />
+
+        <TextView
             android:id="@+id/player_overlay_battery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
