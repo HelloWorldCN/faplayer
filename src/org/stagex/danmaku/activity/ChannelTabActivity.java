@@ -26,6 +26,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -71,6 +74,10 @@ public class ChannelTabActivity extends TabActivity implements
 	private Editor editor;
 	private boolean isTVListSuc;
 	
+	/* 旋转图标 */
+	private Animation operatingAnim;
+	private LinearInterpolator lin; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -81,6 +88,10 @@ public class ChannelTabActivity extends TabActivity implements
 		button_home = (Button) findViewById(R.id.home_btn);
 		button_back = (Button) findViewById(R.id.back_btn);
 		button_refresh = (Button) findViewById(R.id.refresh_btn);
+		/* 旋转图标 */
+		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.tip);
+		lin = new LinearInterpolator();  
+		operatingAnim.setInterpolator(lin);
 		
 		//记录更新成功还是失败
 	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -475,8 +486,14 @@ public class ChannelTabActivity extends TabActivity implements
 				finish();
 				break;
 			case R.id.refresh_btn:
+				/* 开始旋转 */
+			    if (operatingAnim != null) {
+			    	button_refresh.startAnimation(operatingAnim);
+			    }
 				//TODO 到远程服务器下载直播电视播放列表
 				tvPlaylistDownload();
+				/* TODO 停止旋转（时间可能很短，来不及显示，就停下来了） */
+//				button_refresh.clearAnimation();
 				
 				isTVListSuc = sharedPreferences.getBoolean("isTVListSuc", false);
 				
@@ -489,6 +506,8 @@ public class ChannelTabActivity extends TabActivity implements
 			        @Override
 			        public void onClick(DialogInterface dialog, int which) {
 			            //do nothing - it will close on its own
+			        	/* 先摆放在这里 */
+			        	button_refresh.clearAnimation();
 			        	finish();
 			        }
 			     })

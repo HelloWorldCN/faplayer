@@ -15,6 +15,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -32,6 +35,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private Button button_home;
 	private Button button_back;
 	private Button button_refresh;
+	
+	/* 旋转图标 */
+	private Animation operatingAnim;
+	private LinearInterpolator lin; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		button_back = (Button) findViewById(R.id.back_btn);
 		button_refresh = (Button) findViewById(R.id.refresh_btn);
 		
+		/* 旋转图标 */
+		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.tip);
+		lin = new LinearInterpolator();  
+		operatingAnim.setInterpolator(lin);
 		
 		// ~~~~~~ 绑定事件
 //		mRadioFile.setOnClickListener(this);
@@ -103,9 +114,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				finish();
 				break;
 			case R.id.refresh_btn:
+				/* 开始旋转 */
+			    if (operatingAnim != null) {
+			    	button_refresh.startAnimation(operatingAnim);
+			    }
 				Log.v(LOGTAG, "===>重新扫描SD卡媒体内容");
 				Toast.makeText(MainActivity.this, "重新扫描SD卡媒体内容", Toast.LENGTH_LONG).show();
 				startMediaScannerService();
+				/* TODO 何时停止旋转 */
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
