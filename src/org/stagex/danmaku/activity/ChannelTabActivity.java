@@ -1,8 +1,11 @@
 package org.stagex.danmaku.activity;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.net.ftp.FTPClient;
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
@@ -10,10 +13,15 @@ import org.stagex.danmaku.util.ParseUtil;
 
 import com.nmbb.oplayer.ui.MainActivity;
 
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.Toast;
@@ -57,6 +66,11 @@ public class ChannelTabActivity extends TabActivity implements
 	private Button button_back;
 	private Button button_refresh;
 	
+	/* 列表更新成功标志 */
+	private SharedPreferences sharedPreferences;
+	private Editor editor;
+	private boolean isTVListSuc;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -67,6 +81,11 @@ public class ChannelTabActivity extends TabActivity implements
 		button_home = (Button) findViewById(R.id.home_btn);
 		button_back = (Button) findViewById(R.id.back_btn);
 		button_refresh = (Button) findViewById(R.id.refresh_btn);
+		
+		//记录更新成功还是失败
+	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+		
 		setListensers();
 		
 		myTabhost = this.getTabHost();
@@ -119,8 +138,13 @@ public class ChannelTabActivity extends TabActivity implements
 		/* 设置Tab的监听事件 */
 		myTabhost.setOnTabChangedListener(this);
 
-		/* 解析所有的channel list */
-		allinfos = ParseUtil.parse(this);
+		/* 解析所有的channel list 区分是采用默认列表还是服务器列表 */
+		isTVListSuc = sharedPreferences.getBoolean("isTVListSuc", false);
+		allinfos = ParseUtil.parse(this,  isTVListSuc);
+		if (isTVListSuc)
+			Log.d(LOGTAG, "采用服务器更新后的播放列表");
+		else
+			Log.d(LOGTAG, "采用本地备份的播放列表");
 
 		/* 获得各个台类别的list */
 		yang_shi_list = (ListView) findViewById(R.id.yang_shi_tab);
@@ -356,16 +380,16 @@ public class ChannelTabActivity extends TabActivity implements
 		startActivity(intent);
 	}
 	
-	private void startLiveMedia(String liveUrl, String name) {
-		Intent intent = new Intent(ChannelTabActivity.this,
-				PlayerActivity.class);
-		ArrayList<String> playlist = new ArrayList<String>();
-		playlist.add(liveUrl);
-		intent.putExtra("selected", 0);
-		intent.putExtra("playlist", playlist);
-		intent.putExtra("title", name);
-		startActivity(intent);
-	}
+//	private void startLiveMedia(String liveUrl, String name) {
+//		Intent intent = new Intent(ChannelTabActivity.this,
+//				PlayerActivity.class);
+//		ArrayList<String> playlist = new ArrayList<String>();
+//		playlist.add(liveUrl);
+//		intent.putExtra("selected", 0);
+//		intent.putExtra("playlist", playlist);
+//		intent.putExtra("title", name);
+//		startActivity(intent);
+//	}
 
 	/*
 	 * 从所有的台源中解析出央视的台源
@@ -451,12 +475,98 @@ public class ChannelTabActivity extends TabActivity implements
 				finish();
 				break;
 			case R.id.refresh_btn:
-				//TODO 重新刷新电视界面列表
+				//TODO 到远程服务器下载直播电视播放列表
+				tvPlaylistDownload();
+				
+				isTVListSuc = sharedPreferences.getBoolean("isTVListSuc", false);
+				
+				if (isTVListSuc) {
+				//弹出加载【成功】对话框
+				new AlertDialog.Builder(ChannelTabActivity.this)
+			    .setTitle("更新成功")
+			    .setMessage("直播地址更新完毕!\n请点击【确定】\n重新进入当前界面")
+			    .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+			        @Override
+			        public void onClick(DialogInterface dialog, int which) {
+			            //do nothing - it will close on its own
+			        	finish();
+			        }
+			     })
+			   .show();
+				} else {
+					//弹出加载【失败】对话框
+					new AlertDialog.Builder(ChannelTabActivity.this)
+				    .setTitle("更新失败")
+				    .setMessage("直播地址更新失败!\n采用本地备份的列表")
+				    .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+				        @Override
+				        public void onClick(DialogInterface dialog, int which) {
+				            //do nothing - it will close on its own
+				        }
+				     })
+				   .show();
+				}
+				
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
 			}
 		}
 	};
+	
+    /**
+     * FTP下载单个文件测试
+     */
+    private void tvPlaylistDownload() {
+        FTPClient ftpClient = new FTPClient();
+        FileOutputStream fos = null;
+        
+        //假设更新列表成功
+        editor.putBoolean("isTVListSuc", true);
+        editor.commit();
+        
+        try {
+            ftpClient.connect("ftp92147.host217.web519.com");
+            ftpClient.login("ftp92147", "950288@kk");
+            
+            //此处不需要Data前面的"/"
+            String remoteFileName = "Data/channel_list_cn.list.api2";
+            //此处要注意必须加上channel_list_cn.list.api2前面的"/"
+            fos = new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/.channel_list_cn.list.api2");
+
+            ftpClient.setBufferSize(1024);
+            //设置文件类型（二进制）
+            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftpClient.retrieveFile(remoteFileName, fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+          //更新列表失败
+            editor.putBoolean("isTVListSuc", false);  
+            editor.commit();
+//            throw new RuntimeException("FTP客户端出错！", e);
+        } finally {
+            try {
+            	if (fos != null) {
+            		//TODO 需要对文件的合法性作一定的测试，例如大小
+            		fos.close();
+            	}
+			} catch (IOException e) {
+				e.printStackTrace();
+				//更新列表失败
+				editor.putBoolean("isTVListSuc", false);  
+                editor.commit();
+//				throw new RuntimeException("关闭文件发生异常！", e);
+			}
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+              //更新列表失败
+                editor.putBoolean("isTVListSuc", false);  
+                editor.commit();
+//                throw new RuntimeException("关闭FTP连接发生异常！", e);
+            }
+        }
+    }
 	
 }

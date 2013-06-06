@@ -1,5 +1,6 @@
 package org.stagex.danmaku.util;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,31 +12,46 @@ import org.json.JSONObject;
 import org.stagex.danmaku.adapter.ChannelInfo;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 public class ParseUtil {
-	public static List<ChannelInfo> parse(Context context) {
+	public static List<ChannelInfo> parse(Context context, Boolean pathFlag) {
 		List<ChannelInfo> list = new ArrayList<ChannelInfo>();
 		StringBuffer stringBuffer = new StringBuffer();
+		int len = -1;
+		int all = 0;
+		
 		try {
 			byte[] readBuffer = new byte[1024];
-			InputStream fip = context.getAssets().open(
-					"channel_list_cn.list.api2");
-			int len = -1;
-			int all = 0;
-			while ((len = fip.read(readBuffer)) != -1) {
-				// Log.d("ParseUtil", "len = " + len);
-				all += len;
-				String readString = new String(readBuffer, 0, len);
-				stringBuffer.append(readString);
+			//pathFlag为true，表示采用更新后的地址
+			//pathFlag为false，表示采用assert目录下默认地址
+			if (pathFlag) {
+				FileInputStream fos  = new FileInputStream(Environment.getExternalStorageDirectory().getPath() + "/.channel_list_cn.list.api2");
+				while ((len = fos.read(readBuffer)) != -1) {
+					all += len;
+					String readString = new String(readBuffer, 0, len);
+					stringBuffer.append(readString);
+				}
+				fos.close();
+			} else {
+				InputStream fip  = context.getAssets().open("channel_list_cn.list.api2");
+				while ((len = fip.read(readBuffer)) != -1) {
+					all += len;
+					String readString = new String(readBuffer, 0, len);
+					stringBuffer.append(readString);
+				}
+				fip.close();
 			}
-			Log.d("ParseUtil",
-					"all = " + all + " buff len = " + stringBuffer.length());
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		Log.d("ParseUtil",
+				"all = " + all + " buff len = " + stringBuffer.length());
+		
 		try {
 			JSONArray arr = new JSONArray(stringBuffer.toString());
 
