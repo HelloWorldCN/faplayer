@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -98,6 +99,7 @@ public class ChannelTabActivity extends TabActivity implements
 		editor = sharedPreferences.edit();
 
 		setListensers();
+		initializeEvents();
 
 		myTabhost = this.getTabHost();
 		myTabhost.setup();
@@ -502,9 +504,10 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 更新服务器地址
 	 */
 	private void startRefreshList() {
-		if (operatingAnim != null) {
-			button_refresh.startAnimation(operatingAnim);
-		}
+//		if (operatingAnim != null) {
+//			button_refresh.startAnimation(operatingAnim);
+//		}
+		onRefreshStart();
 
 		Log.d(LOGTAG, "===> start refresh playlist");
 
@@ -554,12 +557,15 @@ public class ChannelTabActivity extends TabActivity implements
 			isTVListSuc = sharedPreferences.getBoolean("isTVListSuc", false);
 
 			/* TODO 停止旋转（时间可能很短，来不及显示，就停下来了） */
-			button_refresh.clearAnimation();
+//			button_refresh.clearAnimation();
+			onRefreshEnd();
 
 			if (isTVListSuc) {
 				// 更新界面的节目表list
 				RefreshList();
-
+				
+				Log.d(LOGTAG, "===> 6");
+				
 				// 弹出加载【成功】对话框
 				if (ChannelTabActivity.this == null)
 					return;
@@ -604,6 +610,7 @@ public class ChannelTabActivity extends TabActivity implements
 
 		// 2秒钟，如果超过就判定超时了
 		ftpClient.setConnectTimeout(2000);
+		ftpClient.enterLocalPassiveMode();
 
 		// 假设更新列表成功
 		editor.putBoolean("isTVListSuc", true);
@@ -613,9 +620,13 @@ public class ChannelTabActivity extends TabActivity implements
 		try {
 			int reply;
 
+			Log.d(LOGTAG, "===> 1");
+			
 			ftpClient.setControlEncoding("UTF-8");
 			ftpClient.connect("ftp92147.host217.web519.com");
 
+			Log.d(LOGTAG, "===> 2");
+			
 			reply = ftpClient.getReplyCode();
 			if (!FTPReply.isPositiveCompletion(reply)) {
 				// 断开连接
@@ -626,9 +637,13 @@ public class ChannelTabActivity extends TabActivity implements
 				return;
 			}
 
+			Log.d(LOGTAG, "===> 3");
+			
 			// 用户登录信息
 			ftpClient.login("ftp92147", "950288@kk");
 
+			Log.d(LOGTAG, "===> 4");
+			
 			// 此处不需要Data前面的"/"
 			String remoteFileName = "Data/channel_list_cn.list.api2";
 			// 此处要注意必须加上channel_list_cn.list.api2前面的"/"
@@ -640,6 +655,7 @@ public class ChannelTabActivity extends TabActivity implements
 			// 设置文件类型（二进制）
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.retrieveFile(remoteFileName, fos);
+			Log.d(LOGTAG, "===> 5");
 		} catch (IOException e) {
 			e.printStackTrace();
 			// 更新列表失败
@@ -671,4 +687,48 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 	}
 
+	private static Handler mEventHandler;
+	private static final int TV_LIST_REFRESH_START = 0x0001;
+	private static final int TV_LIST_REFRESH_END = 0x0002;
+	
+	/**
+	 * 地址刷新过程中的事件响应的核心处理方法
+	 */
+	private void initializeEvents() {
+		mEventHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				switch (msg.what) {
+				case TV_LIST_REFRESH_START :
+					//开始刷新
+					if (operatingAnim != null) {
+						button_refresh.startAnimation(operatingAnim);
+					}
+					break;
+				case TV_LIST_REFRESH_END :
+					//刷新完毕
+					button_refresh.clearAnimation();
+					break;
+				default :
+					break;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * 以下：接收事件，做中间处理，再调用handleMessage方法处理之
+	 * @{
+	 */
+	private void onRefreshStart() {
+		Message msg = new Message();
+		msg.what = TV_LIST_REFRESH_START;
+		mEventHandler.sendMessage(msg);
+	}
+	
+	private void onRefreshEnd() {
+		Message msg = new Message();
+		msg.what = TV_LIST_REFRESH_END;
+		mEventHandler.sendMessage(msg);
+	}
+	
 }

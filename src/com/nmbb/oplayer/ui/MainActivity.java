@@ -222,6 +222,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				case MEDIA_SEAN_DOWN :
 					//媒体扫描完毕
 					button_refresh.clearAnimation();
+					break;
 				default :
 					break;
 				}
