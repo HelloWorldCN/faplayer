@@ -27,9 +27,19 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/loading_txt"
-             android:visibility="gone"
-             android:textSize="20dp"
-            android:textColor="#3197FF" />
+            android:textColor="#3197FF"
+            android:textSize="20dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/buffer_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textColor="#3197FF"
+            android:textSize="20dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

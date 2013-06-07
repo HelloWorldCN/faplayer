@@ -83,6 +83,7 @@ public class PlayerActivity extends Activity implements
 	/* player misc */
 	private ProgressBar mProgressBarPreparing;
 	private TextView mLoadingTxt;
+	private TextView mPercentTxt;
 
 	/* player controls */
 	private TextView mTitle;
@@ -182,12 +183,21 @@ public class PlayerActivity extends Activity implements
 				switch (msg.what) {
 				case MEDIA_PLAYER_BUFFERING_UPDATE: {
 					if (mMediaPlayerLoaded) {
+						
+//						Log.d(LOGTAG, "===>load   " + msg.arg1 + "%");
+						mPercentTxt.setText("已缓冲===> " + String.valueOf(msg.arg1) + "%");
+						
+						mPercentTxt
+						.setVisibility(msg.arg1 < 100 ? View.VISIBLE
+								: View.GONE);
+						
 						mProgressBarPreparing
 								.setVisibility(msg.arg1 < 100 ? View.VISIBLE
 										: View.GONE);
-						mLoadingTxt
-						.setVisibility(msg.arg1 < 100 ? View.VISIBLE
-								: View.GONE);
+						
+//						mLoadingTxt
+//						.setVisibility(msg.arg1 < 100 ? View.VISIBLE
+//								: View.GONE);
 					}
 					break;
 				}
@@ -402,6 +412,8 @@ public class PlayerActivity extends Activity implements
 		mProgressBarPreparing = (ProgressBar) findViewById(R.id.player_prepairing);
 		//缓冲提示语言
 		mLoadingTxt =  (TextView)findViewById(R.id.player_loading);
+		//缓冲比例
+		mPercentTxt =  (TextView)findViewById(R.id.buffer_percent);
 		
 		//初始化手势
 		initGesture();
