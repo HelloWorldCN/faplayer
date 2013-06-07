@@ -148,7 +148,11 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 //							MediaScannerService.class));
 //			/* end */
 			/* FIXME 这个Toast在当前Activity不是MainActivity时，会报空指针错误 */
+			if(getActivity() == null) break;
 			Toast.makeText((MainActivity) getActivity(), "SD卡扫描完毕", Toast.LENGTH_LONG).show();
+			
+			//通知右上角的刷新图标停止旋转
+			MainActivity.onMediaScanDown();
 			
 			/* ？？？ */
 			new DataTask().execute();
@@ -162,7 +166,7 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 			break;
 		}
 	}
-
+	
 	/** 显示状态栏信息 */
 	private void displayStatusBar() {
 		//SD卡剩余数量
@@ -365,7 +369,9 @@ public class FragmentFile extends FragmentBase implements OnItemClickListener, I
 		@Override
 		protected void onPostExecute(List<POMedia> result) {
 			super.onPostExecute(result);
-
+			/* FIXME 这个方法在当前Activity不是MainActivity时，会报空指针错误 */
+			if( getActivity() == null)
+				return;
 			mAdapter = new FileAdapter(getActivity(), result);
 			mListView.setAdapter(mAdapter);
 

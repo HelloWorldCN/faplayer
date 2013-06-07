@@ -1,5 +1,7 @@
 package org.stagex.danmaku.activity;
 
+import java.io.File;
+
 import org.keke.player.R;
 import org.stagex.danmaku.util.SystemUtility;
 
@@ -8,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -49,6 +52,15 @@ public class HomeActivity extends Activity {
 		
 		//启动广告
 		AppConnect.getInstance(this); 
+		
+		//创建应用程序工作目录
+		File dir = new File(Environment
+					.getExternalStorageDirectory().getPath() + "/kekePlayer");
+		if (dir.exists()) {
+			/* do nothing */
+		} else {
+			dir.mkdirs();
+		}
 		
 		findViews();
 		setListensers();

@@ -27,7 +27,7 @@ public class ParseUtil {
 			//pathFlag为true，表示采用更新后的地址
 			//pathFlag为false，表示采用assert目录下默认地址
 			if (pathFlag) {
-				FileInputStream fos  = new FileInputStream(Environment.getExternalStorageDirectory().getPath() + "/.channel_list_cn.list.api2");
+				FileInputStream fos  = new FileInputStream(Environment.getExternalStorageDirectory().getPath() + "/kekePlayer/.channel_list_cn.list.api2");
 				while ((len = fos.read(readBuffer)) != -1) {
 					all += len;
 					String readString = new String(readBuffer, 0, len);

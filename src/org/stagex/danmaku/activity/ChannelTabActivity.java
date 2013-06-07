@@ -1,17 +1,17 @@
 package org.stagex.danmaku.activity;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.util.ParseUtil;
-
-import com.nmbb.oplayer.ui.MainActivity;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -36,10 +36,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
@@ -497,7 +495,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO 到远程服务器下载直播电视播放列表
 				// 为了给用户有所体验，延迟2s
 				mHander.postDelayed(mRunnable, 2000);
-				
+			
+//				Log.d(LOGTAG, "===> end refresh playlist");
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
@@ -521,6 +520,7 @@ public class ChannelTabActivity extends TabActivity implements
 			
 			if (isTVListSuc) {
 				// 弹出加载【成功】对话框
+				if (ChannelTabActivity.this == null) return;
 				new AlertDialog.Builder(ChannelTabActivity.this)
 						.setTitle("更新成功")
 						.setMessage("服务器地址更新成功\n请点击【确定】生效")
@@ -551,6 +551,7 @@ public class ChannelTabActivity extends TabActivity implements
 								}).show();
 			} else {
 				// 弹出加载【失败】对话框
+				if (ChannelTabActivity.this == null) return;
 				new AlertDialog.Builder(ChannelTabActivity.this)
 						.setTitle("更新失败")
 						.setMessage("抱歉！服务器地址更新失败")
@@ -573,22 +574,40 @@ public class ChannelTabActivity extends TabActivity implements
 	private void tvPlaylistDownload() {
 		FTPClient ftpClient = new FTPClient();
 		FileOutputStream fos = null;
-
+		
+		 // 2秒钟，如果超过就判定超时了
+		 ftpClient.setConnectTimeout(2000);
+		 
 		// 假设更新列表成功
 		editor.putBoolean("isTVListSuc", true);
 		editor.commit();
 		
 		//TODO 后续可以设置多个服务器地址，防止服务器流量不够，导致更新失败
 		try {
+			 int reply; 
+			
+			ftpClient.setControlEncoding("UTF-8");
 			ftpClient.connect("ftp92147.host217.web519.com");
+			
+			 reply = ftpClient.getReplyCode();			 
+			 if (!FTPReply.isPositiveCompletion(reply)) {
+		            // 断开连接
+		            ftpClient.disconnect();
+					// 更新列表失败
+					editor.putBoolean("isTVListSuc", false);
+					editor.commit();
+					return;
+		       }
+			 
+			 //用户登录信息
 			ftpClient.login("ftp92147", "950288@kk");
-
+			
 			// 此处不需要Data前面的"/"
 			String remoteFileName = "Data/channel_list_cn.list.api2";
 			// 此处要注意必须加上channel_list_cn.list.api2前面的"/"
 			fos = new FileOutputStream(Environment
 					.getExternalStorageDirectory().getPath()
-					+ "/.channel_list_cn.list.api2");
+					+ "/kekePlayer/.channel_list_cn.list.api2");
 
 			ftpClient.setBufferSize(1024);
 			// 设置文件类型（二进制）

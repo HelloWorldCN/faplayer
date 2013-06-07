@@ -8,6 +8,8 @@ import org.stagex.danmaku.activity.HomeActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -78,6 +80,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mPager.setOnPageChangeListener(mPagerListener);
 		setListensers();
 
+		//扫描事件初始化
+		initializeEvents();
+		
 		// ~~~~~~ 绑定数据
 		mPager.setAdapter(mAdapter);
 	}
@@ -203,4 +208,35 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 //			break;
 //		}
 	}
+	
+	private static Handler mEventHandler;
+	private static final int MEDIA_SEAN_DOWN = 0x0001;
+	
+	/**
+	 * 播放过程中的事件响应的核心处理方法
+	 */
+	private void initializeEvents() {
+		mEventHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				switch (msg.what) {
+				case MEDIA_SEAN_DOWN :
+					//媒体扫描完毕
+					button_refresh.clearAnimation();
+				default :
+					break;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * 以下：接收事件，做中间处理，再调用handleMessage方法处理之
+	 * @{
+	 */
+	public static void onMediaScanDown() {
+		Message msg = new Message();
+		msg.what = MEDIA_SEAN_DOWN;
+		mEventHandler.sendMessage(msg);
+	}
+	
 }
