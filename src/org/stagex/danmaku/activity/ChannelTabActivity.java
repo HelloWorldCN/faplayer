@@ -1,6 +1,5 @@
 package org.stagex.danmaku.activity;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +71,8 @@ public class ChannelTabActivity extends TabActivity implements
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
 	private boolean isTVListSuc;
+	/* 如果没有备份过服务器地址，则加载本地初始的地址 */
+	private boolean hasBackup;
 
 	/* 旋转图标 */
 	private Animation operatingAnim;
@@ -149,12 +150,15 @@ public class ChannelTabActivity extends TabActivity implements
 		myTabhost.setOnTabChangedListener(this);
 
 		/* 解析所有的channel list 区分是采用默认列表还是服务器列表 */
-		isTVListSuc = sharedPreferences.getBoolean("isTVListSuc", false);
-		allinfos = ParseUtil.parse(this, isTVListSuc);
-		if (isTVListSuc)
+		hasBackup = sharedPreferences.getBoolean("hasBackup", false);
+		allinfos = ParseUtil.parse(this, hasBackup);
+		if (hasBackup)
 			Log.d(LOGTAG, "采用服务器更新后的播放列表");
-		else
-			Log.d(LOGTAG, "采用本地备份的播放列表");
+		else {
+			// 如果没有备份过地址，第一次自动加载服务器地址
+			startRefreshList();
+			Log.d(LOGTAG, "采用初始的播放列表");
+		}
 
 		/* 获得各个台类别的list */
 		yang_shi_list = (ListView) findViewById(R.id.yang_shi_tab);
@@ -485,18 +489,8 @@ public class ChannelTabActivity extends TabActivity implements
 				finish();
 				break;
 			case R.id.refresh_btn:
-				/* 开始旋转 */
-				if (operatingAnim != null) {
-					button_refresh.startAnimation(operatingAnim);
-				}
-				
-				Log.d(LOGTAG, "===> start refresh playlist");
-				
-				// TODO 到远程服务器下载直播电视播放列表
-				// 为了给用户有所体验，延迟2s
-				mHander.postDelayed(mRunnable, 2000);
-			
-//				Log.d(LOGTAG, "===> end refresh playlist");
+				// 更新服务器地址
+				startRefreshList();
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
@@ -504,58 +498,91 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 	};
 
+	/**
+	 * 更新服务器地址
+	 */
+	private void startRefreshList() {
+		if (operatingAnim != null) {
+			button_refresh.startAnimation(operatingAnim);
+		}
+
+		Log.d(LOGTAG, "===> start refresh playlist");
+
+		// TODO 到远程服务器下载直播电视播放列表
+		// 为了给用户有所体验，延迟2s
+		mHander.postDelayed(mRunnable, 2000);
+
+		// Log.d(LOGTAG, "===> end refresh playlist");
+	}
+
+	/**
+	 * 更新界面的节目表list
+	 */
+	private void RefreshList() {
+		// 置已经备份过的标志位
+		editor.putBoolean("hasBackup", true);
+		editor.commit();
+		// 重新加载当前的播放列表
+		if (allinfos != null) {
+
+			// 首先清空之前的数据
+			allinfos.clear();
+			yangshi_infos.clear();
+			weishi_infos.clear();
+			difang_infos.clear();
+			tiyu_infos.clear();
+
+			// 重新解析XML
+			allinfos = ParseUtil.parse(ChannelTabActivity.this, true);
+			// 重新显示list
+			setYangshiView();
+			setWeishiView();
+			setDifangView();
+			setTiyuView();
+		}
+	}
+
 	/* 处理FTP下载的线程 */
 	private Handler mHander = new Handler();
 
 	private final Runnable mRunnable = new Runnable() {
 
 		public void run() {
-			//到远程服务器下载直播电视播放列表
+			// 到远程服务器下载直播电视播放列表
 			tvPlaylistDownload();
 
 			isTVListSuc = sharedPreferences.getBoolean("isTVListSuc", false);
 
 			/* TODO 停止旋转（时间可能很短，来不及显示，就停下来了） */
 			button_refresh.clearAnimation();
-			
+
 			if (isTVListSuc) {
+				// 更新界面的节目表list
+				RefreshList();
+
 				// 弹出加载【成功】对话框
-				if (ChannelTabActivity.this == null) return;
+				if (ChannelTabActivity.this == null)
+					return;
 				new AlertDialog.Builder(ChannelTabActivity.this)
 						.setTitle("更新成功")
-						.setMessage("服务器地址更新成功\n请点击【确定】生效")
-						.setNegativeButton("确定",
+						.setMessage("服务器地址更新成功")
+						.setNegativeButton("知道了",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										// 重新加载当前的播放列表
-										if (allinfos != null) {
-											
-											//首先清空之前的数据
-											allinfos.clear();
-											yangshi_infos.clear();
-											weishi_infos .clear();
-											difang_infos.clear();
-											tiyu_infos.clear();
-											
-											//重新解析XML
-											allinfos = ParseUtil.parse(ChannelTabActivity.this, true);
-											//重新显示list
-											setYangshiView();
-											setWeishiView();
-											setDifangView();
-											setTiyuView();
-										}
+										// do nothing - it will close on its
+										// own
 									}
 								}).show();
 			} else {
 				// 弹出加载【失败】对话框
-				if (ChannelTabActivity.this == null) return;
+				if (ChannelTabActivity.this == null)
+					return;
 				new AlertDialog.Builder(ChannelTabActivity.this)
 						.setTitle("更新失败")
-						.setMessage("抱歉！服务器地址更新失败")
-						.setNegativeButton("确定",
+						.setMessage("抱歉！服务器地址更新失败\n默认使用初始节目地址")
+						.setNegativeButton("知道了",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -574,34 +601,34 @@ public class ChannelTabActivity extends TabActivity implements
 	private void tvPlaylistDownload() {
 		FTPClient ftpClient = new FTPClient();
 		FileOutputStream fos = null;
-		
-		 // 2秒钟，如果超过就判定超时了
-		 ftpClient.setConnectTimeout(2000);
-		 
+
+		// 2秒钟，如果超过就判定超时了
+		ftpClient.setConnectTimeout(2000);
+
 		// 假设更新列表成功
 		editor.putBoolean("isTVListSuc", true);
 		editor.commit();
-		
-		//TODO 后续可以设置多个服务器地址，防止服务器流量不够，导致更新失败
+
+		// TODO 后续可以设置多个服务器地址，防止服务器流量不够，导致更新失败
 		try {
-			 int reply; 
-			
+			int reply;
+
 			ftpClient.setControlEncoding("UTF-8");
 			ftpClient.connect("ftp92147.host217.web519.com");
-			
-			 reply = ftpClient.getReplyCode();			 
-			 if (!FTPReply.isPositiveCompletion(reply)) {
-		            // 断开连接
-		            ftpClient.disconnect();
-					// 更新列表失败
-					editor.putBoolean("isTVListSuc", false);
-					editor.commit();
-					return;
-		       }
-			 
-			 //用户登录信息
+
+			reply = ftpClient.getReplyCode();
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				// 断开连接
+				ftpClient.disconnect();
+				// 更新列表失败
+				editor.putBoolean("isTVListSuc", false);
+				editor.commit();
+				return;
+			}
+
+			// 用户登录信息
 			ftpClient.login("ftp92147", "950288@kk");
-			
+
 			// 此处不需要Data前面的"/"
 			String remoteFileName = "Data/channel_list_cn.list.api2";
 			// 此处要注意必须加上channel_list_cn.list.api2前面的"/"
