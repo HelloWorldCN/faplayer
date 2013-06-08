@@ -30,4 +30,69 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="style_home_item_parent">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+
+    <style name="style_home_item">
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">13.0dip</item>
+        <item name="android:paddingTop">11.0dip</item>
+        <item name="android:paddingRight">13.0dip</item>
+        <item name="android:paddingBottom">21.0dip</item>
+        <item name="android:focusable">true</item>
+        <item name="android:layout_width">135.0dip</item>
+        <item name="android:layout_height">90.0dip</item>
+    </style>
+
+    <style name="style_home_item_img">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">32.0dip</item>
+        <item name="android:layout_height">32.0dip</item>
+    </style>
+
+    <style name="style_home_item_text">
+        <item name="android:textSize">14.0sp</item>
+        <item name="android:textColor">#ff4a4d48</item>
+        <item name="android:gravity">center</item>
+        <item name="android:focusable">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6.0dip</item>
+    </style>
+
+    <style name="style_header">
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/bg_list_item_selected</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">42.0dip</item>
+    </style>
+
+    <style name="style_header_text">
+        <item name="android:textSize">20.0sp</item>
+        <item name="android:textColor">#ff3e3e3d</item>
+        <item name="android:ellipsize">start</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:paddingLeft">10.0dip</item>
+        <item name="android:layout_width">0.0dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:drawableLeft">@drawable/sel_back</item>
+        <item name="android:drawablePadding">6.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+
+    <style name="style_content_header_img">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">8.0dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">6.0dip</item>
+        <item name="android:layout_marginRight">6.0dip</item>
+    </style>
+
 </resources>

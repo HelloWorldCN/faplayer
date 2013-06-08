@@ -36,6 +36,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
@@ -65,9 +66,9 @@ public class ChannelTabActivity extends TabActivity implements
 	TextView view0, view1, view2, view3;
 
 	/* 顶部标题栏的控件 */
-	private Button button_home;
-	private Button button_back;
-	private Button button_refresh;
+	private ImageView button_home;
+	private TextView button_back;
+	private ImageView button_refresh;
 
 	/* 列表更新成功标志 */
 	private SharedPreferences sharedPreferences;
@@ -87,9 +88,9 @@ public class ChannelTabActivity extends TabActivity implements
 		this.setContentView(R.layout.tab_channel);
 
 		/* 顶部标题栏的控件 */
-		button_home = (Button) findViewById(R.id.home_btn);
-		button_back = (Button) findViewById(R.id.back_btn);
-		button_refresh = (Button) findViewById(R.id.refresh_btn);
+		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_back = (TextView) findViewById(R.id.back_btn);
+		button_refresh = (ImageView) findViewById(R.id.refresh_btn);
 		/* 旋转图标 */
 		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.tip);
 		lin = new LinearInterpolator();
