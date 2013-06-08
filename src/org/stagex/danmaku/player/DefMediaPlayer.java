@@ -21,20 +21,20 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 
 	private MediaPlayer mMediaPlayer = null;
 
-//	private Timer mTimer = null;
-//	private TimerTask mTimerTask = new TimerTask() {
-//		@Override
-//		public void run() {
-//			if (mMediaPlayer == null || mOnProgressUpdateListener == null)
-//				return;
-//			if (mMediaPlayer.isPlaying()) {
-//				int time = mMediaPlayer.getCurrentPosition();
-//				int length = mMediaPlayer.getDuration();
-//				mOnProgressUpdateListener.onProgressUpdate(
-//						(AbsMediaPlayer) DefMediaPlayer.this, time, length);
-//			}
-//		}
-//	};
+	private Timer mTimer = null;
+	private TimerTask mTimerTask = new TimerTask() {
+		@Override
+		public void run() {
+			if (mMediaPlayer == null || mOnProgressUpdateListener == null)
+				return;
+			if (mMediaPlayer.isPlaying()) {
+				int time = mMediaPlayer.getCurrentPosition();
+				int length = mMediaPlayer.getDuration();
+				mOnProgressUpdateListener.onProgressUpdate(
+						(AbsMediaPlayer) DefMediaPlayer.this, time, length);
+			}
+		}
+	};
 
 	private AbsMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = null;
 	private AbsMediaPlayer.OnCompletionListener mOnCompletionListener = null;
@@ -155,7 +155,12 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 
 	@Override
 	public void release() {
+		/* modify by juguofeng 2013-06-08 */
 		try {
+			if (mTimer != null) {
+				mTimer.cancel();
+				mTimer = null;
+			}
 			mMediaPlayer.release();
 		} catch (Exception e) {
 			Log.e(LOGTAG, "release()");
@@ -191,13 +196,13 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 			if (uri.startsWith("file://"))
 				uri = uri.substring(7);
 			mMediaPlayer.setDataSource(uri);
-//			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		} catch (Exception e) {
 			/* TODO 视频可能无法播放，应上报错误的事件 */
 			Log.e(LOGTAG, "setDataSource()");
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -262,12 +267,12 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 	public void start() {
 		try {
 			mMediaPlayer.start();
-//			if (mTimer != null) {
-//				mTimer.purge();
-//			} else {
-//				mTimer = new Timer();
-//			}
-//			mTimer.schedule(mTimerTask, 0, 250);
+			if (mTimer != null) {
+				mTimer.purge();
+			} else {
+				mTimer = new Timer();
+			}
+			mTimer.schedule(mTimerTask, 0, 250);
 		} catch (Exception e) {
 			Log.e(LOGTAG, "start()");
 		}
@@ -276,10 +281,10 @@ public class DefMediaPlayer extends AbsMediaPlayer implements
 	@Override
 	public void stop() {
 		try {
-//			if (mTimer != null) {
-//				mTimer.purge();
-//				mTimer = null;
-//			}
+			if (mTimer != null) {
+				mTimer.purge();
+				mTimer = null;
+			}
 			mMediaPlayer.stop();
 		} catch (Exception e) {
 			Log.e(LOGTAG, "stop()");
