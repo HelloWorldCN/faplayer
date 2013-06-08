@@ -36,7 +36,6 @@ public class ChannelSourceActivity extends Activity {
 	/* 顶部标题栏的控件 */
 	private Button button_home;
 	private Button button_back;
-	private Button button_refresh;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class ChannelSourceActivity extends Activity {
 		/* 顶部标题栏的控件 */
 		button_home = (Button) findViewById(R.id.home_btn);
 		button_back = (Button) findViewById(R.id.back_btn);
-		button_refresh = (Button) findViewById(R.id.refresh_btn);
 		/* 设置监听 */
 		setListensers();
 		
@@ -102,7 +100,6 @@ public class ChannelSourceActivity extends Activity {
 	private void setListensers() {
 		button_home.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
-		button_refresh.setOnClickListener(goListener);
 	}
 	
 	//按键监听
@@ -119,9 +116,6 @@ public class ChannelSourceActivity extends Activity {
 			case R.id.back_btn:
 				//回到上一个界面(Activity)
 				finish();
-				break;
-			case R.id.refresh_btn:
-				//TODO 重新刷新电视界面列表
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
