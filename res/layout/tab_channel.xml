@@ -74,6 +74,19 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000" />
+                
+                <ListView
+                    android:id="@+id/yu_le_tab"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="#00000000" />
+                
+                <ListView
+                    android:id="@+id/qi_ta_tab"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="#00000000" />
+                
             </FrameLayout>
 
             <TabWidget

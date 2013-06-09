@@ -55,15 +55,19 @@ public class ChannelTabActivity extends TabActivity implements
 	List<ChannelInfo> weishi_infos = null;
 	List<ChannelInfo> difang_infos = null;
 	List<ChannelInfo> tiyu_infos = null;
+	List<ChannelInfo> yule_infos = null;
+	List<ChannelInfo> qita_infos = null;
 
 	private ListView yang_shi_list;
 	private ListView wei_shi_list;
 	private ListView di_fang_list;
 	private ListView ti_yu_list;
+	private ListView yu_le_list;
+	private ListView qi_ta_list;
 
 	private TabHost myTabhost;
 
-	TextView view0, view1, view2, view3;
+	TextView view0, view1, view2, view3, view4, view5;
 
 	/* 顶部标题栏的控件 */
 	private ImageView button_home;
@@ -149,6 +153,26 @@ public class ChannelTabActivity extends TabActivity implements
 				// set the Title and Icon
 				.setContent(R.id.ti_yu_tab));
 		// set the layout
+		
+		RelativeLayout tab4 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_host_ctx, null);
+		view4 = (TextView) tab4.findViewById(R.id.tab_label);
+		view4.setText("娱乐");
+		myTabhost.addTab(myTabhost.newTabSpec("Five")// make a new Tab
+				.setIndicator(tab4)
+				// set the Title and Icon
+				.setContent(R.id.yu_le_tab));
+		// set the layout
+		
+		RelativeLayout tab5 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_host_ctx, null);
+		view5 = (TextView) tab5.findViewById(R.id.tab_label);
+		view5.setText("其他");
+		myTabhost.addTab(myTabhost.newTabSpec("Six")// make a new Tab
+				.setIndicator(tab5)
+				// set the Title and Icon
+				.setContent(R.id.qi_ta_tab));
+		// set the layout
 
 		/* 设置Tab的监听事件 */
 		myTabhost.setOnTabChangedListener(this);
@@ -168,25 +192,40 @@ public class ChannelTabActivity extends TabActivity implements
 		yang_shi_list = (ListView) findViewById(R.id.yang_shi_tab);
 		// 防止滑动黑屏
 		yang_shi_list.setCacheColorHint(Color.TRANSPARENT);
+		
 		wei_shi_list = (ListView) findViewById(R.id.wei_shi_tab);
 		// 防止滑动黑屏
 		wei_shi_list.setCacheColorHint(Color.TRANSPARENT);
+		
 		di_fang_list = (ListView) findViewById(R.id.di_fang_tab);
 		// 防止滑动黑屏
 		di_fang_list.setCacheColorHint(Color.TRANSPARENT);
+		
 		ti_yu_list = (ListView) findViewById(R.id.ti_yu_tab);
 		// 防止滑动黑屏
 		ti_yu_list.setCacheColorHint(Color.TRANSPARENT);
+		
+		yu_le_list = (ListView) findViewById(R.id.yu_le_tab);
+		// 防止滑动黑屏
+		yu_le_list.setCacheColorHint(Color.TRANSPARENT);
+		
+		qi_ta_list = (ListView) findViewById(R.id.qi_ta_tab);
+		// 防止滑动黑屏
+		qi_ta_list.setCacheColorHint(Color.TRANSPARENT);
 
 		// 默认显示第一个标签
 		view0.setTextSize(25);
 		view1.setTextSize(15);
 		view2.setTextSize(15);
 		view3.setTextSize(15);
+		view4.setTextSize(15);
+		view5.setTextSize(15);
 		setYangshiView();
 		setWeishiView();
 		setDifangView();
 		setTiyuView();
+		setYuleView();
+		setQitaView();
 	}
 
 	@Override
@@ -202,29 +241,48 @@ public class ChannelTabActivity extends TabActivity implements
 			view1.setTextSize(15);
 			view2.setTextSize(15);
 			view3.setTextSize(15);
-			// setYangshiView();
+			view4.setTextSize(15);
+			view5.setTextSize(15);
 		}
 		if (tagString.equals("Two")) {
 			view0.setTextSize(15);
 			view1.setTextSize(25);
 			view2.setTextSize(15);
 			view3.setTextSize(15);
-			// setWeishiView();
+			view4.setTextSize(15);
+			view5.setTextSize(15);
 		}
 		if (tagString.equals("Three")) {
 			view0.setTextSize(15);
 			view1.setTextSize(15);
 			view2.setTextSize(25);
 			view3.setTextSize(15);
-			// setDifangView();
+			view4.setTextSize(15);
+			view5.setTextSize(15);
 		}
-
 		if (tagString.equals("Four")) {
 			view0.setTextSize(15);
 			view1.setTextSize(15);
 			view2.setTextSize(15);
 			view3.setTextSize(25);
-			// setTiyuView();
+			view4.setTextSize(15);
+			view5.setTextSize(15);
+		}
+		if (tagString.equals("Five")) {
+			view0.setTextSize(15);
+			view1.setTextSize(15);
+			view2.setTextSize(15);
+			view3.setTextSize(15);
+			view4.setTextSize(25);
+			view5.setTextSize(15);
+		}
+		if (tagString.equals("Six")) {
+			view0.setTextSize(15);
+			view1.setTextSize(15);
+			view2.setTextSize(15);
+			view3.setTextSize(15);
+			view4.setTextSize(15);
+			view5.setTextSize(25);
 		}
 	}
 
@@ -386,6 +444,86 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 	}
+	
+	/*
+	 * 设置娱乐台源的channel list
+	 */
+	private void setYuleView() {
+		yule_infos = getYule(allinfos);
+		ChannelAdapter adapter = new ChannelAdapter(this, yule_infos);
+		yu_le_list.setAdapter(adapter);
+		yu_le_list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				ChannelInfo info = (ChannelInfo) yu_le_list
+						.getItemAtPosition(arg2);
+				Log.d("ChannelInfo",
+						"name = " + info.getName() + "[" + info.getUrl() + "]");
+
+				// startLiveMedia(info.getUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName());
+			}
+		});
+
+		yu_le_list.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
+	
+	/*
+	 * 设置其他未分类台源的channel list
+	 */
+	private void setQitaView() {
+		qita_infos = getQita(allinfos);
+		ChannelAdapter adapter = new ChannelAdapter(this, qita_infos);
+		qi_ta_list.setAdapter(adapter);
+		qi_ta_list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				ChannelInfo info = (ChannelInfo) qi_ta_list
+						.getItemAtPosition(arg2);
+				Log.d("ChannelInfo",
+						"name = " + info.getName() + "[" + info.getUrl() + "]");
+
+				// startLiveMedia(info.getUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName());
+			}
+		});
+
+		qi_ta_list.setOnScrollListener(new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
 
 	/**
 	 * 显示所有的台源
@@ -398,26 +536,15 @@ public class ChannelTabActivity extends TabActivity implements
 		startActivity(intent);
 	}
 
-	// private void startLiveMedia(String liveUrl, String name) {
-	// Intent intent = new Intent(ChannelTabActivity.this,
-	// PlayerActivity.class);
-	// ArrayList<String> playlist = new ArrayList<String>();
-	// playlist.add(liveUrl);
-	// intent.putExtra("selected", 0);
-	// intent.putExtra("playlist", playlist);
-	// intent.putExtra("title", name);
-	// startActivity(intent);
-	// }
-
 	/*
-	 * 从所有的台源中解析出央视的台源
+	 * 从所有的台源中解析出央视的台源 ==> id = 1
 	 */
 	private List<ChannelInfo> getYangShi(List<ChannelInfo> all) {
 		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("1") || cinfo.getTypes().equals("1|4")) {
+			if (cinfo.getTypes().equals("1") || cinfo.getTypes().equals("1|4") || cinfo.getTypes().equals("1|5"))  {
 				info.add(cinfo);
 			}
 		}
@@ -425,14 +552,14 @@ public class ChannelTabActivity extends TabActivity implements
 	}
 
 	/*
-	 * 从所有的台源中解析出央视的台源
+	 * 从所有的台源中解析出卫视的台源 ==> id = 2
 	 */
 	private List<ChannelInfo> getWeiShi(List<ChannelInfo> all) {
 		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("2") || cinfo.getTypes().equals("2|4")) {
+			if (cinfo.getTypes().equals("2") || cinfo.getTypes().equals("2|4") || cinfo.getTypes().equals("2|5")) {
 				info.add(cinfo);
 			}
 		}
@@ -440,14 +567,14 @@ public class ChannelTabActivity extends TabActivity implements
 	}
 
 	/*
-	 * 从所有的台源中解析出央视的台源
+	 * 从所有的台源中解析出地方的台源 ==> id = 3
 	 */
 	private List<ChannelInfo> getDiFang(List<ChannelInfo> all) {
 		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("3") || cinfo.getTypes().equals("3|4")) {
+			if (cinfo.getTypes().equals("3") || cinfo.getTypes().equals("3|4") || cinfo.getTypes().equals("3|5")) {
 				info.add(cinfo);
 			}
 		}
@@ -455,7 +582,7 @@ public class ChannelTabActivity extends TabActivity implements
 	}
 
 	/*
-	 * 从所有的台源中解析出央视的台源
+	 * 从所有的台源中解析出体育的台源 ==> id = 4
 	 */
 	private List<ChannelInfo> getTiYu(List<ChannelInfo> all) {
 		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
@@ -470,7 +597,39 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 		return info;
 	}
+	
+	/*
+	 * 从所有的台源中解析出娱乐的台源 ==>id = 5
+	 */
+	private List<ChannelInfo> getYule(List<ChannelInfo> all) {
+		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
 
+		for (int i = 0; i < all.size(); i++) {
+			ChannelInfo cinfo = all.get(i);
+			if (cinfo.getTypes().equals("5") || cinfo.getTypes().equals("1|5")
+					|| cinfo.getTypes().equals("2|5")
+					|| cinfo.getTypes().equals("3|5")) {
+				info.add(cinfo);
+			}
+		}
+		return info;
+	}
+
+	/*
+	 * 从所有的台源中解析出其他未分类的台源 ==>id = 6
+	 */
+	private List<ChannelInfo> getQita(List<ChannelInfo> all) {
+		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
+
+		for (int i = 0; i < all.size(); i++) {
+			ChannelInfo cinfo = all.get(i);
+			if (cinfo.getTypes().equals("6")) {
+				info.add(cinfo);
+			}
+		}
+		return info;
+	}
+	
 	// Listen for button clicks
 	private void setListensers() {
 		button_home.setOnClickListener(goListener);
@@ -544,6 +703,8 @@ public class ChannelTabActivity extends TabActivity implements
 			weishi_infos.clear();
 			difang_infos.clear();
 			tiyu_infos.clear();
+			yule_infos.clear();
+			qita_infos.clear();
 
 			// 重新解析XML
 			allinfos = ParseUtil.parse(ChannelTabActivity.this, true);
@@ -552,6 +713,8 @@ public class ChannelTabActivity extends TabActivity implements
 			setWeishiView();
 			setDifangView();
 			setTiyuView();
+			setYuleView();
+			setQitaView();
 		}
 	}
 
