@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import cn.waps.AppConnect;
 
@@ -23,10 +24,10 @@ import com.nmbb.oplayer.ui.MainActivity;
 public class HomeActivity extends Activity {
 	private static final String LOGTAG = "HomeActivity";
 
-	private Button button_local;
-	private Button button_live;
-	private Button button_userdef;
-	private Button button_about;
+	private LinearLayout button_local;
+	private LinearLayout button_live;
+	private LinearLayout button_userdef;
+	private LinearLayout button_setup;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -67,10 +68,10 @@ public class HomeActivity extends Activity {
 	}
 
 	private void findViews() {
-		button_local = (Button) findViewById(R.id.local_media);
-		button_live = (Button) findViewById(R.id.live_media);
-		button_userdef = (Button)findViewById(R.id.userdef_media);
-		button_about = (Button)findViewById(R.id.setup_media);
+		button_local = (LinearLayout) findViewById(R.id.go_local);
+		button_live = (LinearLayout) findViewById(R.id.go_live);
+		button_userdef = (LinearLayout)findViewById(R.id.go_userdef);
+		button_setup = (LinearLayout)findViewById(R.id.go_setup);
 	}
 
 	// Listen for button clicks
@@ -78,22 +79,22 @@ public class HomeActivity extends Activity {
 		button_local.setOnClickListener(goListener);
 		button_live.setOnClickListener(goListener);
 		button_userdef.setOnClickListener(goListener);
-		button_about.setOnClickListener(goListener);
+		button_setup.setOnClickListener(goListener);
 	}
 
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.local_media:
+			case R.id.go_local:
 				startLocalMedia();
 				break;
-			case R.id.live_media:
+			case R.id.go_live:
 				startLiveMedia();
 				break;
-			case R.id.userdef_media:
+			case R.id.go_userdef:
 				startUserdefMedia();
 				break;
-			case R.id.setup_media:
+			case R.id.go_setup:
 				startSetupMedia();
 				break;
 			default:

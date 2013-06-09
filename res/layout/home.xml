@@ -26,14 +26,14 @@
             android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/l1"
+                android:id="@+id/go_live"
                 style="@style/style_home_item"
                 android:orientation="vertical" >
 
-                <Button
+                <ImageView
                     android:id="@+id/live_media"
                     style="@style/style_home_item_img"
-                    android:background="@drawable/sel_livetv" />
+                    android:src="@drawable/sel_livetv" />
 
                 <TextView
                     style="@style/style_home_item_text"
@@ -45,14 +45,14 @@
                 layout="@layout/layout_divider_horizontal" />
 
             <LinearLayout
-                android:id="@+id/l2"
+                android:id="@+id/go_local"
                 style="@style/style_home_item"
                 android:orientation="vertical" >
 
-                <Button
+                <ImageView
                     android:id="@+id/local_media"
                     style="@style/style_home_item_img"
-                    android:background="@drawable/sel_local" />
+                    android:src="@drawable/sel_local" />
 
                 <TextView
                     style="@style/style_home_item_text"
@@ -70,14 +70,14 @@
             android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/l3"
+                android:id="@+id/go_userdef"
                 style="@style/style_home_item"
                 android:orientation="vertical" >
 
-                <Button
+                <ImageView
                     android:id="@+id/userdef_media"
                     style="@style/style_home_item_img"
-                    android:background="@drawable/sel_fav" />
+                    android:src="@drawable/sel_fav" />
 
                 <TextView
                     style="@style/style_home_item_text"
@@ -89,14 +89,14 @@
                 layout="@layout/layout_divider_horizontal" />
 
             <LinearLayout
-                android:id="@+id/l4"
+                android:id="@+id/go_setup"
                 style="@style/style_home_item"
                 android:orientation="vertical" >
 
-                <Button
+                <ImageView
                     android:id="@+id/setup_media"
                     style="@style/style_home_item_img"
-                    android:background="@drawable/sel_setup" />
+                    android:src="@drawable/sel_setup" />
 
                 <TextView
                     style="@style/style_home_item_text"
