@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class UserDefActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -24,8 +26,8 @@ public class UserDefActivity extends Activity {
 	Button mButtonPlay = null;
 	
 	/* 顶部标题栏的控件 */
-	private Button button_home;
-	private Button button_back;
+	private ImageView button_home;
+	private TextView button_back;
 	/* 文本编辑框 */
 	private Button button_clear;
 
@@ -35,8 +37,8 @@ public class UserDefActivity extends Activity {
 		setContentView(R.layout.user_def);
 		
 		/* 顶部标题栏的控件 */
-		button_home = (Button) findViewById(R.id.home_btn);
-		button_back = (Button) findViewById(R.id.back_btn);
+		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 文本编辑框 */
 		button_clear = (Button) findViewById(R.id.clear_play);
 		mTextUri = (EditText) findViewById(R.id.test_uri);

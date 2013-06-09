@@ -13,14 +13,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class SetupActivity  extends Activity {
 	/** Called when the activity is first created. */
 	private static final String LOGTAG = "SetupActivity";
 	
 	/* 顶部标题栏的控件 */
-	private Button button_home;
-	private Button button_back;
+	private ImageView button_home;
+	private TextView button_back;
 	/* 设置控件 */
 	private Button button_codec;
 	private Button button_about;
@@ -35,8 +37,8 @@ public class SetupActivity  extends Activity {
 		setContentView(R.layout.setup);
 		
 		/* 顶部标题栏的控件 */
-		button_home = (Button) findViewById(R.id.home_btn);
-		button_back = (Button) findViewById(R.id.back_btn);
+		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置控件 */
 		button_codec = (Button) findViewById(R.id.codec_mode);
 		button_about = (Button) findViewById(R.id.about);

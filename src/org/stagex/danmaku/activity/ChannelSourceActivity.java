@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,8 +35,8 @@ public class ChannelSourceActivity extends Activity {
 	private String channel_name;
 	
 	/* 顶部标题栏的控件 */
-	private Button button_home;
-	private Button button_back;
+	private ImageView button_home;
+	private TextView button_back;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,8 @@ public class ChannelSourceActivity extends Activity {
 		setContentView(R.layout.channel_source);
 		
 		/* 顶部标题栏的控件 */
-		button_home = (Button) findViewById(R.id.home_btn);
-		button_back = (Button) findViewById(R.id.back_btn);
+		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置监听 */
 		setListensers();
 		

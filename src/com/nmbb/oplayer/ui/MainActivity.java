@@ -21,6 +21,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nmbb.oplayer.scanner.MediaScannerService;
@@ -34,9 +36,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 //	public FileDownloadHelper mFileDownload;
 	
 	/* 顶部标题栏的控件 */
-	private Button button_home;
-	private Button button_back;
-	private Button button_refresh;
+	private ImageView button_home;
+	private TextView button_back;
+	private ImageView button_refresh;
 	
 	/* 旋转图标 */
 	private Animation operatingAnim;
@@ -65,9 +67,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mPager = (ViewPager) findViewById(R.id.pager);
 //		mRadioFile = (RadioButton) findViewById(R.id.radio_file);
 //		mRadioOnline = (RadioButton) findViewById(R.id.radio_online);
-		button_home = (Button) findViewById(R.id.home_btn);
-		button_back = (Button) findViewById(R.id.back_btn);
-		button_refresh = (Button) findViewById(R.id.refresh_btn);
+		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_back = (TextView) findViewById(R.id.back_btn);
+		button_refresh = (ImageView) findViewById(R.id.refresh_btn);
 		
 		/* 旋转图标 */
 		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.tip);

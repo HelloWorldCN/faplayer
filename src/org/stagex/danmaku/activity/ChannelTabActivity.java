@@ -701,7 +701,7 @@ public class ChannelTabActivity extends TabActivity implements
 				return;
 			new AlertDialog.Builder(ChannelTabActivity.this)
 					.setTitle("更新失败")
-					.setMessage("抱歉！服务器地址更新失败\n默认使用初始节目地址")
+					.setMessage("抱歉！服务器地址更新失败\n已为您加载备份的节目地址")
 					.setNegativeButton("知道了",
 							new DialogInterface.OnClickListener() {
 								@Override
