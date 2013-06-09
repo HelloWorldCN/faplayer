@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class SetupActivity  extends Activity {
@@ -24,8 +25,9 @@ public class SetupActivity  extends Activity {
 	private ImageView button_home;
 	private TextView button_back;
 	/* 设置控件 */
-	private Button button_codec;
-	private Button button_about;
+	private RelativeLayout codec_sel;
+	private ImageView button_codec;
+	private RelativeLayout about_sel;
 	/* 记录硬解码与软解码的状态 */
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
@@ -40,8 +42,9 @@ public class SetupActivity  extends Activity {
 		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置控件 */
-		button_codec = (Button) findViewById(R.id.codec_mode);
-		button_about = (Button) findViewById(R.id.about);
+		codec_sel = (RelativeLayout) findViewById(R.id.codec_sel);
+		button_codec = (ImageView) findViewById(R.id.codec_mode);
+		about_sel = (RelativeLayout) findViewById(R.id.about_sel);
 		
 		/* 判断解码器状态 */
 	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -50,13 +53,13 @@ public class SetupActivity  extends Activity {
 	    if (isHardDec)
 	    {
 	        int resource = SystemUtility.getDrawableId("mini_operate_selected");
-			button_codec.setBackgroundResource(resource);
+	        button_codec.setImageResource(resource);
 	        Log.d(LOGTAG, "检测到为硬解码模式");
 	    }
 	    else
 	    {
 			int resource = SystemUtility.getDrawableId("mini_operate_unselected");
-			button_codec.setBackgroundResource(resource);
+			button_codec.setImageResource(resource);
 	        Log.d(LOGTAG, "检测到为软解码模式");
 	    }
 	    
@@ -68,8 +71,8 @@ public class SetupActivity  extends Activity {
 	private void setListensers() {
 		button_home.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
-		button_codec.setOnClickListener(goListener);
-		button_about.setOnClickListener(goListener);
+		codec_sel.setOnClickListener(goListener);
+		about_sel.setOnClickListener(goListener);
 	}
 
 	//按键监听
@@ -87,12 +90,12 @@ public class SetupActivity  extends Activity {
 				//回到上一个界面(Activity)
 				finish();
 				break;
-			case R.id.codec_mode:
+			case R.id.codec_sel:
 				isHardDec = sharedPreferences.getBoolean("isHardDec", false);
 			    if (isHardDec)  
 			    {
 			        int resource = SystemUtility.getDrawableId("mini_operate_unselected");
-					button_codec.setBackgroundResource(resource);
+					button_codec.setImageResource(resource);
 			        editor.putBoolean("isHardDec", false);
 			        editor.commit();
 			        Log.d(LOGTAG, "设置为软解码模式");
@@ -100,13 +103,13 @@ public class SetupActivity  extends Activity {
 			    else
 			    {
 					int resource = SystemUtility.getDrawableId("mini_operate_selected");
-					button_codec.setBackgroundResource(resource);
+					button_codec.setImageResource(resource);
 			        editor.putBoolean("isHardDec", true);  
 			        editor.commit();
 			        Log.d(LOGTAG, "设置为硬解码模式");
 			    }
 				break;
-			case R.id.about:
+			case R.id.about_sel:
 				startAboutMedia();
 				break;
 			default:

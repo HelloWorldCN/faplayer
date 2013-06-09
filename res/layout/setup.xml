@@ -47,6 +47,7 @@
         android:textSize="15sp" />
 
     <RelativeLayout
+        android:id="@+id/codec_sel"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
@@ -88,13 +89,13 @@
             android:layout_toLeftOf="@id/s1"
             android:orientation="horizontal" >
 
-            <Button
+            <ImageView
                 android:id="@+id/codec_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/mini_operate_unselected" />
+                android:src="@drawable/mini_operate_unselected" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -108,6 +109,7 @@
         android:textSize="15sp" />
 
     <RelativeLayout
+        android:id="@+id/about_sel"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
@@ -149,7 +151,7 @@
             android:layout_toLeftOf="@id/o1"
             android:orientation="horizontal" >
 
-            <Button
+            <ImageView
                 android:id="@+id/about"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
