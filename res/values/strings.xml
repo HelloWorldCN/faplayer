@@ -37,6 +37,6 @@
     <string name="example1">例如：\n\nhttp://devimages.apple.com/iphone/samples/bipbop/gear1/prog_index.m3u8</string>
     <string name="example2">mms://live.cri.cn/pop</string>
     <string name="example3">rtsp://av1.jiaodong.net/tv1</string>
-    <string name="codec_str">【硬解码】:\n===>利用您手机操作系统的接口进行解码，有利于提升性能；但是，兼容性不够，有些视频源会无法播放。\n\n【软解码】：\n===>采用第三方的代码库，兼容性很好，但是在某些CPU能力不强的手机上，可能会影响性能，影响用户体验。\n\n【建议】：\n===>我们推荐您根据您手机的实际情况，在设置中动态切换!</string>
+    <string name="codec_str">[硬解码]\n利用您手机操作系统的接口进行解码，有利于提升性能；但是，兼容性不够，有些视频源会无法播放。\n\n[软解码]\n采用第三方的代码库，兼容性很好，但是在某些CPU能力不强的手机上，可能会影响性能，影响用户体验。\n\n[建议]\n我们推荐您根据您手机的实际情况，在设置中动态切换!</string>
 
 </resources>

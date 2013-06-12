@@ -28,6 +28,7 @@ public class SetupActivity  extends Activity {
 	private RelativeLayout codec_sel;
 	private ImageView button_codec;
 	private RelativeLayout about_sel;
+	private RelativeLayout help_sel;
 	/* 记录硬解码与软解码的状态 */
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
@@ -45,6 +46,7 @@ public class SetupActivity  extends Activity {
 		codec_sel = (RelativeLayout) findViewById(R.id.codec_sel);
 		button_codec = (ImageView) findViewById(R.id.codec_mode);
 		about_sel = (RelativeLayout) findViewById(R.id.about_sel);
+		help_sel = (RelativeLayout) findViewById(R.id.help_sel);
 		
 		/* 判断解码器状态 */
 	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -73,6 +75,7 @@ public class SetupActivity  extends Activity {
 		button_back.setOnClickListener(goListener);
 		codec_sel.setOnClickListener(goListener);
 		about_sel.setOnClickListener(goListener);
+		help_sel.setOnClickListener(goListener);
 	}
 
 	//按键监听
@@ -112,6 +115,9 @@ public class SetupActivity  extends Activity {
 			case R.id.about_sel:
 				startAboutMedia();
 				break;
+			case R.id.help_sel:
+				startHelpMedia();
+				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
 			}
@@ -134,4 +140,19 @@ public class SetupActivity  extends Activity {
 	   .show();
 	};
 	
+	/**
+	 * 程序帮助界面
+	 */
+	private void startHelpMedia() {
+		new AlertDialog.Builder(SetupActivity.this)
+	    .setTitle("帮助")
+	    .setMessage(R.string.codec_str)
+	    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+	        @Override
+	        public void onClick(DialogInterface dialog, int which) {
+	            //do nothing - it will close on its own
+	        }
+	     })
+	   .show();
+	};
 }
