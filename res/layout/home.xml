@@ -28,6 +28,7 @@
             <LinearLayout
                 android:id="@+id/go_live"
                 style="@style/style_home_item"
+                android:background="@drawable/sel_home_bg"
                 android:orientation="vertical" >
 
                 <ImageView
@@ -47,6 +48,7 @@
             <LinearLayout
                 android:id="@+id/go_local"
                 style="@style/style_home_item"
+                android:background="@drawable/sel_home_bg"
                 android:orientation="vertical" >
 
                 <ImageView
@@ -72,6 +74,7 @@
             <LinearLayout
                 android:id="@+id/go_userdef"
                 style="@style/style_home_item"
+                android:background="@drawable/sel_home_bg"
                 android:orientation="vertical" >
 
                 <ImageView
@@ -91,6 +94,7 @@
             <LinearLayout
                 android:id="@+id/go_setup"
                 style="@style/style_home_item"
+                android:background="@drawable/sel_home_bg"
                 android:orientation="vertical" >
 
                 <ImageView
