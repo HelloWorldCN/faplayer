@@ -87,6 +87,7 @@ public class PlayerActivity extends Activity implements
 
 	/* player controls */
 	private TextView mTitle;
+	private TextView mSource;
     private TextView mSysTime;
     private TextView mBattery;
 	private TextView mTextViewTime;
@@ -121,6 +122,7 @@ public class PlayerActivity extends Activity implements
 	
 	/* title name */
 	private String mTitleName;
+	private String mSourceName;
 
 //	private int mAudioTrackIndex = 0;
 //	private int mAudioTrackCount = 0;
@@ -380,6 +382,7 @@ public class PlayerActivity extends Activity implements
 		
 		//overlay header
 		mTitle = (TextView)findViewById(R.id.player_overlay_title);
+		mSource = (TextView)findViewById(R.id.player_overlay_name);
 		mSysTime = (TextView) findViewById(R.id.player_overlay_systime);
 		mBattery = (TextView) findViewById(R.id.player_overlay_battery);
 		mCodecMode = (TextView) findViewById(R.id.player_codec_mode);
@@ -438,6 +441,7 @@ public class PlayerActivity extends Activity implements
 			mPlayListArray = intent.getStringArrayListExtra("playlist");
 //			Log.d(LOGTAG, "===>>>" + mTitleName);
 			mTitleName = intent.getStringExtra("title");
+			mSourceName = intent.getStringExtra("source");
 		}
 		if (mPlayListArray == null || mPlayListArray.size() == 0) {
 			Log.e(LOGTAG, "initializeData(): empty");
@@ -910,6 +914,7 @@ public class PlayerActivity extends Activity implements
 		//TODO 更新当前时间信息
 		mSysTime.setText(DateFormat.format("kk:mm", System.currentTimeMillis()));
 		mTitle.setText(mTitleName);
+		mSource.setText(mSourceName);
 		mCodecMode.setText(isHardDec ? "【硬解码】" :"【软解码】");
 		
 		//仅在触摸按下时，响应触摸事件

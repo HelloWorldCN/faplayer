@@ -11,8 +11,7 @@ public class OPlayerApplication extends Application {
 	private static OPlayerApplication mApplication;
 
 	/** OPlayer SD卡缓存路径 */
-//	public static final String OPLAYER_CACHE_BASE = Environment.getExternalStorageDirectory() + "/oplayer";
-	public static final String OPLAYER_CACHE_BASE = Environment.getExternalStorageDirectory() + "/faplayer";
+	public static final String OPLAYER_CACHE_BASE = Environment.getExternalStorageDirectory() + "/kekePlayer/sd_media";
 	/** 视频截图缓冲路径 */
 	public static final String OPLAYER_VIDEO_THUMB = OPLAYER_CACHE_BASE + "/thumb/";
 	/** 首次扫描 */

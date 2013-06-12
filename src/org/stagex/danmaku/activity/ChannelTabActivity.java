@@ -153,7 +153,7 @@ public class ChannelTabActivity extends TabActivity implements
 				// set the Title and Icon
 				.setContent(R.id.ti_yu_tab));
 		// set the layout
-		
+
 		RelativeLayout tab4 = (RelativeLayout) LayoutInflater.from(this)
 				.inflate(R.layout.tab_host_ctx, null);
 		view4 = (TextView) tab4.findViewById(R.id.tab_label);
@@ -163,7 +163,7 @@ public class ChannelTabActivity extends TabActivity implements
 				// set the Title and Icon
 				.setContent(R.id.yu_le_tab));
 		// set the layout
-		
+
 		RelativeLayout tab5 = (RelativeLayout) LayoutInflater.from(this)
 				.inflate(R.layout.tab_host_ctx, null);
 		view5 = (TextView) tab5.findViewById(R.id.tab_label);
@@ -192,23 +192,23 @@ public class ChannelTabActivity extends TabActivity implements
 		yang_shi_list = (ListView) findViewById(R.id.yang_shi_tab);
 		// 防止滑动黑屏
 		yang_shi_list.setCacheColorHint(Color.TRANSPARENT);
-		
+
 		wei_shi_list = (ListView) findViewById(R.id.wei_shi_tab);
 		// 防止滑动黑屏
 		wei_shi_list.setCacheColorHint(Color.TRANSPARENT);
-		
+
 		di_fang_list = (ListView) findViewById(R.id.di_fang_tab);
 		// 防止滑动黑屏
 		di_fang_list.setCacheColorHint(Color.TRANSPARENT);
-		
+
 		ti_yu_list = (ListView) findViewById(R.id.ti_yu_tab);
 		// 防止滑动黑屏
 		ti_yu_list.setCacheColorHint(Color.TRANSPARENT);
-		
+
 		yu_le_list = (ListView) findViewById(R.id.yu_le_tab);
 		// 防止滑动黑屏
 		yu_le_list.setCacheColorHint(Color.TRANSPARENT);
-		
+
 		qi_ta_list = (ListView) findViewById(R.id.qi_ta_tab);
 		// 防止滑动黑屏
 		qi_ta_list.setCacheColorHint(Color.TRANSPARENT);
@@ -301,8 +301,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO Auto-generated method stub
 				ChannelInfo info = (ChannelInfo) yang_shi_list
 						.getItemAtPosition(arg2);
-				Log.d("ChannelInfo",
-						"name = " + info.getName() + "[" + info.getUrl() + "]");
+				// Log.d("ChannelInfo",
+				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
 				showAllSource(info.getAllUrl(), info.getName());
@@ -340,8 +340,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO Auto-generated method stub
 				ChannelInfo info = (ChannelInfo) wei_shi_list
 						.getItemAtPosition(arg2);
-				Log.d("ChannelInfo",
-						"name = " + info.getName() + "[" + info.getUrl() + "]");
+				// Log.d("ChannelInfo",
+				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
 				showAllSource(info.getAllUrl(), info.getName());
@@ -380,8 +380,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO Auto-generated method stub
 				ChannelInfo info = (ChannelInfo) di_fang_list
 						.getItemAtPosition(arg2);
-				Log.d("ChannelInfo",
-						"name = " + info.getName() + "[" + info.getUrl() + "]");
+				// Log.d("ChannelInfo",
+				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
 				showAllSource(info.getAllUrl(), info.getName());
@@ -420,8 +420,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO Auto-generated method stub
 				ChannelInfo info = (ChannelInfo) ti_yu_list
 						.getItemAtPosition(arg2);
-				Log.d("ChannelInfo",
-						"name = " + info.getName() + "[" + info.getUrl() + "]");
+				// Log.d("ChannelInfo",
+				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
 				showAllSource(info.getAllUrl(), info.getName());
@@ -444,7 +444,7 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 	}
-	
+
 	/*
 	 * 设置娱乐台源的channel list
 	 */
@@ -460,8 +460,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO Auto-generated method stub
 				ChannelInfo info = (ChannelInfo) yu_le_list
 						.getItemAtPosition(arg2);
-				Log.d("ChannelInfo",
-						"name = " + info.getName() + "[" + info.getUrl() + "]");
+				// Log.d("ChannelInfo",
+				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
 				showAllSource(info.getAllUrl(), info.getName());
@@ -484,7 +484,7 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 	}
-	
+
 	/*
 	 * 设置其他未分类台源的channel list
 	 */
@@ -500,8 +500,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// TODO Auto-generated method stub
 				ChannelInfo info = (ChannelInfo) qi_ta_list
 						.getItemAtPosition(arg2);
-				Log.d("ChannelInfo",
-						"name = " + info.getName() + "[" + info.getUrl() + "]");
+				// Log.d("ChannelInfo",
+				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
 				showAllSource(info.getAllUrl(), info.getName());
@@ -544,7 +544,8 @@ public class ChannelTabActivity extends TabActivity implements
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("1") || cinfo.getTypes().equals("1|4") || cinfo.getTypes().equals("1|5"))  {
+			if (cinfo.getTypes().equals("1") || cinfo.getTypes().equals("1|4")
+					|| cinfo.getTypes().equals("1|5")) {
 				info.add(cinfo);
 			}
 		}
@@ -559,7 +560,8 @@ public class ChannelTabActivity extends TabActivity implements
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("2") || cinfo.getTypes().equals("2|4") || cinfo.getTypes().equals("2|5")) {
+			if (cinfo.getTypes().equals("2") || cinfo.getTypes().equals("2|4")
+					|| cinfo.getTypes().equals("2|5")) {
 				info.add(cinfo);
 			}
 		}
@@ -574,7 +576,8 @@ public class ChannelTabActivity extends TabActivity implements
 
 		for (int i = 0; i < all.size(); i++) {
 			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("3") || cinfo.getTypes().equals("3|4") || cinfo.getTypes().equals("3|5")) {
+			if (cinfo.getTypes().equals("3") || cinfo.getTypes().equals("3|4")
+					|| cinfo.getTypes().equals("3|5")) {
 				info.add(cinfo);
 			}
 		}
@@ -597,7 +600,7 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 		return info;
 	}
-	
+
 	/*
 	 * 从所有的台源中解析出娱乐的台源 ==>id = 5
 	 */
@@ -629,7 +632,7 @@ public class ChannelTabActivity extends TabActivity implements
 		}
 		return info;
 	}
-	
+
 	// Listen for button clicks
 	private void setListensers() {
 		button_home.setOnClickListener(goListener);
@@ -678,7 +681,7 @@ public class ChannelTabActivity extends TabActivity implements
 
 				isTVListSuc = sharedPreferences
 						.getBoolean("isTVListSuc", false);
-				
+
 				// 发送刷新完毕的消息
 				onRefreshEnd();
 				Log.d(LOGTAG, "===> end refresh playlist");
@@ -834,9 +837,7 @@ public class ChannelTabActivity extends TabActivity implements
 	}
 
 	/**
-	 * 处理刷新的结果，判断刷新成功还是失败
-	 * 如果成功，就更新位服务器上的直播地址
-	 * 如果失败，仍采用当前的直播地址
+	 * 处理刷新的结果，判断刷新成功还是失败 如果成功，就更新位服务器上的直播地址 如果失败，仍采用当前的直播地址
 	 */
 	private void dealRefreshResult() {
 		if (isTVListSuc) {
