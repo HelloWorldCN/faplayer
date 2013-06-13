@@ -8,6 +8,8 @@ import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 import cn.waps.AdView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -31,7 +33,7 @@ public class ChannelSourceActivity extends Activity {
 	private String channel_name;
 
 	/* 顶部标题栏的控件 */
-	private ImageView button_home;
+	private ImageView button_help;
 	private TextView button_back;
 
 	@Override
@@ -40,7 +42,7 @@ public class ChannelSourceActivity extends Activity {
 		setContentView(R.layout.channel_source);
 
 		/* 顶部标题栏的控件 */
-		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_help = (ImageView) findViewById(R.id.help_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置监听 */
 		setListensers();
@@ -94,7 +96,7 @@ public class ChannelSourceActivity extends Activity {
 
 	// Listen for button clicks
 	private void setListensers() {
-		button_home.setOnClickListener(goListener);
+		button_help.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 	}
 
@@ -102,12 +104,19 @@ public class ChannelSourceActivity extends Activity {
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.home_btn:
-				// 退回主界面(homeActivity)
-				finish();
-				Intent intent = new Intent(ChannelSourceActivity.this,
-						HomeActivity.class);
-				startActivity(intent);
+			case R.id.help_btn:
+				// 显示帮助对话框
+				new AlertDialog.Builder(ChannelSourceActivity.this)
+						.setTitle("帮助")
+						.setMessage(R.string.msg_str)
+						.setNegativeButton("知道了",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// do nothing - it will close on its own
+									}
+								}).show();
 				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)

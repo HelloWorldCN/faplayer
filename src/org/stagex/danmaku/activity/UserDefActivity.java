@@ -126,9 +126,6 @@ public class UserDefActivity extends Activity {
 			case R.id.home_btn:
 				//退回主界面(homeActivity)
 				finish();
-				Intent intent = new Intent(UserDefActivity.this,
-						HomeActivity.class);
-				startActivity(intent);
 				break;
 			case R.id.back_btn:
 				//回到上一个界面(Activity)

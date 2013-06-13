@@ -38,5 +38,6 @@
     <string name="example2">mms://live.cri.cn/pop</string>
     <string name="example3">rtsp://av1.jiaodong.net/tv1</string>
     <string name="codec_str">[硬解码]\n利用您手机操作系统的接口进行解码，有利于提升性能；但是，兼容性不够，有些视频源会无法播放。\n\n[软解码]\n采用第三方的代码库，兼容性很好，但是在某些CPU能力不强的手机上，可能会影响性能，影响用户体验。\n\n[建议]\n我们推荐您根据您手机的实际情况，在设置中动态切换!</string>
+    <string name="msg_str">[搜狐视频]\n首选！高清、流畅，但每晚黄金时段，某些卫视台可能有版权问题，暂时不能观看\n\n[乐视网]\n高清，但某些台源可能会有卡顿\n\n[腾讯视频]\n高清\n\n[PPTV]\n高清、标清</string>
 
 </resources>

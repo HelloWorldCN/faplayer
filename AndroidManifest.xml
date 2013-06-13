@@ -44,7 +44,6 @@
         <activity
             android:name="org.stagex.danmaku.activity.HomeActivity"
             android:label="@string/home_title"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
