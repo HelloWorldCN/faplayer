@@ -127,7 +127,7 @@ public class SetupActivity  extends Activity {
 	private void startAboutMedia() {
 		new AlertDialog.Builder(SetupActivity.this)
 	    .setTitle("关于")
-	    .setMessage("版本：可可电视v1.1.0\n作者：可可工作室\n企鹅：1956733072\n鹅群：336809417\n联系：keke_player@163.com\n许可：FFmpeg & VLC")
+	    .setMessage(R.string.version_note)
 	    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
 	        @Override
 	        public void onClick(DialogInterface dialog, int which) {

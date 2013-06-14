@@ -33,3 +33,23 @@
 		【NOTE-3】	vlc armv7a ===> sh build.sh ABI=armeabi-v7a FPU=vfpv3-d16 TUNE=cortex-a8
 				生成libvlccore_armv7a.so，然后将前一个库拷贝至此处，然后在用eclipse编译android apk
 	3）有些地址源失效了，后续准备将播放列表放到申请的服务器上
+	
+==================
+2013-06-14 v1.2.0-beta
+	做出了重大更新，支持服务器地址更新，NEON库采用togic的，非NEON库仍采用faplayer的库
+	采用了togic的库，解决了两个问题
+	1）解决网络卡顿造成的音视频不同步的问题，例如乐视视频源
+	2）解决偶尔无法退出native线程的问题
+	新特性
+	1）服务器直播地址更新功能
+	2）直播地址源甄别
+	3）软硬解按钮切换
+	后续功能v1.3.0
+	1）界面进一步美化，操作更方便，如播放过程中切换源和解码模式
+	2）解决keke_fapleyer的上述两个问题，以替换togic的so库
+	3）本地媒体的缩略图、快进时间显示、记录播放等功能
+	注意
+	1）在v1.3.0版本之前，即解决keke_player的两个bug之前，在livetv_togic分支下开发，待解决之后，merge到livetv分支。
+	期间，非NEON库仍采用sh build.sh ABI=armeabi-v7a FPU=vfpv3-d16 TUNE=cortex-a8命令，然后拷贝togic-1.4.3的so库至
+	libs/armeabi-v7a目录即可
+	
