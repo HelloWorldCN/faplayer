@@ -25,8 +25,8 @@
 
 #define NAME(FUN) NAME2(CLASS, FUN)
 
-#define CLASS org_stagex_danmaku_player_VlcMediaPlayer
-#define PREFIX "org/stagex/danmaku/player/"
+#define CLASS com_togic_mediacenter_player_VlcMediaPlayer
+#define PREFIX "com/togic/mediacenter/player/"
 
 /* the JVM */
 JavaVM *gJVM = NULL;
@@ -176,7 +176,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
     vlc_cond_destroy(&s_VlcMediaPlayer_cond);
 }
 
-JNIEXPORT int Java_org_stagex_danmaku_helper_SystemUtility_setenv(JNIEnv *env, jclass klz, jstring key, jstring val, jboolean overwrite)
+JNIEXPORT int Java_org_stagex_danmaku_util_SystemUtility_setenv(JNIEnv *env, jclass klz, jstring key, jstring val, jboolean overwrite)
 {
     const char *key_utf8 = (*env)->GetStringUTFChars(env, key, NULL);
     const char *val_utf8 = (*env)->GetStringUTFChars(env, val, NULL);
@@ -520,7 +520,7 @@ JNIEXPORT void JNICALL NAME(nativeSeekTo)(JNIEnv *env, jobject thiz, jint msec)
     libvlc_media_player_set_time(vj->player, msec);
 }
 
-JNIEXPORT void JNICALL NAME(nativeSetDataSource)(JNIEnv *env, jobject thiz, jstring path)
+JNIEXPORT void JNICALL NAME(nativeSetDataSource)(JNIEnv *env, jobject thiz, jstring path, jstring path1, jint param)
 {
     vlc_jni_player_t *vj = vlc_jni_player_find_or_throw(env, thiz);
     const char *str = (*env)->GetStringUTFChars(env, path, 0);

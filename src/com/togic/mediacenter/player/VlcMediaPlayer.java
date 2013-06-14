@@ -10,23 +10,28 @@ import android.view.SurfaceHolder;
 
 public class VlcMediaPlayer extends AbsMediaPlayer {
 	private static final String LOGTAG = "VlcMediaPlayer";
-	
+
+	private static boolean armv7_neon = false;
+
 	static {
 		if (SystemUtility.getArmArchitecture() == 7) {
 			/* armv7 */
-			if(SystemUtility.getArmFeatures() >= 0) {
+			if (SystemUtility.getArmFeatures() >= 0) {
+				armv7_neon = true;
 				/* neon */
 				System.loadLibrary("vlccore_neon");
 				Log.d(LOGTAG, "检测到ARMV7-NEON的CPU架构");
 			} else {
-				/* armv7 NO neon*/
+				armv7_neon = false;
+				/* armv7 NO neon */
 				System.loadLibrary("vlccore_armv7a");
 				Log.d(LOGTAG, "检测到ARMV7的CPU架构");
 			}
 		} else {
+			armv7_neon = false;
 			/* armv6 */
-//			System.loadLibrary("vlccore_vfp");
-//			Log.d(LOGTAG, "检测到ARMV6的CPU架构");
+			// System.loadLibrary("vlccore_vfp");
+			// Log.d(LOGTAG, "检测到ARMV6的CPU架构");
 			Log.e(LOGTAG, "暂时不支持ARMV6的CPU架构");
 		}
 	}
@@ -73,8 +78,9 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 
 	protected native void nativeSeekTo(int msec);
 
-//	protected native void nativeSetDataSource(String path);
-	protected native void nativeSetDataSource(String path, String path1, int param);
+	// protected native void nativeSetDataSource(String path);
+	protected native void nativeSetDataSource(String path, String path1,
+			int param);
 
 	protected native void nativeSetLooping(boolean looping);
 
@@ -120,7 +126,7 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 
 	/* called by native side */
 	private void onVlcEvent(VlcEvent ev) {
-		//Log.d(LOGTAG, String.format("received vlc event %d", ev.eventType));
+		// Log.d(LOGTAG, String.format("received vlc event %d", ev.eventType));
 		switch (ev.eventType) {
 		case VlcEvent.MediaParsedChanged: {
 			if (!ev.booleanValue) {
@@ -267,7 +273,7 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 
 	@Override
 	public Boolean setDataSource(String path) {
-//		nativeSetDataSource(path);
+		// nativeSetDataSource(path);
 		nativeSetDataSource(path, null, 0);
 		return true;
 	}
@@ -275,7 +281,13 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 	@Override
 	public void setDisplay(SurfaceHolder holder) {
 		if (holder != null) {
-			holder.setFormat(PixelFormat.RGBA_8888);
+			if (armv7_neon)
+				// for togic_faplayer [armv7 NEON]
+				holder.setFormat(PixelFormat.RGBA_8888);
+			else
+				// for keke_faplayer [armv7 no NEON]
+				holder.setFormat(PixelFormat.RGB_565);
+
 			nativeAttachSurface(holder.getSurface());
 		} else
 			nativeDetachSurface();
