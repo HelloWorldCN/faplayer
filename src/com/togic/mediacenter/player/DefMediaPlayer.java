@@ -1,4 +1,4 @@
-package org.stagex.danmaku.player;
+package com.togic.mediacenter.player;
 
 import java.util.Timer;
 import java.util.TimerTask;

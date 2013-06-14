@@ -1,4 +1,4 @@
-package org.stagex.danmaku.player;
+package com.togic.mediacenter.player;
 
 import org.stagex.danmaku.util.SystemUtility;
 
@@ -73,7 +73,8 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 
 	protected native void nativeSeekTo(int msec);
 
-	protected native void nativeSetDataSource(String path);
+//	protected native void nativeSetDataSource(String path);
+	protected native void nativeSetDataSource(String path, String path1, int param);
 
 	protected native void nativeSetLooping(boolean looping);
 
@@ -266,14 +267,15 @@ public class VlcMediaPlayer extends AbsMediaPlayer {
 
 	@Override
 	public Boolean setDataSource(String path) {
-		nativeSetDataSource(path);
+//		nativeSetDataSource(path);
+		nativeSetDataSource(path, null, 0);
 		return true;
 	}
 
 	@Override
 	public void setDisplay(SurfaceHolder holder) {
 		if (holder != null) {
-			holder.setFormat(PixelFormat.RGB_565);
+			holder.setFormat(PixelFormat.RGBA_8888);
 			nativeAttachSurface(holder.getSurface());
 		} else
 			nativeDetachSurface();
