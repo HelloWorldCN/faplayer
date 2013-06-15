@@ -246,7 +246,7 @@ public class PlayerActivity extends Activity implements
 						mLoadingTxt.setVisibility(View.GONE);
 						/* TODO 用在硬解解码模式，判断不支持的源 */
 						new AlertDialog.Builder(PlayerActivity.this)
-								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setIcon(R.drawable.ic_dialog_alert)
 								.setTitle("播放失败【硬解码】")
 								.setMessage(
 										"很遗憾，该视频无法播放\n请尝试该节目【其他源】\n或切换至【软解码】模式再次尝试")
@@ -274,7 +274,7 @@ public class PlayerActivity extends Activity implements
 						mLoadingTxt.setVisibility(View.GONE);
 						// 弹出播放失败的窗口@{
 						new AlertDialog.Builder(PlayerActivity.this)
-								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setIcon(R.drawable.ic_dialog_alert)
 								.setTitle("播放失败【软解码】")
 								.setMessage(
 										"很遗憾，该视频无法播放\n请切换该频道【其他地址源】\n或观看【其他频道】")
@@ -564,7 +564,7 @@ public class PlayerActivity extends Activity implements
 			mLoadingTxt.setVisibility(View.GONE);
 			/* TODO 用在硬解解码模式，判断不支持的源 */
 			new AlertDialog.Builder(PlayerActivity.this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("播放失败【硬解码】")
 					.setMessage("很遗憾，您的硬件解码器无法播放该视频\n请切换至【软解码】再次尝试")
 					.setNegativeButton("知道了",

@@ -39,7 +39,7 @@ public class HomeActivity extends Activity {
 		// 判断CPU类型，如果低于ARMV6，则不让其运行
 		if (SystemUtility.getArmArchitecture() <= 6) {
 			new AlertDialog.Builder(HomeActivity.this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("警告")
 					.setMessage("抱歉！软件解码库暂时不支持您的CPU\n\n请到设置中选择【硬解码】模式")
 					// .setMessage("抱歉！软件解码库暂时不支持您的CPU")
@@ -60,7 +60,7 @@ public class HomeActivity extends Activity {
 			// 如果连接的是移动网络，对用户作出警告
 			if (network.isMobileNetwork())
 				new AlertDialog.Builder(HomeActivity.this)
-						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setIcon(R.drawable.ic_dialog_alert)
 						.setTitle("警告")
 						.setMessage(
 								"您正在使用移动网络，由此产生的流量费用由运营商收取！\n\n是否切换至WIFI网络？")
@@ -95,7 +95,7 @@ public class HomeActivity extends Activity {
 		} else {
 			// 如果没有网络连接
 			new AlertDialog.Builder(HomeActivity.this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("没有可用的网络")
 					.setMessage("推荐您只在WIFI模式下观看直播电视节目！\n\n是否对WIFI网络进行设置？")
 					.setPositiveButton("是",
@@ -225,7 +225,7 @@ public class HomeActivity extends Activity {
 		// 按下键盘上返回按钮
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			new AlertDialog.Builder(this)
-					.setIcon(android.R.drawable.ic_lock_power_off)
+					.setIcon(R.drawable.ic_lock_power_off)
 					.setTitle(R.string.prompt)
 					.setMessage(R.string.quit_desc)
 					.setNegativeButton(R.string.cancel,

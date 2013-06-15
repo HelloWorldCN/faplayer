@@ -141,7 +141,7 @@ public class SetupActivity extends Activity {
 	 */
 	private void startHelpMedia() {
 		new AlertDialog.Builder(SetupActivity.this)
-				.setIcon(android.R.drawable.ic_menu_help)
+				.setIcon(R.drawable.ic_menu_help)
 				.setTitle("帮助")
 				.setMessage(R.string.codec_str)
 				.setNegativeButton("知道了",

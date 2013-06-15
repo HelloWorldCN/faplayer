@@ -98,9 +98,9 @@ public class UserDefActivity extends Activity {
 				startActivity(intent);
 			} else {
 				new AlertDialog.Builder(UserDefActivity.this)
-						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setIcon(R.drawable.ic_dialog_alert)
 						.setTitle("警告")
-						.setMessage("请检查URL的合法性\n" + uri)
+						.setMessage("请检查URL的合法性：\n" + uri)
 						.setNegativeButton("知道了",
 								new DialogInterface.OnClickListener() {
 									@Override

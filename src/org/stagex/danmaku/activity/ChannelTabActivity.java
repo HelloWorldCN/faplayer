@@ -862,7 +862,7 @@ public class ChannelTabActivity extends TabActivity implements
 			if (ChannelTabActivity.this == null)
 				return;
 			new AlertDialog.Builder(ChannelTabActivity.this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("更新失败")
 					.setMessage("抱歉！服务器地址更新失败\n已为您加载备份的节目地址")
 					.setNegativeButton("知道了",
