@@ -50,8 +50,8 @@ public class PlayerActivity extends Activity implements
 		AbsMediaPlayer.OnCompletionListener, AbsMediaPlayer.OnErrorListener,
 		AbsMediaPlayer.OnInfoListener, AbsMediaPlayer.OnPreparedListener,
 		AbsMediaPlayer.OnProgressUpdateListener,
-		AbsMediaPlayer.OnVideoSizeChangedListener,
-		OnClickListener, OnSeekBarChangeListener {
+		AbsMediaPlayer.OnVideoSizeChangedListener, OnClickListener,
+		OnSeekBarChangeListener {
 
 	static final String LOGTAG = "PlayerActivity";
 
@@ -89,8 +89,8 @@ public class PlayerActivity extends Activity implements
 	/* player controls */
 	private TextView mTitle;
 	private TextView mSource;
-    private TextView mSysTime;
-    private TextView mBattery;
+	private TextView mSysTime;
+	private TextView mBattery;
 	private TextView mTextViewTime;
 	private TextView mCodecMode;
 	private SeekBar mSeekBarProgress;
@@ -119,20 +119,22 @@ public class PlayerActivity extends Activity implements
 	private int mTime = -1;
 	private int mLength = -1;
 	private boolean mCanSeek = true;
-	private int mAspectRatio = 1;				//直接全屏
-	
+	private int mAspectRatio = 1; // 直接全屏
+
 	/* title name */
 	private String mTitleName;
 	private String mSourceName;
 
-//	private int mAudioTrackIndex = 0;
-//	private int mAudioTrackCount = 0;
-//	private int mSubtitleTrackIndex = 0;
-//	private int mSubtitleTrackCount = 0;
-	
+	// private int mAudioTrackIndex = 0;
+	// private int mAudioTrackCount = 0;
+	// private int mSubtitleTrackIndex = 0;
+	// private int mSubtitleTrackCount = 0;
+
 	/**
-	 *  增加手势控制
-	 *  @{  */
+	 * 增加手势控制
+	 * 
+	 * @{
+	 */
 	private View mVolumeBrightnessLayout;
 	private ImageView mOperationBg;
 	private ImageView mOperationPercent;
@@ -146,14 +148,14 @@ public class PlayerActivity extends Activity implements
 	/** 当前缩放模式 */
 	// private int mLayout = VideoView.VIDEO_LAYOUT_ZOOM;
 	/** 响应函数是否生效的标志位 */
-	private boolean mDoHandleAll = false; 
-	private boolean mDoHandleClick= false; 
-	private boolean mDoHandleSeek = false; 
-	
+	private boolean mDoHandleAll = false;
+	private boolean mDoHandleClick = false;
+	private boolean mDoHandleSeek = false;
+
 	private static final int MSG_CTL_ALL = 0;
 	private static final int MSG_CTL_CLICK = 1;
 	private static final int MSG_CTL_SEEKBAR = 2;
-	
+
 	private GestureDetector mGestureDetector;
 	/* @} */
 
@@ -161,9 +163,10 @@ public class PlayerActivity extends Activity implements
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
 	private boolean isHardDec;
-	
+
 	/**
 	 * 判断使用的解码接口
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -176,7 +179,7 @@ public class PlayerActivity extends Activity implements
 		return obj.getClass().getName()
 				.compareTo(VlcMediaPlayer.class.getName()) == 0;
 	}
-	
+
 	/**
 	 * 播放过程中的事件响应的核心处理方法
 	 */
@@ -186,42 +189,47 @@ public class PlayerActivity extends Activity implements
 				switch (msg.what) {
 				case MEDIA_PLAYER_BUFFERING_UPDATE: {
 					if (mMediaPlayerLoaded) {
-						
-//						Log.d(LOGTAG, "===>load   " + msg.arg1 + "%");
-						mPercentTxt.setText("已缓冲===> " + String.valueOf(msg.arg1) + "%");
-						
-						mPercentTxt
-						.setVisibility(msg.arg1 < 100 ? View.VISIBLE
+
+						// Log.d(LOGTAG, "===>load   " + msg.arg1 + "%");
+						mPercentTxt.setText("已缓冲===> "
+								+ String.valueOf(msg.arg1) + "%");
+
+						mPercentTxt.setVisibility(msg.arg1 < 100 ? View.VISIBLE
 								: View.GONE);
-						
+
 						mProgressBarPreparing
 								.setVisibility(msg.arg1 < 100 ? View.VISIBLE
 										: View.GONE);
-						
-//						mLoadingTxt
-//						.setVisibility(msg.arg1 < 100 ? View.VISIBLE
-//								: View.GONE);
+
+						// mLoadingTxt
+						// .setVisibility(msg.arg1 < 100 ? View.VISIBLE
+						// : View.GONE);
 					}
 					break;
 				}
 				case MEDIA_PLAYER_COMPLETION: {
 					/* TODO 播放结束后，如何处理 */
-					//使用通知窗口
-//					Toast.makeText(getApplicationContext(),"播放结束，请按返回键", Toast.LENGTH_LONG).show();
-					//使用警告窗口 @{
+					// 使用通知窗口
+					// Toast.makeText(getApplicationContext(),"播放结束，请按返回键",
+					// Toast.LENGTH_LONG).show();
+					// 使用警告窗口 @{
 					new AlertDialog.Builder(PlayerActivity.this)
-				    .setTitle("播放结束")
-				    .setMessage("该视频已经播放结束.")
-				    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
-				        @Override
-				        public void onClick(DialogInterface dialog, int which) {
-				            //do nothing - it will close on its own
-				        	//关闭当前的PlayerActivity，退回listview的界面
-				        	finish();
-				        }
-				     })
-				   .show();
-					//@}
+							.setIcon(R.drawable.ic_about)
+							.setTitle("播放结束")
+							.setMessage("该视频已经播放结束.")
+							.setNegativeButton("知道了",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											// do nothing - it will close on its
+											// own
+											// 关闭当前的PlayerActivity，退回listview的界面
+											finish();
+										}
+									}).show();
+					// @}
 					break;
 				}
 				/* FIXME 这里的处理有待进一步细化 */
@@ -229,50 +237,61 @@ public class PlayerActivity extends Activity implements
 					Log.e(LOGTAG, "MEDIA_PLAYER_ERROR");
 					/* fall back to VlcMediaPlayer if possible */
 					if (isDefMediaPlayer(msg.obj)) {
-//						Log.i(LOGTAG, "DefMediaPlayer selectMediaPlayer（VLC）");
-//						selectMediaPlayer(
-//								mPlayListArray.get(mPlayListSelected), true);
-//						break;
+						// Log.i(LOGTAG,
+						// "DefMediaPlayer selectMediaPlayer（VLC）");
+						// selectMediaPlayer(
+						// mPlayListArray.get(mPlayListSelected), true);
+						// break;
 						mProgressBarPreparing.setVisibility(View.GONE);
 						mLoadingTxt.setVisibility(View.GONE);
 						/* TODO 用在硬解解码模式，判断不支持的源 */
 						new AlertDialog.Builder(PlayerActivity.this)
-					    .setTitle("播放失败【硬解码】")
-					    .setMessage("很遗憾，该视频无法播放\n请尝试该节目【其他源】\n或切换至【软解码】模式再次尝试")
-					    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
-					        @Override
-					        public void onClick(DialogInterface dialog, int which) {
-					            //do nothing - it will close on its own
-					        	//关闭当前的PlayerActivity，退回listview的界面
-					        	finish();
-					        }
-					     })
-					   .show();
-						//@}
-//						Log.i(LOGTAG, "get out of alert");
+								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setTitle("播放失败【硬解码】")
+								.setMessage(
+										"很遗憾，该视频无法播放\n请尝试该节目【其他源】\n或切换至【软解码】模式再次尝试")
+								.setNegativeButton("知道了",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												// do nothing - it will close on
+												// its own
+												// 关闭当前的PlayerActivity，退回listview的界面
+												finish();
+											}
+										}).show();
+						// @}
+						// Log.i(LOGTAG, "get out of alert");
 						break;
 					} else if (isVlcMediaPlayer(msg.obj)) {
-//						Log.i(LOGTAG, "VlcMediaPlayer");
+						// Log.i(LOGTAG, "VlcMediaPlayer");
 						/* destroy media player */
 						mSurfaceViewVlc.setVisibility(View.GONE);
-//						Log.i(LOGTAG, "VlcMediaPlayer update UI");
+						// Log.i(LOGTAG, "VlcMediaPlayer update UI");
 						mProgressBarPreparing.setVisibility(View.GONE);
 						mLoadingTxt.setVisibility(View.GONE);
-						//弹出播放失败的窗口@{
+						// 弹出播放失败的窗口@{
 						new AlertDialog.Builder(PlayerActivity.this)
-					    .setTitle("播放失败【软解码】")
-					    .setMessage("很遗憾，该视频无法播放\n请切换该频道【其他地址源】\n或观看【其他频道】")
-					    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
-					        @Override
-					        public void onClick(DialogInterface dialog, int which) {
-					            //do nothing - it will close on its own
-					        	//关闭当前的PlayerActivity，退回listview的界面
-					        	finish();
-					        }
-					     })
-					   .show();
-						//@}
-//						Log.i(LOGTAG, "get out of alert");
+								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setTitle("播放失败【软解码】")
+								.setMessage(
+										"很遗憾，该视频无法播放\n请切换该频道【其他地址源】\n或观看【其他频道】")
+								.setNegativeButton("知道了",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												// do nothing - it will close on
+												// its own
+												// 关闭当前的PlayerActivity，退回listview的界面
+												finish();
+											}
+										}).show();
+						// @}
+						// Log.i(LOGTAG, "get out of alert");
 						break;
 					}
 				}
@@ -319,7 +338,7 @@ public class PlayerActivity extends Activity implements
 					SurfaceView surface = isDefMediaPlayer(player) ? mSurfaceViewDef
 							: mSurfaceViewVlc;
 					int ar = mAspectRatio;
-					//根据设置，改变播放界面大小和比例
+					// 根据设置，改变播放界面大小和比例
 					changeSurfaceSize(player, surface, ar);
 					break;
 				}
@@ -380,21 +399,21 @@ public class PlayerActivity extends Activity implements
 			}
 
 		});
-		
-		//overlay header
-		mTitle = (TextView)findViewById(R.id.player_overlay_title);
-		mSource = (TextView)findViewById(R.id.player_overlay_name);
+
+		// overlay header
+		mTitle = (TextView) findViewById(R.id.player_overlay_title);
+		mSource = (TextView) findViewById(R.id.player_overlay_name);
 		mSysTime = (TextView) findViewById(R.id.player_overlay_systime);
 		mBattery = (TextView) findViewById(R.id.player_overlay_battery);
 		mCodecMode = (TextView) findViewById(R.id.player_codec_mode);
-		
-		//seekbar和两端的岂止时间
+
+		// seekbar和两端的岂止时间
 		mTextViewTime = (TextView) findViewById(R.id.player_text_position);
 		mSeekBarProgress = (SeekBar) findViewById(R.id.player_seekbar_progress);
 		mSeekBarProgress.setOnSeekBarChangeListener(this);
 		mTextViewLength = (TextView) findViewById(R.id.player_text_length);
-		
-		//播放控件
+
+		// 播放控件
 		mImageButtonToggleMessage = (ImageButton) findViewById(R.id.player_button_toggle_message);
 		mImageButtonToggleMessage.setOnClickListener(this);
 		mImageButtonSwitchAudio = (ImageButton) findViewById(R.id.player_button_switch_audio);
@@ -412,21 +431,21 @@ public class PlayerActivity extends Activity implements
 
 		mLinearLayoutControlBar = (RelativeLayout) findViewById(R.id.player_control_bar);
 
-		//缓冲进度圈
+		// 缓冲进度圈
 		mProgressBarPreparing = (ProgressBar) findViewById(R.id.player_prepairing);
-		//缓冲提示语言
-		mLoadingTxt =  (TextView)findViewById(R.id.player_loading);
-		//缓冲比例
-		mPercentTxt =  (TextView)findViewById(R.id.buffer_percent);
-		
-		//初始化手势
+		// 缓冲提示语言
+		mLoadingTxt = (TextView) findViewById(R.id.player_loading);
+		// 缓冲比例
+		mPercentTxt = (TextView) findViewById(R.id.buffer_percent);
+
+		// 初始化手势
 		initGesture();
-		
-		//初始化电量监测
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-//        filter.addAction(VLCApplication.SLEEP_INTENT);
-        registerReceiver(mReceiver, filter);
+
+		// 初始化电量监测
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+		// filter.addAction(VLCApplication.SLEEP_INTENT);
+		registerReceiver(mReceiver, filter);
 	}
 
 	protected void initializeData() {
@@ -440,7 +459,7 @@ public class PlayerActivity extends Activity implements
 		} else {
 			mPlayListSelected = intent.getIntExtra("selected", 0);
 			mPlayListArray = intent.getStringArrayListExtra("playlist");
-//			Log.d(LOGTAG, "===>>>" + mTitleName);
+			// Log.d(LOGTAG, "===>>>" + mTitleName);
 			mTitleName = intent.getStringExtra("title");
 			mSourceName = intent.getStringExtra("source");
 		}
@@ -461,7 +480,7 @@ public class PlayerActivity extends Activity implements
 		mTime = -1;
 		mLength = -1;
 		mCanSeek = true;
-		mAspectRatio = 1;			//直接全屏
+		mAspectRatio = 1; // 直接全屏
 		/* */
 		mImageButtonToggleMessage.setVisibility(View.GONE);
 		mImageButtonSwitchAudio.setVisibility(View.GONE);
@@ -483,31 +502,32 @@ public class PlayerActivity extends Activity implements
 
 	/**
 	 * TODO 选择播放器：软解（VLC）或者硬解（MP），后续可以通过设置选项让用户来选择
+	 * 
 	 * @param uri
 	 * @param forceVlc
 	 */
 	protected void selectMediaPlayer(String uri, boolean forceVlc) {
 		/* TODO: do this through configuration */
 		boolean useDefault = true;
-//		int indexOfDot = uri.lastIndexOf('.');
-//		if (indexOfDot != -1) {
-//			String extension = uri.substring(indexOfDot).toLowerCase();
-//			/* used for mms network radio */
-//			boolean mms_radio_flag = uri.contains("mms://");
-//			boolean http_live_flag = uri.contains("http://");
-//			if (extension.compareTo(".flv") == 0
-//					|| extension.compareTo(".hlv") == 0
-//					|| extension.compareTo(".m3u8") == 0
-//					|| extension.compareTo(".mkv") == 0
-//					|| extension.compareTo(".rm") == 0
-//					|| extension.compareTo(".rmvb") == 0
-//					|| extension.compareTo(".ts") == 0
-//					|| mms_radio_flag 
-//					|| http_live_flag) {
-//				useDefault = false;
-//			}
-//		}
-		
+		// int indexOfDot = uri.lastIndexOf('.');
+		// if (indexOfDot != -1) {
+		// String extension = uri.substring(indexOfDot).toLowerCase();
+		// /* used for mms network radio */
+		// boolean mms_radio_flag = uri.contains("mms://");
+		// boolean http_live_flag = uri.contains("http://");
+		// if (extension.compareTo(".flv") == 0
+		// || extension.compareTo(".hlv") == 0
+		// || extension.compareTo(".m3u8") == 0
+		// || extension.compareTo(".mkv") == 0
+		// || extension.compareTo(".rm") == 0
+		// || extension.compareTo(".rmvb") == 0
+		// || extension.compareTo(".ts") == 0
+		// || mms_radio_flag
+		// || http_live_flag) {
+		// useDefault = false;
+		// }
+		// }
+
 		if (forceVlc) {
 			useDefault = false;
 		}
@@ -517,6 +537,7 @@ public class PlayerActivity extends Activity implements
 
 	/**
 	 * 创建MP
+	 * 
 	 * @param useDefault
 	 * @param uri
 	 * @param holder
@@ -537,29 +558,32 @@ public class PlayerActivity extends Activity implements
 		mMediaPlayer.setOnVideoSizeChangedListener(this);
 		mMediaPlayer.reset();
 		mMediaPlayer.setDisplay(holder);
-		if (mMediaPlayer.setDataSource(uri) == false)  {
+		if (mMediaPlayer.setDataSource(uri) == false) {
 			/* 隐藏缓冲圈 */
 			mProgressBarPreparing.setVisibility(View.GONE);
 			mLoadingTxt.setVisibility(View.GONE);
 			/* TODO 用在硬解解码模式，判断不支持的源 */
 			new AlertDialog.Builder(PlayerActivity.this)
-		    .setTitle("播放失败【硬解码】")
-		    .setMessage("很遗憾，您的硬件解码器无法播放该视频\n请切换至【软解码】再次尝试")
-		    .setNegativeButton("知道了", new DialogInterface.OnClickListener() {
-		        @Override
-		        public void onClick(DialogInterface dialog, int which) {
-		            //do nothing - it will close on its own
-		        	//关闭当前的PlayerActivity，退回listview的界面
-		        	finish();
-		        }
-		     })
-		   .show();
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle("播放失败【硬解码】")
+					.setMessage("很遗憾，您的硬件解码器无法播放该视频\n请切换至【软解码】再次尝试")
+					.setNegativeButton("知道了",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// do nothing - it will close on its own
+									// 关闭当前的PlayerActivity，退回listview的界面
+									finish();
+								}
+							}).show();
 		}
 		mMediaPlayer.prepareAsync();
 	}
 
 	/**
 	 * 销毁MP
+	 * 
 	 * @param isDefault
 	 */
 	protected void destroyMediaPlayer(boolean isDefault) {
@@ -575,13 +599,14 @@ public class PlayerActivity extends Activity implements
 	 * 启动播放器
 	 */
 	protected void startMediaPlayer() {
-//		Log.i(LOGTAG, "startMediaPlayer() ");
+		// Log.i(LOGTAG, "startMediaPlayer() ");
 		if (mMediaPlayerStarted || !mMediaPlayerLoaded) {
-//			Log.i(LOGTAG, "(mMediaPlayerStarted || !mMediaPlayerLoaded) return");
+			// Log.i(LOGTAG,
+			// "(mMediaPlayerStarted || !mMediaPlayerLoaded) return");
 			return;
 		}
 		if (mMediaPlayer != null) {
-//			Log.i(LOGTAG, "mMediaPlayer.start()");
+			// Log.i(LOGTAG, "mMediaPlayer.start()");
 			mMediaPlayer.start();
 			mMediaPlayerStarted = true;
 		}
@@ -589,6 +614,7 @@ public class PlayerActivity extends Activity implements
 
 	/**
 	 * TODO 处理surface的界面比例
+	 * 
 	 * @param player
 	 * @param surface
 	 * @param ar
@@ -653,47 +679,45 @@ public class PlayerActivity extends Activity implements
 		surface.setLayoutParams(lp);
 		surface.invalidate();
 	}
-	
+
 	/**
 	 * 入口方法
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//播放事件初始化
+		// 播放事件初始化
 		initializeEvents();
-		//加载布局
+		// 加载布局
 		setContentView(R.layout.player);
-		//播放控件初始化
+		// 播放控件初始化
 		initializeControls();
-		//缓冲环显示
+		// 缓冲环显示
 		mProgressBarPreparing.setVisibility(View.VISIBLE);
-		//缓冲提示语
+		// 缓冲提示语
 		mLoadingTxt.setVisibility(View.VISIBLE);
-		//数据初始化
+		// 数据初始化
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
-		//选择播放器
+		// 选择播放器
 
 		/* 判断解码器状态 */
-	    sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
-	    editor = sharedPreferences.edit();
-	    isHardDec = sharedPreferences.getBoolean("isHardDec", false);
-	    if (isHardDec)
-	    {
-			//选择系统硬解码
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		isHardDec = sharedPreferences.getBoolean("isHardDec", false);
+		if (isHardDec) {
+			// 选择系统硬解码
 			selectMediaPlayer(uri, false);
-	    }  else
-	    {
-			//强制选择VLC播放器
+		} else {
+			// 强制选择VLC播放器
 			selectMediaPlayer(uri, true);
-	    }
+		}
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		//注销电量检测事件
+		// 注销电量检测事件
 		unregisterReceiver(mReceiver);
 	}
 
@@ -717,25 +741,25 @@ public class PlayerActivity extends Activity implements
 	public void onClick(View v) {
 		if (!mMediaPlayerLoaded)
 			return;
-		
-		//如果有click事件，也阻止控件隐藏
+
+		// 如果有click事件，也阻止控件隐藏
 		mDoHandleAll = false;
 		mDoHandleClick = true;
 		mDoHandleSeek = false;
 		endCTLGesture(MSG_CTL_CLICK);
-		
+
 		int id = v.getId();
 		switch (id) {
 		case R.id.player_button_switch_audio: {
-			//TODO 暂不做处理
+			// TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_switch_subtitle: {
-			//TODO 暂不做处理
+			// TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_previous: {
-			//TODO 暂不做处理
+			// TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_toggle_play: {
@@ -755,7 +779,7 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 		case R.id.player_button_next: {
-			//TODO 暂不做处理
+			// TODO 暂不做处理
 			break;
 		}
 		case R.id.player_button_switch_aspect_ratio: {
@@ -773,22 +797,23 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 	}
-	
+
 	/**
 	 * seekbar的响应方法
+	 * 
 	 * @{
 	 */
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		/* not used */
-//		Log.v(LOGTAG, "-----Progress-----");
+		// Log.v(LOGTAG, "-----Progress-----");
 	}
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
 		/* not used */
-//		Log.v(LOGTAG, "-----start seek---------");
+		// Log.v(LOGTAG, "-----start seek---------");
 		mDoHandleAll = false;
 		mDoHandleClick = false;
 		mDoHandleSeek = true;
@@ -805,7 +830,7 @@ public class PlayerActivity extends Activity implements
 				int position = seekBar.getProgress();
 				if (mMediaPlayer != null)
 					mMediaPlayer.seekTo(position);
-//				Log.v(LOGTAG, "-------seek end--------");
+				// Log.v(LOGTAG, "-------seek end--------");
 				/* seek结束了，可做控件隐藏的相应处理 */
 				endCTLGesture(MSG_CTL_SEEKBAR);
 			}
@@ -815,10 +840,12 @@ public class PlayerActivity extends Activity implements
 			break;
 		}
 	}
-	/** @} */	
-	
+
+	/** @} */
+
 	/**
 	 * 以下：接收事件，做中间处理，再调用handleMessage方法处理之
+	 * 
 	 * @{
 	 */
 	@Override
@@ -888,8 +915,9 @@ public class PlayerActivity extends Activity implements
 		msg.arg2 = height;
 		mEventHandler.sendMessage(msg);
 	}
+
 	/** @} */
-	
+
 	/**
 	 * 初始化手势控制
 	 */
@@ -897,34 +925,34 @@ public class PlayerActivity extends Activity implements
 		mVolumeBrightnessLayout = findViewById(R.id.operation_volume_brightness);
 		mOperationBg = (ImageView) findViewById(R.id.operation_bg);
 		mOperationPercent = (ImageView) findViewById(R.id.operation_percent);
-	
+
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		mMaxVolume = mAudioManager
 				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-	
+
 		mGestureDetector = new GestureDetector(this, new MyGestureListener());
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		/* 首先处理touch事件（因为废弃了onTouch事件了）*/
+		/* 首先处理touch事件（因为废弃了onTouch事件了） */
 		if (!mMediaPlayerLoaded) {
 			return true;
 		}
-		
-		//TODO 更新当前时间信息
+
+		// TODO 更新当前时间信息
 		mSysTime.setText(DateFormat.format("kk:mm", System.currentTimeMillis()));
 		mTitle.setText(mTitleName);
 		mSource.setText(mSourceName);
-		mCodecMode.setText(isHardDec ? "【硬解码】" :"【软解码】");
-		
-		//仅在触摸按下时，响应触摸事件
+		mCodecMode.setText(isHardDec ? "【硬解码】" : "【软解码】");
+
+		// 仅在触摸按下时，响应触摸事件
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			int visibility = mLinearLayoutControlBar.getVisibility();
-			//加上判断之后可以在连续触摸的时候，到达其延时后仍可隐藏
+			// 加上判断之后可以在连续触摸的时候，到达其延时后仍可隐藏
 			if (visibility != View.VISIBLE) {
 				mLinearLayoutControlBar.setVisibility(View.VISIBLE);
-				//延时一段时间后隐藏
+				// 延时一段时间后隐藏
 				mDoHandleAll = true;
 				mDoHandleClick = false;
 				mDoHandleSeek = false;
@@ -936,72 +964,72 @@ public class PlayerActivity extends Activity implements
 				mLinearLayoutControlBar.setVisibility(View.GONE);
 			}
 		}
-		
-		//处理音量和亮度调节手势事件
+
+		// 处理音量和亮度调节手势事件
 		if (mGestureDetector.onTouchEvent(event))
 			return true;
-	
+
 		// 处理手势结束
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_UP:
-			endALGesture();			//结束音量和亮度调节手势
+			endALGesture(); // 结束音量和亮度调节手势
 			break;
 		}
-	
+
 		return super.onTouchEvent(event);
 	}
-	
+
 	/** 结束音量和亮度调节手势 */
 	private void endALGesture() {
 		mVolume = -1;
 		mBrightness = -1f;
-	
+
 		// 隐藏
 		mDismissALHandler.removeMessages(0);
 		mDismissALHandler.sendEmptyMessageDelayed(0, 500);
 	}
-	
+
 	/** 结束控制接口触摸 */
 	private void endCTLGesture(int msg) {
 		// 隐藏
 		mDismissCTLHandler.removeMessages(msg);
 		mDismissCTLHandler.sendEmptyMessageDelayed(msg, 5000);
 	}
-	
+
 	private class MyGestureListener extends SimpleOnGestureListener {
-	
-		 /** TODO 双击（改变分辨率） */
-		 @Override
-		 public boolean onDoubleTap(MotionEvent e) {
-//		 if (mLayout == VideoView.VIDEO_LAYOUT_ZOOM)
-//		 mLayout = VideoView.VIDEO_LAYOUT_ORIGIN;
-//		 else
-//		 mLayout++;
-//		 if (mVideoView != null)
-//		 mVideoView.setVideoLayout(mLayout, 0);
-		 return true;
-		 }
-	
+
+		/** TODO 双击（改变分辨率） */
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			// if (mLayout == VideoView.VIDEO_LAYOUT_ZOOM)
+			// mLayout = VideoView.VIDEO_LAYOUT_ORIGIN;
+			// else
+			// mLayout++;
+			// if (mVideoView != null)
+			// mVideoView.setVideoLayout(mLayout, 0);
+			return true;
+		}
+
 		/** 滑动 */
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2,
 				float distanceX, float distanceY) {
-//			Log.v(LOGTAG, "--------" + e1 );
+			// Log.v(LOGTAG, "--------" + e1 );
 			float mOldX = e1.getX(), mOldY = e1.getY();
 			int y = (int) e2.getRawY();
 			Display disp = getWindowManager().getDefaultDisplay();
 			int windowWidth = disp.getWidth();
 			int windowHeight = disp.getHeight();
-	
+
 			if (mOldX > windowWidth * 4.0 / 5)// 右边滑动
 				onVolumeSlide((mOldY - y) / windowHeight);
 			else if (mOldX < windowWidth / 5.0)// 左边滑动
 				onBrightnessSlide((mOldY - y) / windowHeight);
-	
+
 			return super.onScroll(e1, e2, distanceX, distanceY);
 		}
 	}
-	
+
 	/** 定时隐藏音量和亮度图标 */
 	private Handler mDismissALHandler = new Handler() {
 		@Override
@@ -1009,12 +1037,12 @@ public class PlayerActivity extends Activity implements
 			mVolumeBrightnessLayout.setVisibility(View.GONE);
 		}
 	};
-	
+
 	/** 定时隐藏播放控件 */
 	private Handler mDismissCTLHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-//			Log.v(LOGTAG, "-----msg.what------" + msg.what);
+			// Log.v(LOGTAG, "-----msg.what------" + msg.what);
 			switch (msg.what) {
 			case MSG_CTL_ALL:
 				if (mDoHandleAll) {
@@ -1039,7 +1067,7 @@ public class PlayerActivity extends Activity implements
 			}
 		}
 	};
-	
+
 	/**
 	 * 滑动改变声音大小
 	 * 
@@ -1050,28 +1078,28 @@ public class PlayerActivity extends Activity implements
 			mVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 			if (mVolume < 0)
 				mVolume = 0;
-	
+
 			// 显示
 			mOperationBg.setImageResource(R.drawable.video_volumn_bg);
 			mVolumeBrightnessLayout.setVisibility(View.VISIBLE);
 		}
-	
+
 		int index = (int) (percent * mMaxVolume) + mVolume;
 		if (index > mMaxVolume)
 			index = mMaxVolume;
 		else if (index < 0)
 			index = 0;
-	
+
 		// 变更声音
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
-	
+
 		// 变更进度条
 		ViewGroup.LayoutParams lp = mOperationPercent.getLayoutParams();
 		lp.width = findViewById(R.id.operation_full).getLayoutParams().width
 				* index / mMaxVolume;
 		mOperationPercent.setLayoutParams(lp);
 	}
-	
+
 	/**
 	 * 滑动改变亮度
 	 * 
@@ -1084,7 +1112,7 @@ public class PlayerActivity extends Activity implements
 				mBrightness = 0.50f;
 			if (mBrightness < 0.01f)
 				mBrightness = 0.01f;
-	
+
 			// 显示
 			mOperationBg.setImageResource(R.drawable.video_brightness_bg);
 			mVolumeBrightnessLayout.setVisibility(View.VISIBLE);
@@ -1096,33 +1124,31 @@ public class PlayerActivity extends Activity implements
 		else if (lpa.screenBrightness < 0.01f)
 			lpa.screenBrightness = 0.01f;
 		getWindow().setAttributes(lpa);
-	
+
 		ViewGroup.LayoutParams lp = mOperationPercent.getLayoutParams();
 		lp.width = (int) (findViewById(R.id.operation_full).getLayoutParams().width * lpa.screenBrightness);
 		mOperationPercent.setLayoutParams(lp);
 	}
-	
-	//电池电量检测
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action = intent.getAction();
-            if (action.equalsIgnoreCase(Intent.ACTION_BATTERY_CHANGED)) {
-                int batteryLevel = intent.getIntExtra("level", 0);
-//                Log.v(LOGTAG, "---->get batteryLevel = " + batteryLevel);
-                if (batteryLevel >= 50)
-                    mBattery.setTextColor(Color.GREEN);
-                else if (batteryLevel >= 30)
-                    mBattery.setTextColor(Color.YELLOW);
-                else
-                    mBattery.setTextColor(Color.RED);
-                mBattery.setText(String.format("%d%%", batteryLevel));
-            }
-//            else if (action.equalsIgnoreCase(VLCApplication.SLEEP_INTENT)) {
-//                finish();
-//            }
-        }
-    };
+
+	// 电池电量检测
+	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equalsIgnoreCase(Intent.ACTION_BATTERY_CHANGED)) {
+				int batteryLevel = intent.getIntExtra("level", 0);
+				// Log.v(LOGTAG, "---->get batteryLevel = " + batteryLevel);
+				if (batteryLevel >= 50)
+					mBattery.setTextColor(Color.GREEN);
+				else if (batteryLevel >= 30)
+					mBattery.setTextColor(Color.YELLOW);
+				else
+					mBattery.setTextColor(Color.RED);
+				mBattery.setText(String.format("%d%%", batteryLevel));
+			}
+			// else if (action.equalsIgnoreCase(VLCApplication.SLEEP_INTENT)) {
+			// finish();
+			// }
+		}
+	};
 }
