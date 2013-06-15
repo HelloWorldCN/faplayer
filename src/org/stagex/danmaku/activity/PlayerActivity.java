@@ -249,8 +249,25 @@ public class PlayerActivity extends Activity implements
 								.setIcon(R.drawable.ic_dialog_alert)
 								.setTitle("播放失败【硬解码】")
 								.setMessage(
-										"很遗憾，该视频无法播放\n请尝试该节目【其他源】\n或切换至【软解码】模式再次尝试")
-								.setNegativeButton("知道了",
+										"很遗憾，该视频无法播放\n请尝试该节目【其他源】\n或切换至【软解码】模式再次尝试\n现在切换解码模式吗？")
+								.setPositiveButton("是",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												// do nothing - it will close on
+												// its own
+												Intent intent = new Intent();
+												// 跳转至设置界面
+												intent.setClass(
+														PlayerActivity.this,
+														SetupActivity.class);
+												startActivity(intent);
+												finish();
+											}
+										})
+								.setNegativeButton("否",
 										new DialogInterface.OnClickListener() {
 											@Override
 											public void onClick(
@@ -566,8 +583,23 @@ public class PlayerActivity extends Activity implements
 			new AlertDialog.Builder(PlayerActivity.this)
 					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("播放失败【硬解码】")
-					.setMessage("很遗憾，您的硬件解码器无法播放该视频\n请切换至【软解码】再次尝试")
-					.setNegativeButton("知道了",
+					.setMessage("很遗憾，您的硬件解码器无法播放该视频\n请切换至【软解码】再次尝试\n现在切换解码模式吗？")
+					.setPositiveButton("是",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// do nothing - it will close on
+									// its own
+									Intent intent = new Intent();
+									// 跳转至设置界面
+									intent.setClass(PlayerActivity.this,
+											SetupActivity.class);
+									startActivity(intent);
+									finish();
+								}
+							})
+					.setNegativeButton("否",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,

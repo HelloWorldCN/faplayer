@@ -43,13 +43,18 @@ public class HomeActivity extends Activity {
 					.setTitle("警告")
 					.setMessage("抱歉！软件解码库暂时不支持您的CPU\n\n请到设置中选择【硬解码】模式")
 					// .setMessage("抱歉！软件解码库暂时不支持您的CPU")
-					.setNegativeButton("知道了",
+					.setPositiveButton("设置",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// do nothing - it will close on its own
-									// android.os.Process.killProcess(android.os.Process.myPid());
+									// do nothing - it will close on
+									// its own
+									Intent intent = new Intent();
+									// 跳转至设置界面
+									intent.setClass(HomeActivity.this,
+											SetupActivity.class);
+									startActivity(intent);
 								}
 							}).show();
 		}
