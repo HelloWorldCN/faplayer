@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -30,33 +31,43 @@ public class HomeActivity extends Activity {
 	private LinearLayout button_userdef;
 	private LinearLayout button_setup;
 
+	private SharedPreferences sharedPreferences;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+
 		// 判断CPU类型，如果低于ARMV6，则不让其运行
 		if (SystemUtility.getArmArchitecture() <= 6) {
-			new AlertDialog.Builder(HomeActivity.this)
-					.setIcon(R.drawable.ic_dialog_alert)
-					.setTitle("警告")
-					.setMessage("抱歉！软件解码库暂时不支持您的CPU\n\n请到设置中选择【硬解码】模式")
-					// .setMessage("抱歉！软件解码库暂时不支持您的CPU")
-					.setPositiveButton("设置",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// do nothing - it will close on
-									// its own
-									Intent intent = new Intent();
-									// 跳转至设置界面
-									intent.setClass(HomeActivity.this,
-											SetupActivity.class);
-									startActivity(intent);
-								}
-							}).show();
+			// 如果已经是硬解码模式，则无需设置
+			boolean isHardDec = sharedPreferences
+					.getBoolean("isHardDec", false);
+			if (isHardDec) {
+				// do nothing
+			} else
+				new AlertDialog.Builder(HomeActivity.this)
+						.setIcon(R.drawable.ic_dialog_alert)
+						.setTitle("警告")
+						.setMessage("抱歉！软件解码库暂时不支持您的CPU\n\n请到设置中选择【硬解码】模式，且只能使用硬解码")
+						// .setMessage("抱歉！软件解码库暂时不支持您的CPU")
+						.setPositiveButton("设置",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// do nothing - it will close on
+										// its own
+										Intent intent = new Intent();
+										// 跳转至设置界面
+										intent.setClass(HomeActivity.this,
+												SetupActivity.class);
+										startActivity(intent);
+									}
+								}).show();
 		}
 
 		Network network = new Network(this);
