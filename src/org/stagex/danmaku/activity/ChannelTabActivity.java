@@ -96,7 +96,7 @@ public class ChannelTabActivity extends TabActivity implements
 		button_back = (TextView) findViewById(R.id.back_btn);
 		button_refresh = (ImageView) findViewById(R.id.refresh_btn);
 		/* 旋转图标 */
-		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.tip);
+		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.refresh);
 		lin = new LinearInterpolator();
 		operatingAnim.setInterpolator(lin);
 
@@ -725,8 +725,8 @@ public class ChannelTabActivity extends TabActivity implements
 		FTPClient ftpClient = new FTPClient();
 		FileOutputStream fos = null;
 
-		// 3秒钟，如果超过就判定超时了
-		ftpClient.setConnectTimeout(3000);
+		// 5秒钟，如果超过就判定超时了
+		ftpClient.setConnectTimeout(5000);
 
 		// 假设更新列表成功
 		editor.putBoolean("isTVListSuc", true);

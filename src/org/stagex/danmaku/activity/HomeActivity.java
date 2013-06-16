@@ -16,7 +16,11 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import cn.waps.AppConnect;
@@ -33,11 +37,26 @@ public class HomeActivity extends Activity {
 
 	private SharedPreferences sharedPreferences;
 
+	/* 旋转图标 */
+	private Animation operatingAnim;
+	private LinearInterpolator lin;
+	private ImageView homeImage;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
+
+		/* 旋转图标 */
+		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.icon);
+		lin = new LinearInterpolator();
+		operatingAnim.setInterpolator(lin);
+		homeImage = (ImageView) findViewById(R.id.home_icon);
+		// 开始转圈
+		if (operatingAnim != null) {
+			homeImage.startAnimation(operatingAnim);
+		}
 
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 
@@ -52,7 +71,8 @@ public class HomeActivity extends Activity {
 				new AlertDialog.Builder(HomeActivity.this)
 						.setIcon(R.drawable.ic_dialog_alert)
 						.setTitle("警告")
-						.setMessage("抱歉！软件解码库暂时不支持您的CPU\n\n请到设置中选择【硬解码】模式，且只能使用硬解码")
+						.setMessage(
+								"抱歉！软件解码库暂时不支持您的CPU\n\n请到设置中选择【硬解码】模式，且只能使用硬解码")
 						// .setMessage("抱歉！软件解码库暂时不支持您的CPU")
 						.setPositiveButton("设置",
 								new DialogInterface.OnClickListener() {
@@ -267,6 +287,8 @@ public class HomeActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		// 停止转圈
+		homeImage.clearAnimation();
 		// 关闭广告
 		AppConnect.getInstance(this).finalize();
 		// System.exit(0);

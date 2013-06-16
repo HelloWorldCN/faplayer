@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		button_refresh = (ImageView) findViewById(R.id.refresh_btn);
 		
 		/* 旋转图标 */
-		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.tip);
+		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.refresh);
 		lin = new LinearInterpolator();  
 		operatingAnim.setInterpolator(lin);
 		
