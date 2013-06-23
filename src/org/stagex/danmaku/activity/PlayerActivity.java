@@ -17,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -161,8 +160,9 @@ public class PlayerActivity extends Activity implements
 
 	/* 记录硬解码与软解码的状态 */
 	private SharedPreferences sharedPreferences;
-	private Editor editor;
 	private boolean isHardDec;
+	/* 记录直播电视还是本地媒体状态 */
+	private boolean isLiveMedia;
 
 	/**
 	 * 判断使用的解码接口
@@ -213,22 +213,56 @@ public class PlayerActivity extends Activity implements
 					// Toast.makeText(getApplicationContext(),"播放结束，请按返回键",
 					// Toast.LENGTH_LONG).show();
 					// 使用警告窗口 @{
-					new AlertDialog.Builder(PlayerActivity.this)
-							.setIcon(R.drawable.ic_about)
-							.setTitle("播放结束")
-							.setMessage("该视频已经播放结束.")
-							.setNegativeButton("知道了",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											// do nothing - it will close on its
-											// own
-											// 关闭当前的PlayerActivity，退回listview的界面
-											finish();
-										}
-									}).show();
+					// FIXME 判断当前是否是直播电视状态，如果是，则此时的结束播放
+					// 是由于网络链接中断引起的，立即重新启动@{
+					isLiveMedia = sharedPreferences.getBoolean("isLiveMedia",
+							true);
+					if (isLiveMedia) {
+						// 缓冲环显示
+						mProgressBarPreparing.setVisibility(View.VISIBLE);
+						// 缓冲提示语
+						mLoadingTxt.setVisibility(View.VISIBLE);
+						Log.d(LOGTAG,
+								"reconnect the Media Server in LiveTV mode");
+						if (sharedPreferences.getBoolean("isHardDec", false)) {
+							// 硬解码重新连接媒体服务器
+							destroyMediaPlayer(true);
+							selectMediaPlayer(
+									mPlayListArray.get(mPlayListSelected),
+									false);
+							createMediaPlayer(true,
+									mPlayListArray.get(mPlayListSelected),
+									mSurfaceHolderDef);
+							mMediaPlayer.setDisplay(mSurfaceHolderDef);
+						} else {
+							// 软解码重新连接媒体服务器
+							destroyMediaPlayer(false);
+							selectMediaPlayer(
+									mPlayListArray.get(mPlayListSelected), true);
+							createMediaPlayer(false,
+									mPlayListArray.get(mPlayListSelected),
+									mSurfaceHolderVlc);
+							mMediaPlayer.setDisplay(mSurfaceHolderVlc);
+						}
+					} else
+						// @}
+						new AlertDialog.Builder(PlayerActivity.this)
+								.setIcon(R.drawable.ic_about)
+								.setTitle("播放结束")
+								.setMessage("该视频已经播放结束.")
+								.setNegativeButton("知道了",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												// do nothing - it will close on
+												// its
+												// own
+												// 关闭当前的PlayerActivity，退回listview的界面
+												finish();
+											}
+										}).show();
 					// @}
 					break;
 				}
@@ -620,6 +654,9 @@ public class PlayerActivity extends Activity implements
 	 */
 	protected void destroyMediaPlayer(boolean isDefault) {
 		boolean testDefault = isDefMediaPlayer(mMediaPlayer);
+		// add by juguofeng 2013-06-23
+		mMediaPlayerStarted = false;
+		// end add
 		if (isDefault == testDefault) {
 			mMediaPlayer.setDisplay(null);
 			mMediaPlayer.release();
@@ -735,7 +772,6 @@ public class PlayerActivity extends Activity implements
 
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
-		editor = sharedPreferences.edit();
 		isHardDec = sharedPreferences.getBoolean("isHardDec", false);
 		if (isHardDec) {
 			// 选择系统硬解码
@@ -976,7 +1012,7 @@ public class PlayerActivity extends Activity implements
 		mSysTime.setText(DateFormat.format("kk:mm", System.currentTimeMillis()));
 		mTitle.setText(mTitleName);
 		mSource.setText(mSourceName);
-		mCodecMode.setText(isHardDec ? "【硬解码】" : "【软解码】");
+		mCodecMode.setText(isHardDec ? "[硬解码]" : "[软解码]");
 
 		// 仅在触摸按下时，响应触摸事件
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {

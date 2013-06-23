@@ -11,16 +11,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import cn.waps.AppConnect;
@@ -36,6 +33,7 @@ public class HomeActivity extends Activity {
 	private LinearLayout button_setup;
 
 	private SharedPreferences sharedPreferences;
+	private Editor editor;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -44,6 +42,7 @@ public class HomeActivity extends Activity {
 		setContentView(R.layout.home);
 
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
 
 		// 判断CPU类型，如果低于ARMV6，则不让其运行
 		if (SystemUtility.getArmArchitecture() <= 6) {
@@ -183,9 +182,15 @@ public class HomeActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.go_local:
+				//标记为本地媒体
+				editor.putBoolean("isLiveMedia", false);
+				editor.commit();
 				startLocalMedia();
 				break;
 			case R.id.go_live:
+				//标记为直播电视媒体
+				editor.putBoolean("isLiveMedia", true);
+				editor.commit();
 				startLiveMedia();
 				break;
 			case R.id.go_userdef:
