@@ -26,7 +26,8 @@ public class FragmentBase extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_file, container, false);
 		mListView = (ListView) v.findViewById(android.R.id.list);
 		mLoadingLayout = v.findViewById(R.id.loading);
@@ -47,9 +48,11 @@ public class FragmentBase extends Fragment {
 			mParent.unregisterReceiver(receiver);
 	}
 
-	public void registerContentObserver(Uri uri, boolean notifyForDescendents, ContentObserver observer) {
+	public void registerContentObserver(Uri uri, boolean notifyForDescendents,
+			ContentObserver observer) {
 		if (mParent != null)
-			mParent.getContentResolver().registerContentObserver(uri, notifyForDescendents, observer);
+			mParent.getContentResolver().registerContentObserver(uri,
+					notifyForDescendents, observer);
 	}
 
 	public void unregisterContentObserver(ContentObserver observer) {

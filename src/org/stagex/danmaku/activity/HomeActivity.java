@@ -37,26 +37,11 @@ public class HomeActivity extends Activity {
 
 	private SharedPreferences sharedPreferences;
 
-	/* 旋转图标 */
-	private Animation operatingAnim;
-	private LinearInterpolator lin;
-	private ImageView homeImage;
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
-
-		/* 旋转图标 */
-		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.icon);
-		lin = new LinearInterpolator();
-		operatingAnim.setInterpolator(lin);
-		homeImage = (ImageView) findViewById(R.id.home_icon);
-		// 开始转圈
-		if (operatingAnim != null) {
-			homeImage.startAnimation(operatingAnim);
-		}
 
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 
@@ -287,8 +272,6 @@ public class HomeActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		// 停止转圈
-		homeImage.clearAnimation();
 		// 关闭广告
 		AppConnect.getInstance(this).finalize();
 		// System.exit(0);
