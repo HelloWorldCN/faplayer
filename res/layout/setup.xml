@@ -120,7 +120,6 @@
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:id="@+id/o1"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:orientation="horizontal" >
@@ -144,9 +143,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <include
-        android:id="@+id/divider1"
-        layout="@layout/layout_divider_horizontal" />
+    <include layout="@layout/layout_divider_horizontal" />
 
     <RelativeLayout
         android:id="@+id/help_sel"
@@ -159,7 +156,6 @@
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:id="@+id/o1"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:orientation="horizontal" >
@@ -169,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_help" />
+                android:src="@drawable/ic_about" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -177,9 +173,119 @@
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
-                android:text="帮助"
+                android:text="解码模式"
                 android:textColor="#ff4b4949"
                 android:textSize="15sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/feedback_sel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/sel_setup_list"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_feedback" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="信息反馈"
+                android:textColor="#ff0000ff"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/update_sel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/sel_setup_list"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_pulldown_refresh" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="检查更新"
+                android:textColor="#ff4b4949"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/appList_sel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/sel_setup_list"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_applist" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="精品应用推荐"
+                android:textColor="#ff0000ff"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
 
