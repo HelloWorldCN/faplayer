@@ -1,6 +1,8 @@
 package org.stagex.danmaku.activity;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.keke.player.R;
 import org.stagex.danmaku.util.SystemUtility;
@@ -28,6 +30,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -43,6 +46,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PlayerActivity extends Activity implements
 		AbsMediaPlayer.OnBufferingUpdateListener,
@@ -1219,4 +1223,40 @@ public class PlayerActivity extends Activity implements
 			// }
 		}
 	};
+
+	/**
+	 * 菜单、返回键响应
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			exitBy2Click(); // 调用双击退出函数
+		}
+		return false;
+	}
+
+	/**
+	 * 双击退出函数
+	 */
+	private static Boolean isExit = false;
+
+	private void exitBy2Click() {
+		Timer tExit = null;
+		if (isExit == false) {
+			isExit = true; // 准备退出
+			Toast.makeText(this, "再按一次退出播放", Toast.LENGTH_SHORT).show();
+			tExit = new Timer();
+			TimerTask mTimerTask = new TimerTask() {
+				@Override
+				public void run() {
+					isExit = false; // 取消退出
+				}
+			};
+			tExit.schedule(mTimerTask, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+		} else {
+			finish();
+		}
+	}
+
 }
