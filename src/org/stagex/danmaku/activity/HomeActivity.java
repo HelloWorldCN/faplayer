@@ -83,7 +83,7 @@ public class HomeActivity extends Activity {
 						.setIcon(R.drawable.ic_dialog_alert)
 						.setTitle("警告")
 						.setMessage(
-								"您正在使用移动网络，由此产生的流量费用由运营商收取！\n\n是否切换至WIFI网络？")
+								"您正在使用2G/3G网络，由此产生的流量费用由网络运营商收取！\n\n是否切换至Wi-Fi网络？")
 						.setPositiveButton("是",
 								new DialogInterface.OnClickListener() {
 									@Override
@@ -117,7 +117,7 @@ public class HomeActivity extends Activity {
 			new AlertDialog.Builder(HomeActivity.this)
 					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("没有可用的网络")
-					.setMessage("推荐您只在WIFI模式下观看直播电视节目！\n\n是否对WIFI网络进行设置？")
+					.setMessage("推荐您只在Wi-Fi模式下观看直播电视节目！\n\n是否对Wi-Fi网络进行设置？")
 					.setPositiveButton("是",
 							new DialogInterface.OnClickListener() {
 								@Override
@@ -182,13 +182,13 @@ public class HomeActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.go_local:
-				//标记为本地媒体
+				// 标记为本地媒体
 				editor.putBoolean("isLiveMedia", false);
 				editor.commit();
 				startLocalMedia();
 				break;
 			case R.id.go_live:
-				//标记为直播电视媒体
+				// 标记为直播电视媒体
 				editor.putBoolean("isLiveMedia", true);
 				editor.commit();
 				startLiveMedia();
@@ -229,9 +229,33 @@ public class HomeActivity extends Activity {
 	 * 用户自定义网络视频播放界面
 	 */
 	private void startUserdefMedia() {
-		Intent intent = new Intent();
-		intent.setClass(HomeActivity.this, UserDefActivity.class);
-		startActivity(intent);
+		// 选择哪一种自定义列表加载形式
+		new AlertDialog.Builder(HomeActivity.this)
+				.setIcon(R.drawable.ic_dialog_alert)
+				.setTitle("温馨提示")
+				.setMessage("输入直播网络地址？\nor\n加载SD卡中的地址列表文件？")
+				.setPositiveButton("输入网址",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent();
+								intent.setClass(HomeActivity.this,
+										UserDefActivity.class);
+								startActivity(intent);
+							}
+						})
+				.setNegativeButton("加载列表",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent();
+								intent.setClass(HomeActivity.this,
+										UserLoadActivity.class);
+								startActivity(intent);
+							}
+						}).show();
 	};
 
 	/**
