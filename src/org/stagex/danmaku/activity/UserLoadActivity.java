@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +48,8 @@ public class UserLoadActivity extends Activity {
 	private ChannelLoadAdapter mSourceAdapter;
 	private List<ChannelInfo> infos;
 
+	private WebView mWebView;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,6 +59,8 @@ public class UserLoadActivity extends Activity {
 		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		button_search = (ImageView) findViewById(R.id.search_btn);
+
+		mWebView = (WebView) findViewById(R.id.wv);
 
 		/* 设置监听 */
 		setListensers();
@@ -67,6 +73,8 @@ public class UserLoadActivity extends Activity {
 				+ "/kekePlayer/tvlist.txt";
 		File listFile = new File(path);
 		if (listFile.exists()) {
+			mTvList.setVisibility(View.VISIBLE);
+			mWebView.setVisibility(View.GONE);
 			// 解析本地的自定义列表
 			infos = ParseUtil.parseDef(this, path);
 
@@ -85,8 +93,7 @@ public class UserLoadActivity extends Activity {
 				}
 			});
 		} else
-			showHelp();
-
+			readHtmlFormAssets();
 	}
 
 	// Listen for button clicks
@@ -128,21 +135,24 @@ public class UserLoadActivity extends Activity {
 		}
 	};
 
+	// 显示帮助对话框
 	private void showHelp() {
-		new AlertDialog.Builder(UserLoadActivity.this)
-				.setIcon(R.drawable.ic_dialog_alert)
-				.setTitle("温馨提示")
-				.setMessage(
-						"请将您的自定义列表存放到SD卡目录的kekePlayer文件夹下，并命名为tvlist.txt\n[注意]"
-								+ "\n存储格式为：\n\n[节目名][英文逗号][合法的http地址]\n\n上面的括号不需要输入\n"
-								+ "如有疑问，请加QQ：1956733072\n推荐用户到[奇珀网]下载节目列表资源")
-				.setNegativeButton("知道了",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// do nothing - it will close on its own
-							}
-						}).show();
+		readHtmlFormAssets();
+	}
+
+	// 利用webview来显示帮助的文本信息
+	private void readHtmlFormAssets() {
+		mTvList.setVisibility(View.GONE);
+		mWebView.setVisibility(View.VISIBLE);
+		WebSettings webSettings = mWebView.getSettings();
+
+		webSettings.setLoadWithOverviewMode(true);
+		// WebView双击变大，再双击后变小，当手动放大后，双击可以恢复到原始大小
+		// webSettings.setUseWideViewPort(true);
+		// 设置WebView可触摸放大缩小：
+		// webSettings.setBuiltInZoomControls(true);
+		// WebView 背景透明效果
+		mWebView.setBackgroundColor(Color.TRANSPARENT);
+		mWebView.loadUrl("file:///android_asset/html/tvList_help.html");
 	}
 }
