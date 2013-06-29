@@ -1,8 +1,10 @@
 package org.stagex.danmaku.util;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +85,7 @@ public class ParseUtil {
 				list.add(info);
 			}
 
-			Log.d("ParseUtil", "nums = " + nums);
+			Log.d("ParseUtil", "tvlist nums = " + nums);
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -96,64 +98,40 @@ public class ParseUtil {
 	// 解析本地自定义的列表
 	public static List<ChannelInfo> parseDef(Context context, String tvList) {
 		List<ChannelInfo> list = new ArrayList<ChannelInfo>();
-		StringBuffer stringBuffer = new StringBuffer();
-		int len = -1;
-		int all = 0;
+		int nums = 0;
 
 		try {
-			byte[] readBuffer = new byte[1024];
-			// pathFlag为true，表示采用更新后的地址
-			// pathFlag为false，表示采用assert目录下默认地址
+			InputStream is = new FileInputStream(tvList);
+			InputStreamReader ir = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(ir);
+			try {
+				while (true) {
+					String line = br.readLine();
+					if (line == null)
+						break;
 
-			FileInputStream fos = new FileInputStream(tvList);
-			while ((len = fos.read(readBuffer)) != -1) {
-				all += len;
-				String readString = new String(readBuffer, 0, len);
-				stringBuffer.append(readString);
-			}
-			fos.close();
+					String[] pair = line.split(",");
+					if (pair.length != 2)
+						continue;
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Log.d("ParseUtil",
-				"all = " + all + " buff len = " + stringBuffer.length());
-
-		try {
-			JSONArray arr = new JSONArray(stringBuffer.toString());
-
-			int nums = arr.length();
-
-			for (int i = 0; i < nums; i++) {
-				JSONObject obj = arr.getJSONObject(i);
-				int id = obj.getInt("channel_id");
-				String name = obj.getString("channel_name");
-				String icon_url = obj.getString("icon_url");
-				String mode = obj.getString("mode");
-				String url = obj.getString("url");
-				JSONArray secArr = obj.getJSONArray("second_url");
-				int size = secArr.length();
-				String[] second_url = null;
-				if (size > 0) {
-					second_url = new String[size];
-					for (int j = 0; j < size; j++) {
-						second_url[j] = (String) secArr.get(j);
-					}
+					nums++;
+					String name = pair[0].trim();
+					String url = pair[1].trim();
+					ChannelInfo info = new ChannelInfo(0, name, null, null,
+							url, null, null);
+					list.add(info);
 				}
-				String types = obj.getString("types");
-				ChannelInfo info = new ChannelInfo(id, name, icon_url, mode,
-						url, second_url, types);
-				list.add(info);
+			} finally {
+				br.close();
+				ir.close();
+				is.close();
 			}
-
-			Log.d("ParseUtil", "nums = " + nums);
-
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		Log.d("ParseUtil", "user define tvlist nums = " + nums);
 
 		return list;
 	}
