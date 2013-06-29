@@ -34,12 +34,9 @@
     <string name="user_def_hint">请输入网络地址...</string>
     <string name="user_def_open">打开</string>
     <string name="user_def_clear">清除</string>
-    <string name="example1">例如：\n\nhttp://devimages.apple.com/iphone/samples/bipbop/gear1/prog_index.m3u8</string>
-    <string name="example2">mms://live.cri.cn/pop</string>
-    <string name="example3">rtsp://av1.jiaodong.net/tv1</string>
-    <string name="codec_str">[硬解码]\n利用您手机操作系统的接口进行解码，有利于提升性能；但是，兼容性不够，有些视频源会无法播放。\n\n[软解码]\n采用第三方的代码库，兼容性很好，但是在某些CPU能力不强的手机上，可能会影响性能，影响用户体验。\n\n[建议]\n我们推荐您根据您手机的实际情况，在设置中动态切换!</string>
-    <string name="msg_str">[搜狐视频]\n首选！高清、流畅，但每晚黄金时段，某些卫视台可能有版权问题，暂时不能观看\n\n[乐视网]\n高清，但某些台源可能会有卡顿\n\n[腾讯视频]\n高清\n\n[CNTV]\n高清、标清，央视网络专有频道\n\n[PPTV]\n高清、标清</string>
-    <string name="version_note">版本：可可电视v1.2.0\n作者：可可工作室\n企鹅：1956733072\n鹅群：336809417\n联系：keke_player@163.com\n许可：FFmpeg &amp; VLC</string>
+    <string name="example1">例如：\n\nhttp://www.example.com/stream.avi</string>
+    <string name="example2">mms://mms.examples.com/stream.asx</string>
+    <string name="example3">rtsp://server.example.org:8080/test.sdp</string>
     <string name="appList_btn">应用推荐</string>
 
 </resources>

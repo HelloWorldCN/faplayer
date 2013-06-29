@@ -210,9 +210,8 @@
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
                 android:text="信息反馈"
-                android:textColor="#ff0000ff"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textColor="#ff4b4949"
+                android:textSize="15sp" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -284,8 +283,7 @@
                 android:gravity="center"
                 android:text="精品应用推荐"
                 android:textColor="#ff0000ff"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="15sp" />
         </LinearLayout>
     </RelativeLayout>
 

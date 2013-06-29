@@ -8,6 +8,7 @@ import cn.waps.AppConnect;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -126,10 +127,12 @@ public class SetupActivity extends Activity {
 				AppConnect.getInstance(SetupActivity.this).showFeedback();
 				break;
 			case R.id.update_sel:
-				AppConnect.getInstance(SetupActivity.this).checkUpdate(SetupActivity.this);
+				AppConnect.getInstance(SetupActivity.this).checkUpdate(
+						SetupActivity.this);
 				break;
 			case R.id.appList_sel:
-				AppConnect.getInstance(SetupActivity.this).showOffers(SetupActivity.this);
+				AppConnect.getInstance(SetupActivity.this).showOffers(
+						SetupActivity.this);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
@@ -141,35 +144,19 @@ public class SetupActivity extends Activity {
 	 * 程序关于界面
 	 */
 	private void startAboutMedia() {
-		new AlertDialog.Builder(SetupActivity.this)
-				.setIcon(R.drawable.ic_about)
-				.setTitle("关于")
-				.setMessage(R.string.version_note)
-				.setNegativeButton("知道了",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// do nothing - it will close on its own
-							}
-						}).show();
-	};
+		Intent intent = new Intent(SetupActivity.this, MessageActivity.class);
+		intent.putExtra("msgPath", "about.html");
+		intent.putExtra("msgName", "关于");
+		startActivity(intent);
+	}
 
 	/**
 	 * 程序帮助界面
 	 */
 	private void startHelpMedia() {
-		new AlertDialog.Builder(SetupActivity.this)
-				.setIcon(R.drawable.ic_menu_help)
-				.setTitle("帮助")
-				.setMessage(R.string.codec_str)
-				.setNegativeButton("知道了",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// do nothing - it will close on its own
-							}
-						}).show();
-	};
+		Intent intent = new Intent(SetupActivity.this, MessageActivity.class);
+		intent.putExtra("msgPath", "codec.html");
+		intent.putExtra("msgName", "解码模式介绍");
+		startActivity(intent);
+	}
 }

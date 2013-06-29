@@ -105,19 +105,11 @@ public class ChannelSourceActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.help_btn:
-				// 显示帮助对话框
-				new AlertDialog.Builder(ChannelSourceActivity.this)
-						.setIcon(R.drawable.ic_msg)
-						.setTitle("节目源介绍")
-						.setMessage(R.string.msg_str)
-						.setNegativeButton("知道了",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// do nothing - it will close on its own
-									}
-								}).show();
+				// 显示帮助
+				Intent intent = new Intent(ChannelSourceActivity.this, MessageActivity.class);
+				intent.putExtra("msgPath", "source.html");
+				intent.putExtra("msgName", "节目源介绍");
+				startActivity(intent);
 				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)

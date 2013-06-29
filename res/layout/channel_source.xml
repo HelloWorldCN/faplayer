@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/help_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_msg" />
+            android:src="@drawable/sel_source" />
 
         <include layout="@layout/layout_divider_header" />
 
