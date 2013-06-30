@@ -101,14 +101,18 @@ public class ParseUtil {
 		List<ChannelInfo> list = new ArrayList<ChannelInfo>();
 		int nums = 0;
 		String code = "GBK";
-		
+		String privName = null;
+		String first_url = null;
+		ArrayList<String> list_url = new ArrayList<String>();
+
 		try {
+			// 探测txt文件的编码格式
 			code = codeString(tvList);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		try {
 			InputStream is = new FileInputStream(tvList);
 			InputStreamReader ir = new InputStreamReader(is, code);
@@ -116,9 +120,17 @@ public class ParseUtil {
 			try {
 				while (true) {
 					String line = br.readLine();
-					if (line == null)
+					if (line == null) {
+						// 最后一组节目源
+						String[] second_url = new String[list_url.size()];
+						list_url.toArray(second_url);
+						ChannelInfo info = new ChannelInfo(0, privName, null,
+								null, first_url, second_url, null);
+						list.add(info);
 						break;
+					}
 
+					// 如果不符合要求（节目名和节目地址以英文逗号隔开）直接忽略该行
 					String[] pair = line.split(",");
 					if (pair.length != 2)
 						continue;
@@ -126,12 +138,23 @@ public class ParseUtil {
 					nums++;
 					String name = pair[0].trim();
 					String url = pair[1].trim();
-					//TODO 合并相同节目名称的源
-					
-					//end
-					ChannelInfo info = new ChannelInfo(0, name, null, null,
-							url, null, null);
-					list.add(info);
+					// TODO 合并相同节目名称的源
+					if (name.equals(privName))
+						list_url.add(url);
+					else {
+						if (privName != null) {
+							// 保存节目源
+							String[] second_url = new String[list_url.size()];
+							list_url.toArray(second_url);
+							ChannelInfo info = new ChannelInfo(0, privName,
+									null, null, first_url, second_url, null);
+							list.add(info);
+						}
+						list_url.clear();
+						first_url = url;
+						privName = name;
+					}
+					// end
 				}
 			} finally {
 				br.close();
@@ -175,9 +198,9 @@ public class ParseUtil {
 		default:
 			code = "GBK";
 		}
-		
+
 		bin.close();
-		
+
 		return code;
 	}
 }

@@ -1,26 +1,17 @@
 package org.stagex.danmaku.activity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ChannelLoadAdapter;
-import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 import org.stagex.danmaku.util.ParseUtil;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -29,7 +20,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -89,7 +79,7 @@ public class UserLoadActivity extends Activity {
 					ChannelInfo info = (ChannelInfo) mTvList
 							.getItemAtPosition(arg2);
 
-					startLiveMedia(info.getUrl(), info.getName());
+					startLiveMedia(info.getAllUrl(), info.getName());
 				}
 			});
 		} else
@@ -104,13 +94,11 @@ public class UserLoadActivity extends Activity {
 	}
 
 	// 打开网络媒体
-	private void startLiveMedia(String liveUrl, String name) {
-		Intent intent = new Intent(UserLoadActivity.this, PlayerActivity.class);
-		ArrayList<String> playlist = new ArrayList<String>();
-		playlist.add(liveUrl);
-		intent.putExtra("selected", 0);
-		intent.putExtra("playlist", playlist);
-		intent.putExtra("title", name);
+	private void startLiveMedia(ArrayList<String> all_url, String name) {
+		Intent intent = new Intent(UserLoadActivity.this,
+				ChannelSourceActivity.class);
+		intent.putExtra("all_url", all_url);
+		intent.putExtra("channel_name", name);
 		startActivity(intent);
 	}
 

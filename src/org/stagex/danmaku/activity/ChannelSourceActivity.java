@@ -8,8 +8,6 @@ import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 import cn.waps.AdView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
