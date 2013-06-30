@@ -1086,7 +1086,12 @@ public class PlayerActivity extends Activity implements
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2,
 				float distanceX, float distanceY) {
-			// Log.v(LOGTAG, "--------" + e1 );
+			// 异常处理
+			if (e1 == null || e2 == null) {
+				Log.e(LOGTAG, "get MotionEvent value null");
+				return true;
+			}
+
 			float mOldX = e1.getX(), mOldY = e1.getY();
 			int y = (int) e2.getRawY();
 			Display disp = getWindowManager().getDefaultDisplay();

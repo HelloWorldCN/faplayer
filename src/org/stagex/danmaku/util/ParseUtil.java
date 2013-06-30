@@ -1,5 +1,6 @@
 package org.stagex.danmaku.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -99,10 +100,18 @@ public class ParseUtil {
 	public static List<ChannelInfo> parseDef(Context context, String tvList) {
 		List<ChannelInfo> list = new ArrayList<ChannelInfo>();
 		int nums = 0;
-
+		String code = "GBK";
+		
+		try {
+			code = codeString(tvList);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try {
 			InputStream is = new FileInputStream(tvList);
-			InputStreamReader ir = new InputStreamReader(is);
+			InputStreamReader ir = new InputStreamReader(is, code);
 			BufferedReader br = new BufferedReader(ir);
 			try {
 				while (true) {
@@ -117,6 +126,9 @@ public class ParseUtil {
 					nums++;
 					String name = pair[0].trim();
 					String url = pair[1].trim();
+					//TODO 合并相同节目名称的源
+					
+					//end
 					ChannelInfo info = new ChannelInfo(0, name, null, null,
 							url, null, null);
 					list.add(info);
@@ -134,5 +146,38 @@ public class ParseUtil {
 		Log.d("ParseUtil", "user define tvlist nums = " + nums);
 
 		return list;
+	}
+
+	/**
+	 * 判断文件的编码格式
+	 * 
+	 * @param fileName
+	 *            :file
+	 * @return 文件编码格式
+	 * @throws Exception
+	 */
+	private static String codeString(String fileName) throws Exception {
+		BufferedInputStream bin = new BufferedInputStream(new FileInputStream(
+				fileName));
+		int p = (bin.read() << 8) + bin.read();
+		String code = null;
+
+		switch (p) {
+		case 0xefbb:
+			code = "UTF-8";
+			break;
+		case 0xfffe:
+			code = "Unicode";
+			break;
+		case 0xfeff:
+			code = "UTF-16BE";
+			break;
+		default:
+			code = "GBK";
+		}
+		
+		bin.close();
+		
+		return code;
 	}
 }
