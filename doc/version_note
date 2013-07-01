@@ -52,4 +52,11 @@
 	1）在v1.3.0版本之前，即解决keke_player的两个bug之前，在livetv_togic分支下开发，待解决之后，merge到livetv分支。
 	期间，非NEON库仍采用sh build.sh ABI=armeabi-v7a FPU=vfpv3-d16 TUNE=cortex-a8命令，然后拷贝togic-1.4.3的so库至
 	libs/armeabi-v7a目录即可
+
+==================
+2013-07-01 v1.2.2
+	1）修复一些节目源出现播放结束的bug
+	2）支持加载自定义的播放列表文件
+	3）修复部分崩溃的bug
+	
 	
