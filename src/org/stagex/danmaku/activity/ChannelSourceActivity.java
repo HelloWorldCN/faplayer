@@ -6,6 +6,7 @@ import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 
 import cn.waps.AdView;
+import cn.waps.AppConnect;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,7 +32,8 @@ public class ChannelSourceActivity extends Activity {
 	private String channel_name;
 
 	/* 顶部标题栏的控件 */
-	private ImageView button_help;
+	private ImageView button_source;
+	private ImageView button_applist;
 	private TextView button_back;
 
 	@Override
@@ -40,7 +42,8 @@ public class ChannelSourceActivity extends Activity {
 		setContentView(R.layout.channel_source);
 
 		/* 顶部标题栏的控件 */
-		button_help = (ImageView) findViewById(R.id.help_btn);
+		button_source = (ImageView) findViewById(R.id.source_btn);
+		button_applist = (ImageView) findViewById(R.id.applist_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置监听 */
 		setListensers();
@@ -94,7 +97,8 @@ public class ChannelSourceActivity extends Activity {
 
 	// Listen for button clicks
 	private void setListensers() {
-		button_help.setOnClickListener(goListener);
+		button_source.setOnClickListener(goListener);
+		button_applist.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 	}
 
@@ -102,7 +106,7 @@ public class ChannelSourceActivity extends Activity {
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.help_btn:
+			case R.id.source_btn:
 				// 显示帮助
 				Intent intent = new Intent(ChannelSourceActivity.this, MessageActivity.class);
 				intent.putExtra("msgPath", "source.html");
@@ -112,6 +116,11 @@ public class ChannelSourceActivity extends Activity {
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
 				finish();
+				break;
+			case R.id.applist_btn:
+				// 回到上一个界面(Activity)
+				AppConnect.getInstance(ChannelSourceActivity.this).showOffers(
+						ChannelSourceActivity.this);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");

@@ -194,7 +194,7 @@ public class HomeActivity extends Activity {
 				startLiveMedia();
 				break;
 			case R.id.go_userdef:
-				startUserdefMedia();
+				startUserLoadMedia();
 				break;
 			case R.id.go_setup:
 				startSetupMedia();
@@ -228,35 +228,11 @@ public class HomeActivity extends Activity {
 	/**
 	 * 用户自定义网络视频播放界面
 	 */
-	private void startUserdefMedia() {
-		// 选择哪一种自定义列表加载形式
-		new AlertDialog.Builder(HomeActivity.this)
-				.setIcon(R.drawable.ic_dialog_alert)
-				.setTitle("温馨提示")
-				.setMessage("输入直播网络地址？\nor\n加载SD卡中的地址列表文件？")
-				.setPositiveButton("输入网址",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent intent = new Intent();
-								intent.setClass(HomeActivity.this,
-										UserDefActivity.class);
-								startActivity(intent);
-							}
-						})
-				.setNegativeButton("加载列表",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent intent = new Intent();
-								intent.setClass(HomeActivity.this,
-										UserLoadActivity.class);
-								startActivity(intent);
-							}
-						}).show();
-	};
+	private void startUserLoadMedia() {
+		Intent intent = new Intent();
+		intent.setClass(HomeActivity.this, UserLoadActivity.class);
+		startActivity(intent);
+	}
 
 	/**
 	 * 用户设置界面

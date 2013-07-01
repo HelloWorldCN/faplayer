@@ -81,7 +81,7 @@
                 <ImageView
                     android:id="@+id/userdef_media"
                     style="@style/style_home_item_img"
-                    android:src="@drawable/sel_fav" />
+                    android:src="@drawable/sel_def" />
 
                 <TextView
                     style="@style/style_home_item_text"

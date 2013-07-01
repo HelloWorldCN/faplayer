@@ -30,9 +30,9 @@ public class UserLoadActivity extends Activity {
 	private static final String LOGTAG = "UserLoadActivity";
 
 	/* 顶部标题栏的控件 */
-	private ImageView button_home;
 	private TextView button_back;
 	private ImageView button_search;
+	private ImageView button_edit;
 	/* ListView */
 	private ListView mTvList;
 	private ChannelLoadAdapter mSourceAdapter;
@@ -46,9 +46,9 @@ public class UserLoadActivity extends Activity {
 		setContentView(R.layout.user_load);
 
 		/* 顶部标题栏的控件 */
-		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		button_search = (ImageView) findViewById(R.id.search_btn);
+		button_edit = (ImageView) findViewById(R.id.edit_btn);
 
 		mWebView = (WebView) findViewById(R.id.wv);
 
@@ -88,9 +88,9 @@ public class UserLoadActivity extends Activity {
 
 	// Listen for button clicks
 	private void setListensers() {
-		button_home.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 		button_search.setOnClickListener(goListener);
+		button_edit.setOnClickListener(goListener);
 	}
 
 	// 打开网络媒体
@@ -106,16 +106,18 @@ public class UserLoadActivity extends Activity {
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.home_btn:
-				// 退回主界面(homeActivity)
-				finish();
-				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
 				finish();
 				break;
 			case R.id.search_btn:
 				showHelp();
+				break;
+			case R.id.edit_btn:
+				// 用户自己输入网址
+				Intent intent = new Intent();
+				intent.setClass(UserLoadActivity.this, UserDefActivity.class);
+				startActivity(intent);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");

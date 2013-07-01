@@ -15,22 +15,16 @@
         <ImageView
             android:id="@+id/search_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_search" />
+            android:src="@drawable/sel_about" />
 
         <include
             android:id="@+id/search_devide"
             layout="@layout/layout_divider_header" />
 
         <ImageView
-            android:id="@+id/home_btn"
+            android:id="@+id/edit_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_home" />
-
-        <ImageView
-            android:id="@+id/refresh_btn"
-            style="@style/style_content_header_img"
-            android:src="@drawable/ic_refresh"
-            android:visibility="gone" />
+            android:src="@drawable/sel_edit" />
     </LinearLayout>
 
     <ListView

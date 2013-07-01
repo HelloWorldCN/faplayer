@@ -13,20 +13,19 @@
             android:text="@string/live_btn" />
 
         <ImageView
-            android:id="@+id/help_btn"
+            android:id="@+id/source_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_source" />
+            android:src="@drawable/sel_about" />
 
         <include layout="@layout/layout_divider_header" />
 
         <ImageView
-            android:id="@+id/search"
+            android:id="@+id/applist_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_search"
-            android:visibility="gone" />
+            android:src="@drawable/sel_applist" />
 
         <include
-            android:id="@+id/search_devide"
+            android:id="@+id/applist_devide"
             layout="@layout/layout_divider_header"
             android:visibility="gone" />
 

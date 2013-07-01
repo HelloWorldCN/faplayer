@@ -26,7 +26,6 @@ public class UserDefActivity extends Activity {
 	Button mButtonPlay = null;
 
 	/* 顶部标题栏的控件 */
-	private ImageView button_home;
 	private TextView button_back;
 	/* 文本编辑框 */
 	private Button button_clear;
@@ -37,7 +36,6 @@ public class UserDefActivity extends Activity {
 		setContentView(R.layout.user_def);
 
 		/* 顶部标题栏的控件 */
-		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 文本编辑框 */
 		button_clear = (Button) findViewById(R.id.clear_play);
@@ -50,7 +48,6 @@ public class UserDefActivity extends Activity {
 
 	// Listen for button clicks
 	private void setListensers() {
-		button_home.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 		button_clear.setOnClickListener(goListener);
 		mButtonPlay.setOnClickListener(goListener);
@@ -117,10 +114,6 @@ public class UserDefActivity extends Activity {
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.home_btn:
-				// 退回主界面(homeActivity)
-				finish();
-				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
 				finish();
