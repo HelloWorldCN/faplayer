@@ -657,14 +657,17 @@ public class PlayerActivity extends Activity implements
 	 * @param isDefault
 	 */
 	protected void destroyMediaPlayer(boolean isDefault) {
-		boolean testDefault = isDefMediaPlayer(mMediaPlayer);
-		// add by juguofeng 2013-06-23
-		mMediaPlayerStarted = false;
-		// end add
-		if (isDefault == testDefault) {
-			mMediaPlayer.setDisplay(null);
-			mMediaPlayer.release();
-			mMediaPlayer = null;
+		// FIXME 2013-07-02
+		if (mMediaPlayer != null) {
+			boolean testDefault = isDefMediaPlayer(mMediaPlayer);
+			// add by juguofeng 2013-06-23
+			mMediaPlayerStarted = false;
+			// end add
+			if (isDefault == testDefault) {
+				mMediaPlayer.setDisplay(null);
+				mMediaPlayer.release();
+				mMediaPlayer = null;
+			}
 		}
 	}
 
