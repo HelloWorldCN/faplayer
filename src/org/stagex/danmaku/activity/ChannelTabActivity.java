@@ -739,7 +739,7 @@ public class ChannelTabActivity extends TabActivity implements
 			// 设置编码格式
 			ftpClient.setControlEncoding("UTF-8");
 			// 连接服务器
-			ftpClient.connect("ftp92147.host217.web519.com");
+			ftpClient.connect("182.18.22.50");
 
 			reply = ftpClient.getReplyCode();
 			if (!FTPReply.isPositiveCompletion(reply)) {
@@ -755,7 +755,7 @@ public class ChannelTabActivity extends TabActivity implements
 			ftpClient.login("ftp92147", "950288@kk");
 
 			// 此处不需要Data前面的"/"
-			String remoteFileName = "Data/channel_list_cn.list.api2";
+			String remoteFileName = "/ftp92147/Data/channel_list_cn.list.api2";
 			// 此处要注意必须加上channel_list_cn.list.api2前面的"/"
 			fos = new FileOutputStream(Environment
 					.getExternalStorageDirectory().getPath()
