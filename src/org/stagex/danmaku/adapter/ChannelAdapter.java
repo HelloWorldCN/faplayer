@@ -8,10 +8,15 @@ import java.net.URL;
 import java.util.List;
 
 import org.keke.player.R;
+import org.stagex.danmaku.activity.ChannelSourceActivity;
+import org.stagex.danmaku.activity.TvProgramActivity;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.Visibility;
@@ -19,8 +24,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChannelAdapter extends BaseAdapter {
 	private List<ChannelInfo> infos;
@@ -62,6 +69,44 @@ public class ChannelAdapter extends BaseAdapter {
 		ImageView imageView = (ImageView) view.findViewById(R.id.channel_icon);
 		ImageView hotView = (ImageView) view.findViewById(R.id.hot_icon);
 		ImageView newView = (ImageView) view.findViewById(R.id.new_icon);
+
+		// TODO 节目预告
+		ImageView programView = (ImageView) view
+				.findViewById(R.id.program_icon);
+		programView.setTag(position);
+		programView.setOnClickListener(new ImageView.OnClickListener() {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// Toast.makeText(
+				// mContext,
+				// "您单击了[" + infos.get((Integer) v.getTag()).getName()
+				// + "]", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(mContext, TvProgramActivity.class);
+				String channel_name = infos.get((Integer) v.getTag()).getName();
+				String program_path = infos.get((Integer) v.getTag()).getProgram_path();
+				if (program_path == null) {
+					new AlertDialog.Builder(mContext)
+							.setIcon(R.drawable.ic_dialog_alert)
+							.setTitle("警告")
+							.setMessage("暂时没有该电视台的节目预告！")
+							.setPositiveButton("知道了",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											// do nothing - it will close on
+											// its own
+										}
+									}).show();
+				} else {
+					intent.putExtra("ProgramPath", program_path);
+					intent.putExtra("ChannelName", channel_name);
+					mContext.startActivity(intent);
+				}
+			}
+		});
+
 		text.setText(infos.get(position).getName());
 		// 判断是否是热门频道，暂时使用HOT字样
 		if (infos.get(position).getMode().equalsIgnoreCase("HOT"))

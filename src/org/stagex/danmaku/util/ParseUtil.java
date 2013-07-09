@@ -25,7 +25,13 @@ public class ParseUtil {
 		StringBuffer stringBuffer = new StringBuffer();
 		int len = -1;
 		int all = 0;
-
+		
+		/* TODO 为了便于测试直播地址，特地在这里加一行代码，强制
+		 * 使用本地asset的下的地址，测试通过之后，再上传服务器
+		 */
+		pathFlag = false;
+		/* end */
+		
 		try {
 			byte[] readBuffer = new byte[1024];
 			// pathFlag为true，表示采用更新后的地址
@@ -81,8 +87,11 @@ public class ParseUtil {
 					}
 				}
 				String types = obj.getString("types");
+				String path = null;
+				if (obj.has("path"))
+					path = obj.getString("path");
 				ChannelInfo info = new ChannelInfo(id, name, icon_url, mode,
-						url, second_url, types);
+						url, second_url, types, path);
 				list.add(info);
 			}
 
@@ -125,7 +134,7 @@ public class ParseUtil {
 						String[] second_url = new String[list_url.size()];
 						list_url.toArray(second_url);
 						ChannelInfo info = new ChannelInfo(0, privName, null,
-								null, first_url, second_url, null);
+								null, first_url, second_url, null, null);
 						list.add(info);
 						break;
 					}
@@ -147,7 +156,7 @@ public class ParseUtil {
 							String[] second_url = new String[list_url.size()];
 							list_url.toArray(second_url);
 							ChannelInfo info = new ChannelInfo(0, privName,
-									null, null, first_url, second_url, null);
+									null, null, first_url, second_url, null, null);
 							list.add(info);
 						}
 						list_url.clear();

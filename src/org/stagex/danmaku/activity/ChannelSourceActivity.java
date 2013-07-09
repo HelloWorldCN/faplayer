@@ -9,6 +9,8 @@ import cn.waps.AdView;
 import cn.waps.AppConnect;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ public class ChannelSourceActivity extends Activity {
 	private ChannelSourceAdapter mSourceAdapter;
 	private ArrayList<String> infos;
 	private String channel_name;
+	private String program_path;
 
 	/* 顶部标题栏的控件 */
 	private ImageView button_source;
@@ -76,6 +79,7 @@ public class ChannelSourceActivity extends Activity {
 		if (infos == null)
 			Log.e(LOGTAG, "infos is null");
 		channel_name = intent.getStringExtra("channel_name");
+		program_path = intent.getStringExtra("program_path");
 		text.setText(channel_name);
 
 		mSourceAdapter = new ChannelSourceAdapter(this, infos);
@@ -108,10 +112,31 @@ public class ChannelSourceActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.source_btn:
 				// 显示帮助
-				Intent intent = new Intent(ChannelSourceActivity.this, MessageActivity.class);
-				intent.putExtra("msgPath", "source.html");
-				intent.putExtra("msgName", "节目源介绍");
-				startActivity(intent);
+				Intent intent = new Intent(ChannelSourceActivity.this,
+						TvProgramActivity.class);
+				// intent.putExtra("msgPath", "source.html");
+				// intent.putExtra("msgName", "节目源介绍");
+				if (program_path == null) {
+					new AlertDialog.Builder(ChannelSourceActivity.this)
+							.setIcon(R.drawable.ic_dialog_alert)
+							.setTitle("警告")
+							.setMessage(
+									"暂时没有该电视台的节目预告！")
+							.setPositiveButton("知道了",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											// do nothing - it will close on
+											// its own
+										}
+									}).show();
+				} else {
+					intent.putExtra("ProgramPath", program_path);
+					intent.putExtra("ChannelName", channel_name);
+					startActivity(intent);
+				}
 				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)

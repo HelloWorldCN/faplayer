@@ -305,7 +305,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName(),
+						info.getProgram_path());
 			}
 		});
 		yang_shi_list.setOnScrollListener(new OnScrollListener() {
@@ -344,7 +345,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName(),
+						info.getProgram_path());
 			}
 		});
 
@@ -384,7 +386,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName(),
+						info.getProgram_path());
 			}
 		});
 
@@ -424,7 +427,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName(),
+						info.getProgram_path());
 			}
 		});
 
@@ -464,7 +468,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName(),
+						info.getProgram_path());
 			}
 		});
 
@@ -504,7 +509,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName());
+				showAllSource(info.getAllUrl(), info.getName(),
+						info.getProgram_path());
 			}
 		});
 
@@ -528,11 +534,13 @@ public class ChannelTabActivity extends TabActivity implements
 	/**
 	 * 显示所有的台源
 	 */
-	private void showAllSource(ArrayList<String> all_url, String name) {
+	private void showAllSource(ArrayList<String> all_url, String name,
+			String path) {
 		Intent intent = new Intent(ChannelTabActivity.this,
 				ChannelSourceActivity.class);
 		intent.putExtra("all_url", all_url);
 		intent.putExtra("channel_name", name);
+		intent.putExtra("program_path", path);
 		startActivity(intent);
 	}
 

@@ -1,7 +1,6 @@
 package org.stagex.danmaku.adapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChannelInfo {
 	private int id;
@@ -11,14 +10,14 @@ public class ChannelInfo {
 	private String url;
 	private String[] second_url;
 	private String types;
-	private ArrayList<String> all_url;
-
+	private String program_path;
+	
 	public ChannelInfo() {
 
 	}
 
 	public ChannelInfo(int id, String name, String icon_url, String mode,
-			String url, String[] second_url, String types) {
+			String url, String[] second_url, String types, String path) {
 		this.id = id;
 		this.name = name;
 		this.icon_url = icon_url;
@@ -26,6 +25,7 @@ public class ChannelInfo {
 		this.url = url;
 		this.second_url = second_url;
 		this.types = types;
+		this.program_path = path;
 	}
 
 	public ChannelInfo(String name, String url) {
@@ -87,6 +87,14 @@ public class ChannelInfo {
 
 	public void setTypes(String types) {
 		this.types = types;
+	}
+	
+	public String getProgram_path() {
+		return program_path;
+	}
+
+	public void setProgram_path(String program_path) {
+		this.program_path = program_path;
 	}
 	
 	public ArrayList<String> getAllUrl() {
