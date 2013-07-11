@@ -11,7 +11,6 @@ import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.util.ParseUtil;
-import org.stagex.danmaku.util.ThreadPool;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -35,6 +34,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -309,6 +309,18 @@ public class ChannelTabActivity extends TabActivity implements
 						info.getProgram_path());
 			}
 		});
+		
+		//增加长按频道收藏功能
+		yang_shi_list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showFavMsg(arg1);
+				return true;
+			}
+		});
+		
 		yang_shi_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -350,6 +362,17 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
+		//增加长按频道收藏功能
+		wei_shi_list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showFavMsg(arg1);
+				return true;
+			}
+		});
+		
 		wei_shi_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -391,6 +414,17 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
+		//增加长按频道收藏功能
+		di_fang_list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showFavMsg(arg1);
+				return true;
+			}
+		});
+		
 		di_fang_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -432,6 +466,17 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
+		//增加长按频道收藏功能
+		ti_yu_list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showFavMsg(arg1);
+				return true;
+			}
+		});
+		
 		ti_yu_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -473,6 +518,17 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
+		//增加长按频道收藏功能
+		yu_le_list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showFavMsg(arg1);
+				return true;
+			}
+		});
+		
 		yu_le_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -514,6 +570,17 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
+		//增加长按频道收藏功能
+		qi_ta_list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showFavMsg(arg1);
+				return true;
+			}
+		});
+		
 		qi_ta_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -668,6 +735,38 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		}
 	};
+	
+	/**
+	 * 提示是否收藏
+	 */
+	private void showFavMsg(View view) {
+		
+		final ImageView favView = (ImageView) view.findViewById(R.id.fav_icon);
+		
+		new AlertDialog.Builder(ChannelTabActivity.this)
+		.setIcon(R.drawable.ic_dialog_alert)
+		.setTitle("温馨提示")
+		.setMessage(
+				"确定收藏该直播频道吗？")
+		.setPositiveButton("确定",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						// do nothing - it will close on its own
+						// TODO 增加加入数据库操作
+						favView.setVisibility(View.VISIBLE);
+					}
+				})
+		.setNegativeButton("取消",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						dialog.cancel();
+					}
+				}).show();
+	}
 
 	/**
 	 * 更新服务器地址

@@ -56,6 +56,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000"
+                    android:divider="#808080"
+                    android:dividerHeight="1dp"
                     android:fastScrollEnabled="true" />
 
                 <ListView
@@ -63,6 +65,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000"
+                    android:divider="#808080"
+                    android:dividerHeight="1dp"
                     android:fastScrollEnabled="true" />
 
                 <ListView
@@ -70,6 +74,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000"
+                    android:divider="#808080"
+                    android:dividerHeight="1dp"
                     android:fastScrollEnabled="true" />
 
                 <ListView
@@ -77,6 +83,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000"
+                    android:divider="#808080"
+                    android:dividerHeight="1dp"
                     android:fastScrollEnabled="true" />
 
                 <ListView
@@ -84,6 +92,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000"
+                    android:divider="#808080"
+                    android:dividerHeight="1dp"
                     android:fastScrollEnabled="true" />
 
                 <ListView
@@ -91,6 +101,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:cacheColorHint="#00000000"
+                    android:divider="#808080"
+                    android:dividerHeight="1dp"
                     android:fastScrollEnabled="true" />
             </FrameLayout>
 

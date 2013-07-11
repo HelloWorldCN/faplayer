@@ -1,14 +1,8 @@
 package org.stagex.danmaku.adapter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import org.keke.player.R;
-import org.stagex.danmaku.activity.ChannelSourceActivity;
 import org.stagex.danmaku.activity.TvProgramActivity;
 
 import com.fedorvlasov.lazylist.ImageLoader;
@@ -17,17 +11,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.opengl.Visibility;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ChannelAdapter extends BaseAdapter {
 	private List<ChannelInfo> infos;
@@ -71,7 +60,7 @@ public class ChannelAdapter extends BaseAdapter {
 		ImageView newView = (ImageView) view.findViewById(R.id.new_icon);
 
 		// TODO 节目预告
-		ImageView programView = (ImageView) view
+		LinearLayout programView = (LinearLayout) view
 				.findViewById(R.id.program_icon);
 		programView.setTag(position);
 		programView.setOnClickListener(new ImageView.OnClickListener() {
@@ -83,7 +72,8 @@ public class ChannelAdapter extends BaseAdapter {
 				// + "]", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(mContext, TvProgramActivity.class);
 				String channel_name = infos.get((Integer) v.getTag()).getName();
-				String program_path = infos.get((Integer) v.getTag()).getProgram_path();
+				String program_path = infos.get((Integer) v.getTag())
+						.getProgram_path();
 				if (program_path == null) {
 					new AlertDialog.Builder(mContext)
 							.setIcon(R.drawable.ic_dialog_alert)
