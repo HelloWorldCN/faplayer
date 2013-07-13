@@ -13,13 +13,12 @@ public final class ChannelListBusiness {
 	private static final String TABLE_NAME = "channeLlist";
 	private static final String TAG = "ChannelListBusiness";
 
-	public static List<POChannelList> getAllSortFiles() {
+	// 找出所有的收藏频道
+	public static List<POChannelList> getAllFavFiles() {
 		SQLiteHelperOrm db = new SQLiteHelperOrm();
 		try {
 			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
-			QueryBuilder<POChannelList, Long> query = dao.queryBuilder();
-			query.orderBy("save", true);
-			return dao.query(query.prepare());
+			return dao.queryForEq("save", true);
 		} catch (SQLException e) {
 			Logger.e(e);
 		} finally {
@@ -27,5 +26,23 @@ public final class ChannelListBusiness {
 				db.close();
 		}
 		return new ArrayList<POChannelList>();
+	}
+
+	// 清除所有的数据
+	public static void clearAllOldDatabase() {
+		SQLiteHelperOrm db = new SQLiteHelperOrm();
+		try {
+			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
+			List<POChannelList> allChannelList = dao.queryForAll();
+			int size = allChannelList.size();
+			for (int i = 0; i < size; i++) {
+				dao.delete(allChannelList.get(i));
+			}
+		} catch (SQLException e) {
+			Logger.e(e);
+		} finally {
+			if (db != null)
+				db.close();
+		}
 	}
 }

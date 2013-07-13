@@ -1,6 +1,5 @@
 package org.stagex.danmaku.activity;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,14 +12,11 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
-import org.stagex.danmaku.util.FileUtils;
-import org.stagex.danmaku.util.Logger;
 import org.stagex.danmaku.util.ParseUtil;
-import org.stagex.danmaku.util.PinyinUtils;
 
+import com.nmbb.oplayer.scanner.ChannelListBusiness;
 import com.nmbb.oplayer.scanner.DbHelper;
 import com.nmbb.oplayer.scanner.POChannelList;
-import com.nmbb.oplayer.scanner.POMedia;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -782,7 +778,7 @@ public class ChannelTabActivity extends TabActivity implements
 						// do nothing - it will close on its own
 						// TODO 增加加入数据库操作
 						favView.setVisibility(View.VISIBLE);
-						addSave(new POChannelList(saveInfo, true));
+						updateDatabase(new POChannelList(saveInfo, true));
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -811,6 +807,35 @@ public class ChannelTabActivity extends TabActivity implements
 				isTVListSuc = sharedPreferences
 						.getBoolean("isTVListSuc", false);
 
+				// 如果下载成功，重新加载当前的播放列表
+				if (isTVListSuc && allinfos != null) {
+					// 首先清空之前的数据
+					allinfos.clear();
+
+					// 重新解析XML
+					allinfos = ParseUtil.parse(ChannelTabActivity.this, true);
+
+					// 备份所有的收藏频道
+					List<POChannelList> favListChannel = ChannelListBusiness
+							.getAllFavFiles();
+					Log.i(LOGTAG, "===> backup favourite channels over!");
+
+					// 清除原有的数据库数据
+					ChannelListBusiness.clearAllOldDatabase();
+					Log.i(LOGTAG, "===> clear old database over!");
+
+					// 重新将新地址入库
+					int size = allinfos.size();
+					for (int i = 0; i < size; i++) {
+						addDatabase(new POChannelList(allinfos.get(i), false));
+					}
+					Log.i(LOGTAG, "===> add new database over!");
+
+					// 将收藏的频道写回新数据库
+					feedBackFavChannel(favListChannel);
+					Log.i(LOGTAG,
+							"===> feedback favourite channels to database over!");
+				}
 				// 发送刷新完毕的消息
 				onRefreshEnd();
 				Log.d(LOGTAG, "===> end refresh playlist");
@@ -828,9 +853,7 @@ public class ChannelTabActivity extends TabActivity implements
 		editor.commit();
 		// 重新加载当前的播放列表
 		if (allinfos != null) {
-
-			// 首先清空之前的数据
-			allinfos.clear();
+			// 清除之前的数据
 			yangshi_infos.clear();
 			weishi_infos.clear();
 			difang_infos.clear();
@@ -838,8 +861,6 @@ public class ChannelTabActivity extends TabActivity implements
 			yule_infos.clear();
 			qita_infos.clear();
 
-			// 重新解析XML
-			allinfos = ParseUtil.parse(ChannelTabActivity.this, true);
 			// 重新显示list
 			setYangshiView();
 			setWeishiView();
@@ -1027,12 +1048,41 @@ public class ChannelTabActivity extends TabActivity implements
 	}
 
 	/**
-	 * 保存入库
+	 * 收藏后更新某一条数据信息
 	 * 
-	 * @throws FileNotFoundException
 	 */
-	private void addSave(POChannelList channelList) {
-		// 入库
+	private void updateDatabase(POChannelList channelList) {
+		POChannelList newChannelList = mDbHelper.queryForEq(
+				POChannelList.class, "name", channelList.name).get(0);
+		channelList.poId = newChannelList.poId;
+
+		// update
+		Log.i(LOGTAG, "==============>" + channelList.name + "###"
+				+ channelList.poId + "###" + channelList.save);
+
+		mDbHelper.update(channelList);
+	}
+
+	/**
+	 * 重新更新直播地址后，需要更新数据库
+	 * 
+	 */
+	private void addDatabase(POChannelList channelList) {
 		mDbHelper.create(channelList);
+		Log.i(LOGTAG, "===> add a new data!");
+	}
+
+	// 将收藏的频道写回新数据库
+	private void feedBackFavChannel(List<POChannelList> favListChannel) {
+		int size = favListChannel.size();
+
+		for (int i = 0; i < size; i++) {
+			List<POChannelList> newChannelList = mDbHelper.queryForEq(
+					POChannelList.class, "name", favListChannel.get(i).name);
+			if (newChannelList.size() > 0) {
+				newChannelList.get(0).save = true;
+				mDbHelper.update(newChannelList.get(0));
+			}
+		}
 	}
 }

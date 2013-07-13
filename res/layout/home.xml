@@ -55,11 +55,11 @@
                 <ImageView
                     android:id="@+id/local_media"
                     style="@style/style_home_item_img"
-                    android:src="@drawable/sel_local" />
+                    android:src="@drawable/sel_favourite" />
 
                 <TextView
                     style="@style/style_home_item_text"
-                    android:text="@string/local_btn" />
+                    android:text="@string/favourite_btn" />
             </LinearLayout>
         </LinearLayout>
 

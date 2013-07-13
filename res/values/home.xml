@@ -7,5 +7,6 @@
     <string name="mark_btn">收藏</string>
     <string name="about_btn">关于</string>
     <string name="selfdef_btn">自定义</string>
+    <string name="favourite_btn">收藏频道</string>
     
 </resources>

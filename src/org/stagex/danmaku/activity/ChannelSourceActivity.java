@@ -143,7 +143,7 @@ public class ChannelSourceActivity extends Activity {
 				finish();
 				break;
 			case R.id.applist_btn:
-				// 回到上一个界面(Activity)
+				// 显示精品应用推荐
 				AppConnect.getInstance(ChannelSourceActivity.this).showOffers(
 						ChannelSourceActivity.this);
 				break;

@@ -1,45 +1,77 @@
 package org.stagex.danmaku.activity;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
+import cn.waps.AppConnect;
+
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.nmbb.oplayer.scanner.ChannelListBusiness;
+import com.nmbb.oplayer.scanner.DbHelper;
 import com.nmbb.oplayer.scanner.POChannelList;
 import com.nmbb.oplayer.scanner.SQLiteHelperOrm;
 
 public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 
+	private static final String LOGTAG = "FavouriteActivity";
 	private ListView fav_list;
 
-	List<ChannelInfo> fav_infos = null;
-	List<POChannelList> listChannel = null;
+	private List<ChannelInfo> fav_infos = null;
+	private List<POChannelList> listChannel = null;
+
+	/* 频道收藏的数据库 */
+	private DbHelper<POChannelList> mDbHelper;
+	private Map<String, Object> mDbWhere = new HashMap<String, Object>(2);
+
+	/* 顶部标题栏的控件 */
+	private TextView button_back;
+	private ImageView button_home;
+	private ImageView button_delete;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.favourite);
-		
+
 		/* 获得收藏类别的list */
 		fav_list = (ListView) findViewById(R.id.fav_list);
 		// 防止滑动黑屏
 		fav_list.setCacheColorHint(Color.TRANSPARENT);
+
+		/* 频道收藏的数据库 */
+		mDbHelper = new DbHelper<POChannelList>();
+
+		/* 顶部标题栏的控件 */
+		button_back = (TextView) findViewById(R.id.back_btn);
+		button_home = (ImageView) findViewById(R.id.home_btn);
+		button_delete = (ImageView) findViewById(R.id.delete_btn);
+		/* 设置监听 */
+		setListensers();
 
 		setFavView();
 	}
@@ -76,7 +108,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 					int arg2, long arg3) {
 				ChannelInfo info = (ChannelInfo) fav_list
 						.getItemAtPosition(arg2);
-//				showFavMsg(arg1, info);
+				ClearFavMsg(arg1, info);
 				return true;
 			}
 		});
@@ -99,7 +131,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	}
 
 	private List<ChannelInfo> getFav() {
-		listChannel = ChannelListBusiness.getAllSortFiles();
+		listChannel = ChannelListBusiness.getAllFavFiles();
 		int size = listChannel.size();
 		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
 		for (int i = 0; i < size; i++) {
@@ -110,7 +142,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 		}
 		return info;
 	}
-	
+
 	/**
 	 * 显示所有的台源
 	 */
@@ -123,4 +155,118 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 		intent.putExtra("program_path", path);
 		startActivity(intent);
 	}
+
+	/**
+	 * 提示是否取消收藏
+	 */
+	private void ClearFavMsg(View view, ChannelInfo info) {
+		final ChannelInfo saveInfo = info;
+
+		new AlertDialog.Builder(FavouriteActivity.this)
+				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
+				.setMessage("确定取消该直播频道的收藏吗？")
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// do nothing - it will close on its own
+						// TODO 增加加入数据库操作
+						clearDatabase(new POChannelList(saveInfo, false));
+					}
+				})
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).show();
+	}
+
+	/**
+	 * 提示是否取消所有收藏
+	 */
+	private void clearAllFavMsg() {
+		new AlertDialog.Builder(FavouriteActivity.this)
+				.setIcon(R.drawable.ic_dialog_alert)
+				.setTitle("警告")
+				.setMessage("确定取消所有收藏频道吗？")
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO 取消所有收藏频道
+						List<POChannelList> allFavChannel = ChannelListBusiness
+								.getAllFavFiles();
+						int size = allFavChannel.size();
+						POChannelList favChannel;
+						for (int i = 0; i < size; i++) {
+							favChannel = allFavChannel.get(i);
+							favChannel.save = false;
+							mDbHelper.update(favChannel);
+						}
+						// 重新加載listView
+						reloadFavList();
+					}
+				})
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).show();
+	}
+
+	/**
+	 * 取消收藏
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	private void clearDatabase(POChannelList channelList) {
+		mDbWhere.put("name", channelList.name);
+
+		POChannelList newChannelList = mDbHelper.queryForEq(
+				POChannelList.class, "name", channelList.name).get(0);
+		channelList.poId = newChannelList.poId;
+
+		// update
+		Log.i(LOGTAG, "==============>" + channelList.name + "###"
+				+ channelList.poId + "###" + channelList.save);
+		mDbHelper.update(channelList);
+
+		// 重新加載listView
+		reloadFavList();
+	}
+
+	// 重新加載listView
+	private void reloadFavList() {
+		fav_infos.clear();
+		setFavView();
+	}
+
+	// Listen for button clicks
+	private void setListensers() {
+		button_home.setOnClickListener(goListener);
+		button_delete.setOnClickListener(goListener);
+		button_back.setOnClickListener(goListener);
+	}
+
+	// 按键监听
+	private Button.OnClickListener goListener = new Button.OnClickListener() {
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.back_btn:
+				// 回到上一个界面(Activity)
+				finish();
+				break;
+			case R.id.home_btn:
+				// 回到上一个界面(Activity)
+				finish();
+				break;
+			case R.id.delete_btn:
+				// 删除所有的收藏的频道
+				clearAllFavMsg();
+				break;
+			default:
+				Log.d(LOGTAG, "not supported btn id");
+			}
+		}
+	};
 }
