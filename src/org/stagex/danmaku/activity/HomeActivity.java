@@ -212,7 +212,8 @@ public class HomeActivity extends Activity {
 		Intent intent = new Intent();
 		// intent.setClass(HomeActivity.this, FileBrowserActivity.class);
 		// 启动新的媒体扫描的activity
-		intent.setClass(HomeActivity.this, MainActivity.class);
+//		intent.setClass(HomeActivity.this, MainActivity.class);
+		intent.setClass(HomeActivity.this, FavouriteActivity.class);
 		startActivity(intent);
 	};
 

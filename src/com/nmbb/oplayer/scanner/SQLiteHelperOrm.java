@@ -3,17 +3,17 @@ package com.nmbb.oplayer.scanner;
 import java.sql.SQLException;
 
 import org.stagex.danmaku.OPlayerApplication;
-import org.stagex.danmaku.util.Logger;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
-	private static final String DATABASE_NAME = "oplayer.db";
+	private static final String DATABASE_NAME = "kekePlayer.db";
 	private static final int DATABASE_VERSION = 1;
 
 	public SQLiteHelperOrm(Context context) {
@@ -28,8 +28,11 @@ public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
 			TableUtils.createTable(connectionSource, POMedia.class);
+			TableUtils.createTable(connectionSource, POChannelList.class);
+			Log.i(SQLiteHelperOrm.class.getName(), "创建数据库成功！"); 
 		} catch (SQLException e) {
-			Logger.e(e);
+			Log.i(SQLiteHelperOrm.class.getName(), "创建数据库失败！", e);  
+			e.printStackTrace();
 		}
 	}
 
@@ -37,9 +40,12 @@ public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int arg2, int arg3) {
 		try {
 			TableUtils.dropTable(connectionSource, POMedia.class, true);
+			TableUtils.dropTable(connectionSource, POChannelList.class, true);
 			onCreate(db, connectionSource);
+			Log.i(SQLiteHelperOrm.class.getName(), "更新数据库成功！"); 
 		} catch (SQLException e) {
-			Logger.e(e);
+			Log.i(SQLiteHelperOrm.class.getName(), "更新数据库失败！", e);
+			e.printStackTrace();
 		}
 	}
 }

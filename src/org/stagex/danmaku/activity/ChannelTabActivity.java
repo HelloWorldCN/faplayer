@@ -1,16 +1,26 @@
 package org.stagex.danmaku.activity;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
+import org.stagex.danmaku.util.FileUtils;
+import org.stagex.danmaku.util.Logger;
 import org.stagex.danmaku.util.ParseUtil;
+import org.stagex.danmaku.util.PinyinUtils;
+
+import com.nmbb.oplayer.scanner.DbHelper;
+import com.nmbb.oplayer.scanner.POChannelList;
+import com.nmbb.oplayer.scanner.POMedia;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -85,6 +95,10 @@ public class ChannelTabActivity extends TabActivity implements
 	private Animation operatingAnim;
 	private LinearInterpolator lin;
 
+	/* 频道收藏的数据库 */
+	private DbHelper<POChannelList> mDbHelper;
+	private Map<String, Object> mDbWhere = new HashMap<String, Object>(2);
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -99,6 +113,9 @@ public class ChannelTabActivity extends TabActivity implements
 		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.refresh);
 		lin = new LinearInterpolator();
 		operatingAnim.setInterpolator(lin);
+
+		/* 频道收藏的数据库 */
+		mDbHelper = new DbHelper<POChannelList>();
 
 		// 记录更新成功还是失败
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -309,18 +326,20 @@ public class ChannelTabActivity extends TabActivity implements
 						info.getProgram_path());
 			}
 		});
-		
-		//增加长按频道收藏功能
+
+		// 增加长按频道收藏功能
 		yang_shi_list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				showFavMsg(arg1);
+				ChannelInfo info = (ChannelInfo) yang_shi_list
+						.getItemAtPosition(arg2);
+				showFavMsg(arg1, info);
 				return true;
 			}
 		});
-		
+
 		yang_shi_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -362,17 +381,19 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
-		//增加长按频道收藏功能
+		// 增加长按频道收藏功能
 		wei_shi_list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				showFavMsg(arg1);
+				ChannelInfo info = (ChannelInfo) wei_shi_list
+						.getItemAtPosition(arg2);
+				showFavMsg(arg1, info);
 				return true;
 			}
 		});
-		
+
 		wei_shi_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -414,17 +435,19 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
-		//增加长按频道收藏功能
+		// 增加长按频道收藏功能
 		di_fang_list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				showFavMsg(arg1);
+				ChannelInfo info = (ChannelInfo) di_fang_list
+						.getItemAtPosition(arg2);
+				showFavMsg(arg1, info);
 				return true;
 			}
 		});
-		
+
 		di_fang_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -466,17 +489,19 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
-		//增加长按频道收藏功能
+		// 增加长按频道收藏功能
 		ti_yu_list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				showFavMsg(arg1);
+				ChannelInfo info = (ChannelInfo) ti_yu_list
+						.getItemAtPosition(arg2);
+				showFavMsg(arg1, info);
 				return true;
 			}
 		});
-		
+
 		ti_yu_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -518,17 +543,19 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
-		//增加长按频道收藏功能
+		// 增加长按频道收藏功能
 		yu_le_list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				showFavMsg(arg1);
+				ChannelInfo info = (ChannelInfo) yu_le_list
+						.getItemAtPosition(arg2);
+				showFavMsg(arg1, info);
 				return true;
 			}
 		});
-		
+
 		yu_le_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -570,17 +597,19 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		});
 
-		//增加长按频道收藏功能
+		// 增加长按频道收藏功能
 		qi_ta_list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				showFavMsg(arg1);
+				ChannelInfo info = (ChannelInfo) qi_ta_list
+						.getItemAtPosition(arg2);
+				showFavMsg(arg1, info);
 				return true;
 			}
 		});
-		
+
 		qi_ta_list.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -735,34 +764,30 @@ public class ChannelTabActivity extends TabActivity implements
 			}
 		}
 	};
-	
+
 	/**
 	 * 提示是否收藏
 	 */
-	private void showFavMsg(View view) {
-		
+	private void showFavMsg(View view, ChannelInfo info) {
+
 		final ImageView favView = (ImageView) view.findViewById(R.id.fav_icon);
-		
+		final ChannelInfo saveInfo = info;
+
 		new AlertDialog.Builder(ChannelTabActivity.this)
-		.setIcon(R.drawable.ic_dialog_alert)
-		.setTitle("温馨提示")
-		.setMessage(
-				"确定收藏该直播频道吗？")
-		.setPositiveButton("确定",
-				new DialogInterface.OnClickListener() {
+				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
+				.setMessage("确定收藏该直播频道吗？")
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
+					public void onClick(DialogInterface dialog, int which) {
 						// do nothing - it will close on its own
 						// TODO 增加加入数据库操作
 						favView.setVisibility(View.VISIBLE);
+						addSave(new POChannelList(saveInfo, true));
 					}
 				})
-		.setNegativeButton("取消",
-				new DialogInterface.OnClickListener() {
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
+					public void onClick(DialogInterface dialog, int which) {
 						dialog.cancel();
 					}
 				}).show();
@@ -1001,4 +1026,13 @@ public class ChannelTabActivity extends TabActivity implements
 		mEventHandler.sendMessage(msg);
 	}
 
+	/**
+	 * 保存入库
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	private void addSave(POChannelList channelList) {
+		// 入库
+		mDbHelper.create(channelList);
+	}
 }
