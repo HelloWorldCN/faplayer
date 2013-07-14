@@ -38,5 +38,7 @@
     <string name="example2">mms://mms.examples.com/stream.asx</string>
     <string name="example3">rtsp://server.example.org:8080/test.sdp</string>
     <string name="appList_btn">应用推荐</string>
+    <string name="search_txt">频道搜索</string>
+    <string name="search_hint">请输入搜索的频道名称</string>
 
 </resources>

@@ -22,8 +22,8 @@ import android.widget.TextView;
 public class UserDefActivity extends Activity {
 	/** Called when the activity is first created. */
 	private static final String LOGTAG = "UserDefActivity";
-	EditText mTextUri = null;
-	Button mButtonPlay = null;
+	private EditText mTextUri = null;
+	private Button mButtonPlay = null;
 
 	/* 顶部标题栏的控件 */
 	private TextView button_back;

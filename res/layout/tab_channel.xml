@@ -19,15 +19,13 @@
         <include layout="@layout/layout_divider_header" />
 
         <ImageView
-            android:id="@+id/search"
+            android:id="@+id/search_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_search"
-            android:visibility="gone" />
+            android:src="@drawable/sel_search" />
 
         <include
             android:id="@+id/search_devide"
-            layout="@layout/layout_divider_header"
-            android:visibility="gone" />
+            layout="@layout/layout_divider_header" />
 
         <ImageView
             android:id="@+id/refresh_btn"

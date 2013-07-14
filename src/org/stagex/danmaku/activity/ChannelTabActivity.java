@@ -78,6 +78,7 @@ public class ChannelTabActivity extends TabActivity implements
 	/* 顶部标题栏的控件 */
 	private ImageView button_home;
 	private TextView button_back;
+	private ImageView button_search;
 	private ImageView button_refresh;
 
 	/* 列表更新成功标志 */
@@ -105,6 +106,7 @@ public class ChannelTabActivity extends TabActivity implements
 		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		button_refresh = (ImageView) findViewById(R.id.refresh_btn);
+		button_search = (ImageView) findViewById(R.id.search_btn);
 		/* 旋转图标 */
 		operatingAnim = AnimationUtils.loadAnimation(this, R.anim.refresh);
 		lin = new LinearInterpolator();
@@ -738,6 +740,7 @@ public class ChannelTabActivity extends TabActivity implements
 		button_home.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 		button_refresh.setOnClickListener(goListener);
+		button_search.setOnClickListener(goListener);
 	}
 
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
@@ -750,6 +753,12 @@ public class ChannelTabActivity extends TabActivity implements
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
 				finish();
+				break;
+			case R.id.search_btn:
+				// 打开搜索界面
+				Intent intent = new Intent(ChannelTabActivity.this,
+						SearchActivity.class);
+				startActivity(intent);
 				break;
 			case R.id.refresh_btn:
 				// 更新服务器地址
@@ -817,7 +826,7 @@ public class ChannelTabActivity extends TabActivity implements
 
 					// 备份所有的收藏频道
 					List<POChannelList> favListChannel = ChannelListBusiness
-							.getAllFavFiles();
+							.getAllFavChannels();
 					Log.i(LOGTAG, "===> backup favourite channels over!");
 
 					// 清除原有的数据库数据
@@ -1052,15 +1061,19 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 
 	 */
 	private void updateDatabase(POChannelList channelList) {
-		POChannelList newChannelList = mDbHelper.queryForEq(
-				POChannelList.class, "name", channelList.name).get(0);
-		channelList.poId = newChannelList.poId;
 
-		// update
-		Log.i(LOGTAG, "==============>" + channelList.name + "###"
-				+ channelList.poId + "###" + channelList.save);
+		List<POChannelList> newChannelList = mDbHelper.queryForEq(
+				POChannelList.class, "name", channelList.name);
 
-		mDbHelper.update(channelList);
+		if (newChannelList.size() > 0) {
+			channelList.poId = newChannelList.get(0).poId;
+
+			// update
+			Log.i(LOGTAG, "==============>" + channelList.name + "###"
+					+ channelList.poId + "###" + channelList.save);
+
+			mDbHelper.update(channelList);
+		}
 	}
 
 	/**
@@ -1069,7 +1082,7 @@ public class ChannelTabActivity extends TabActivity implements
 	 */
 	private void addDatabase(POChannelList channelList) {
 		mDbHelper.create(channelList);
-		Log.i(LOGTAG, "===> add a new data!");
+//		Log.i(LOGTAG, "===> add a new data!");
 	}
 
 	// 将收藏的频道写回新数据库

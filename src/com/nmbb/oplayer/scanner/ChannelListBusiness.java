@@ -14,7 +14,7 @@ public final class ChannelListBusiness {
 	private static final String TAG = "ChannelListBusiness";
 
 	// 找出所有的收藏频道
-	public static List<POChannelList> getAllFavFiles() {
+	public static List<POChannelList> getAllFavChannels() {
 		SQLiteHelperOrm db = new SQLiteHelperOrm();
 		try {
 			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
@@ -44,5 +44,21 @@ public final class ChannelListBusiness {
 			if (db != null)
 				db.close();
 		}
+	}
+
+	// 获取所以模糊查询的频道
+	public static List<POChannelList> getAllSearchChannels(String name) {
+		SQLiteHelperOrm db = new SQLiteHelperOrm();
+		try {
+			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
+			QueryBuilder<POChannelList, Long> query = dao.queryBuilder();
+			return query.where().like("name", "%" + name + "%").query();
+		} catch (SQLException e) {
+			Logger.e(e);
+		} finally {
+			if (db != null)
+				db.close();
+		}
+		return new ArrayList<POChannelList>();
 	}
 }

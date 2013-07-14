@@ -131,7 +131,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	}
 
 	private List<ChannelInfo> getFav() {
-		listChannel = ChannelListBusiness.getAllFavFiles();
+		listChannel = ChannelListBusiness.getAllFavChannels();
 		int size = listChannel.size();
 		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
 		for (int i = 0; i < size; i++) {
@@ -194,7 +194,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO 取消所有收藏频道
 						List<POChannelList> allFavChannel = ChannelListBusiness
-								.getAllFavFiles();
+								.getAllFavChannels();
 						int size = allFavChannel.size();
 						POChannelList favChannel;
 						for (int i = 0; i < size; i++) {
