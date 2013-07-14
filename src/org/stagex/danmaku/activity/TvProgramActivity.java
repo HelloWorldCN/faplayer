@@ -1,6 +1,17 @@
 package org.stagex.danmaku.activity;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.keke.player.R;
+import org.stagex.danmaku.adapter.ChannelSourceAdapter;
+import org.stagex.danmaku.adapter.ProgramAdapter;
+import org.stagex.danmaku.adapter.ProgramInfo;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +24,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class TvProgramActivity extends Activity {
@@ -25,6 +37,11 @@ public class TvProgramActivity extends Activity {
 	private WebView mWebView;
 	private String mProgramPath;
 	private String mChannelName;
+	
+	private TextView test_txt;
+	private ListView program_list;
+	
+	private ProgramAdapter mProgramAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +51,10 @@ public class TvProgramActivity extends Activity {
 		/* 顶部标题栏的控件 */
 		button_back = (TextView) findViewById(R.id.back_btn);
 		mWebView = (WebView) findViewById(R.id.wv);
+		test_txt =  (TextView) findViewById(R.id.test_txt);
+		program_list = (ListView)findViewById(R.id.program_list);
+		// 防止滑动黑屏
+		program_list.setCacheColorHint(Color.TRANSPARENT);
 		/* 设置监听 */
 		setListensers();
 
@@ -42,7 +63,45 @@ public class TvProgramActivity extends Activity {
 		mChannelName = intent.getStringExtra("ChannelName");
 
 		button_back.setText(mChannelName);
-		readHtmlFormAssets();
+		
+		/* ====================================================== */
+		/* 用webview方式显示节目预告 */
+//		readHtmlFormAssets();
+		/* ====================================================== */
+		/* TODO 以listView文本方式显示节目预告 */
+		Document doc = null;
+		try {
+			doc = Jsoup.connect("http://www.tvmao.com/ext/show_tv.jsp?p=" + mProgramPath).get();
+			
+			Elements links = doc.select("li"); //带有href属性的a元素
+
+			ArrayList<ProgramInfo> infos = new ArrayList<ProgramInfo>();
+			
+			int size = links.size();
+			for (int i = 0; i < size; i++) {
+				String linkText = links.get(i).text();
+				String[] pair = linkText.split(" ");
+				if (pair.length < 2)
+					continue;
+				String time = pair[0].trim();
+				String program = pair[1].trim();
+				
+				ProgramInfo info = new ProgramInfo(time, program);
+				infos.add(info);
+
+//				test_txt.setText(Calendar.getInstance().get(Calendar.DAY_OF_YEAR));
+				test_txt.setText("节目预告");
+			}
+			
+			mProgramAdapter = new ProgramAdapter(this, infos);
+			program_list.setAdapter(mProgramAdapter);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			test_txt.setText("抱歉，暂时无法获取该频道的节目预告！");
+		}
+		/* ====================================================== */
 	}
 
 	// Listen for button clicks

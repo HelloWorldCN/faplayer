@@ -396,7 +396,8 @@
     "mode": "HOT",
     "url": "http://live.gslb.letv.com/gslb?stream_id=guofangjunshi&tag=live&ext=m3u8&sign=live_ipad",
     "second_url": [],
-    "types": "1"
+    "types": "1",
+    "path": "CCTV&c=CCTVPAYFEE8"
   },
   {
     "channel_id": 20022,
@@ -444,7 +445,8 @@
       "http://cnlive.shntv.cn:1935/live/hunan/playlist.m3u8",
       "http://101.71.8.19:554/hdmi/hntv1hd.stream/playlist.m3u8"
     ],
-    "types": "2"
+    "types": "2",
+    "path": "HUNANTV&c=HUNANTV1"
   },
   {
     "channel_id": 160,
@@ -462,7 +464,8 @@
       "http://liveipad.wasu.cn/jsws_ipad/z.m3u8",
       "http://101.71.8.19:554/hdmi/jstv1hd.stream/playlist.m3u8"
     ],
-    "types": "2"
+    "types": "2",
+    "path": "JSTV&c=JSTV1"
   },
   {
     "channel_id": 74,
@@ -487,7 +490,8 @@
       "http://119.4.250.55:1935/SRT_Live/SHTV_M.stream/playlist.m3u8",
       "http://liveipad.wasu.cn/dfws_ipad/z.m3u8"
     ],
-    "types": "2"
+    "types": "2",
+    "path": "SHHAI&c=DONGFANG1"
   },
   {
     "channel_id": 329,
@@ -511,7 +515,8 @@
       "http://119.4.250.55:1935/SRT_Live/GDTV_M.stream/playlist.m3u8",
       "http://qqlive.rec.hdl.lxdns.com/2084914015.flv"
     ],
-    "types": "2"
+    "types": "2",
+    "path": "GDTV&c=GDTV1"
   },
   {
     "channel_id": 367,
@@ -537,7 +542,8 @@
       "http://qqlive.dnion.com:1863/2220552576.flv",
       "http://play.api.pptv.com/web-m3u8-300188.m3u8?type=m3u8.web.pad"
     ],
-    "types": "2"
+    "types": "2",
+    "path": "SZTV&c=SZTV1"
   },
   {
     "channel_id": 147,
@@ -560,7 +566,8 @@
       "http://zb.v.qq.com:1863/?progid=1975434150&ostype=ios",
       "http://liveipad.wasu.cn/zjws_ipad/z.m3u8"
     ],
-    "types": "2"
+    "types": "2",
+    "path": "ZJTV&c=ZJTV1"
   },
   {
     "channel_id": 307,
