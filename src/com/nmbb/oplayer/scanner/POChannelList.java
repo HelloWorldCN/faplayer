@@ -1,5 +1,7 @@
 package com.nmbb.oplayer.scanner;
 
+import java.util.ArrayList;
+
 import org.stagex.danmaku.adapter.ChannelInfo;
 
 import com.j256.ormlite.field.DataType;
@@ -59,18 +61,26 @@ public class POChannelList {
 		save = save_flag;
 	}
 
-	// copy 数据库数据到ChannelInfo
-	public ChannelInfo POCopyData() {
-		ChannelInfo info = new ChannelInfo(id, name, icon_url, mode, url,
-				second_url, types, program_path);
-
-		return info;
-	}
-
 	// just for test
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("name=").append(name);
 		return sb.toString();
+	}
+	
+	public ArrayList<String> getAllUrl() {
+		ArrayList<String> all_url_list = new ArrayList<String>();
+		int size = 0;
+		
+		if (second_url != null)
+			size = second_url.length + 1;
+		else
+			size = 1;
+
+		all_url_list.add(url);
+		for (int i = 1; i < size; i++)
+			all_url_list.add(second_url[i - 1]);
+		
+		return all_url_list;
 	}
 }

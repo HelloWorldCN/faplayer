@@ -17,6 +17,7 @@ import org.stagex.danmaku.util.ParseUtil;
 import com.nmbb.oplayer.scanner.ChannelListBusiness;
 import com.nmbb.oplayer.scanner.DbHelper;
 import com.nmbb.oplayer.scanner.POChannelList;
+import com.nmbb.oplayer.ui.MainActivity;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -46,6 +47,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
@@ -57,12 +59,12 @@ public class ChannelTabActivity extends TabActivity implements
 
 	List<ChannelInfo> allinfos = null;
 
-	List<ChannelInfo> yangshi_infos = null;
-	List<ChannelInfo> weishi_infos = null;
-	List<ChannelInfo> difang_infos = null;
-	List<ChannelInfo> tiyu_infos = null;
-	List<ChannelInfo> yule_infos = null;
-	List<ChannelInfo> qita_infos = null;
+	List<POChannelList> yangshi_infos = null;
+	List<POChannelList> weishi_infos = null;
+	List<POChannelList> difang_infos = null;
+	List<POChannelList> tiyu_infos = null;
+	List<POChannelList> yule_infos = null;
+	List<POChannelList> qita_infos = null;
 
 	private ListView yang_shi_list;
 	private ListView wei_shi_list;
@@ -87,6 +89,8 @@ public class ChannelTabActivity extends TabActivity implements
 	private boolean isTVListSuc;
 	/* 如果没有备份过服务器地址，则加载本地初始的地址 */
 	private boolean hasBackup;
+	/* 是否建立了频道列表数据库 */
+	private boolean hasChannelDB;
 
 	/* 旋转图标 */
 	private Animation operatingAnim;
@@ -192,17 +196,6 @@ public class ChannelTabActivity extends TabActivity implements
 		/* 设置Tab的监听事件 */
 		myTabhost.setOnTabChangedListener(this);
 
-		/* 解析所有的channel list 区分是采用默认列表还是服务器列表 */
-		hasBackup = sharedPreferences.getBoolean("hasBackup", false);
-		allinfos = ParseUtil.parse(this, hasBackup);
-		if (hasBackup)
-			Log.d(LOGTAG, "采用服务器更新后的播放列表");
-		else {
-			// 如果没有备份过地址，第一次自动加载服务器地址
-			startRefreshList();
-			Log.d(LOGTAG, "采用初始的播放列表");
-		}
-
 		/* 获得各个台类别的list */
 		yang_shi_list = (ListView) findViewById(R.id.yang_shi_tab);
 		// 防止滑动黑屏
@@ -235,6 +228,57 @@ public class ChannelTabActivity extends TabActivity implements
 		view3.setTextSize(15);
 		view4.setTextSize(15);
 		view5.setTextSize(15);
+
+		/* ======================================================== */
+		/*
+		 * FIXME 如果数据库已经建立（不管是否是最新的） 将从数据库读取频道列表数据，1.2.3（不含）之后的版本，
+		 * 将不在直接将JSON数据映射到listView的adapter中去
+		 */
+		hasChannelDB = sharedPreferences.getBoolean("hasChannelDB", false);
+		// 如果还没有建立频道数据库，将先不展示频道listView
+		if (!hasChannelDB) {
+			// 沒有频道数据库，则第一次启动自动加载服务器列表地址
+			startRefreshList();
+			Log.i(LOGTAG, "===>has no database, load remote playlist first");
+		} else {
+			// 加载database中的相关频道列表数据
+			// 首选显示央视，所以get央视频道
+			getPlayList();
+			showPlayList();
+		}
+		/* ======================================================== */
+	}
+
+	// 从数据库listView
+	private void getPlayList() {
+		// 重新加载当前的播放列表
+		if (allinfos != null) {
+			// 清除之前的数据
+			if (yangshi_infos != null)
+				yangshi_infos.clear();
+			if (weishi_infos != null)
+				weishi_infos.clear();
+			if (difang_infos != null)
+				difang_infos.clear();
+			if (tiyu_infos != null)
+				tiyu_infos.clear();
+			if (yule_infos != null)
+				yule_infos.clear();
+			if (qita_infos != null)
+				qita_infos.clear();
+		}
+
+		// 根据JSON里面的types来区分直播频道分类
+		yangshi_infos = ChannelListBusiness.getAllSearchChannels("types", "1");
+		weishi_infos = ChannelListBusiness.getAllSearchChannels("types", "2");
+		difang_infos = ChannelListBusiness.getAllSearchChannels("types", "3");
+		tiyu_infos = ChannelListBusiness.getAllSearchChannels("types", "4");
+		yule_infos = ChannelListBusiness.getAllSearchChannels("types", "5");
+		qita_infos = ChannelListBusiness.getAllSearchChannels("types", "6");
+	}
+
+	// 显示播放listView
+	private void showPlayList() {
 		setYangshiView();
 		setWeishiView();
 		setDifangView();
@@ -305,7 +349,6 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置央视台源的channel list
 	 */
 	private void setYangshiView() {
-		yangshi_infos = getYangShi(allinfos);
 		ChannelAdapter adapter = new ChannelAdapter(this, yangshi_infos);
 		yang_shi_list.setAdapter(adapter);
 		yang_shi_list.setOnItemClickListener(new OnItemClickListener() {
@@ -314,14 +357,13 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) yang_shi_list
+				POChannelList info = (POChannelList) yang_shi_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -331,7 +373,7 @@ public class ChannelTabActivity extends TabActivity implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) yang_shi_list
+				POChannelList info = (POChannelList) yang_shi_list
 						.getItemAtPosition(arg2);
 				showFavMsg(arg1, info);
 				return true;
@@ -359,7 +401,6 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置卫视台源的channel list
 	 */
 	private void setWeishiView() {
-		weishi_infos = getWeiShi(allinfos);
 		ChannelAdapter adapter = new ChannelAdapter(this, weishi_infos);
 		wei_shi_list.setAdapter(adapter);
 		wei_shi_list.setOnItemClickListener(new OnItemClickListener() {
@@ -368,14 +409,13 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) wei_shi_list
+				POChannelList info = (POChannelList) wei_shi_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -385,7 +425,7 @@ public class ChannelTabActivity extends TabActivity implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) wei_shi_list
+				POChannelList info = (POChannelList) wei_shi_list
 						.getItemAtPosition(arg2);
 				showFavMsg(arg1, info);
 				return true;
@@ -413,7 +453,6 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置地方台源的channel list
 	 */
 	private void setDifangView() {
-		difang_infos = getDiFang(allinfos);
 		ChannelAdapter adapter = new ChannelAdapter(this, difang_infos);
 		di_fang_list.setAdapter(adapter);
 		di_fang_list.setOnItemClickListener(new OnItemClickListener() {
@@ -422,14 +461,13 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) di_fang_list
+				POChannelList info = (POChannelList) di_fang_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -439,7 +477,7 @@ public class ChannelTabActivity extends TabActivity implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) di_fang_list
+				POChannelList info = (POChannelList) di_fang_list
 						.getItemAtPosition(arg2);
 				showFavMsg(arg1, info);
 				return true;
@@ -467,7 +505,6 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置体育台源的channel list
 	 */
 	private void setTiyuView() {
-		tiyu_infos = getTiYu(allinfos);
 		ChannelAdapter adapter = new ChannelAdapter(this, tiyu_infos);
 		ti_yu_list.setAdapter(adapter);
 		ti_yu_list.setOnItemClickListener(new OnItemClickListener() {
@@ -476,14 +513,13 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) ti_yu_list
+				POChannelList info = (POChannelList) ti_yu_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -493,7 +529,7 @@ public class ChannelTabActivity extends TabActivity implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) ti_yu_list
+				POChannelList info = (POChannelList) ti_yu_list
 						.getItemAtPosition(arg2);
 				showFavMsg(arg1, info);
 				return true;
@@ -521,7 +557,6 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置娱乐台源的channel list
 	 */
 	private void setYuleView() {
-		yule_infos = getYule(allinfos);
 		ChannelAdapter adapter = new ChannelAdapter(this, yule_infos);
 		yu_le_list.setAdapter(adapter);
 		yu_le_list.setOnItemClickListener(new OnItemClickListener() {
@@ -530,14 +565,13 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) yu_le_list
+				POChannelList info = (POChannelList) yu_le_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -547,7 +581,7 @@ public class ChannelTabActivity extends TabActivity implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) yu_le_list
+				POChannelList info = (POChannelList) yu_le_list
 						.getItemAtPosition(arg2);
 				showFavMsg(arg1, info);
 				return true;
@@ -575,7 +609,6 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置其他未分类台源的channel list
 	 */
 	private void setQitaView() {
-		qita_infos = getQita(allinfos);
 		ChannelAdapter adapter = new ChannelAdapter(this, qita_infos);
 		qi_ta_list.setAdapter(adapter);
 		qi_ta_list.setOnItemClickListener(new OnItemClickListener() {
@@ -584,14 +617,13 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) qi_ta_list
+				POChannelList info = (POChannelList) qi_ta_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -601,7 +633,7 @@ public class ChannelTabActivity extends TabActivity implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) qi_ta_list
+				POChannelList info = (POChannelList) qi_ta_list
 						.getItemAtPosition(arg2);
 				showFavMsg(arg1, info);
 				return true;
@@ -636,103 +668,6 @@ public class ChannelTabActivity extends TabActivity implements
 		intent.putExtra("channel_name", name);
 		intent.putExtra("program_path", path);
 		startActivity(intent);
-	}
-
-	/*
-	 * 从所有的台源中解析出央视的台源 ==> id = 1
-	 */
-	private List<ChannelInfo> getYangShi(List<ChannelInfo> all) {
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-
-		for (int i = 0; i < all.size(); i++) {
-			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("1") || cinfo.getTypes().equals("1|4")
-					|| cinfo.getTypes().equals("1|5")) {
-				info.add(cinfo);
-			}
-		}
-		return info;
-	}
-
-	/*
-	 * 从所有的台源中解析出卫视的台源 ==> id = 2
-	 */
-	private List<ChannelInfo> getWeiShi(List<ChannelInfo> all) {
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-
-		for (int i = 0; i < all.size(); i++) {
-			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("2") || cinfo.getTypes().equals("2|4")
-					|| cinfo.getTypes().equals("2|5")) {
-				info.add(cinfo);
-			}
-		}
-		return info;
-	}
-
-	/*
-	 * 从所有的台源中解析出地方的台源 ==> id = 3
-	 */
-	private List<ChannelInfo> getDiFang(List<ChannelInfo> all) {
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-
-		for (int i = 0; i < all.size(); i++) {
-			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("3") || cinfo.getTypes().equals("3|4")
-					|| cinfo.getTypes().equals("3|5")) {
-				info.add(cinfo);
-			}
-		}
-		return info;
-	}
-
-	/*
-	 * 从所有的台源中解析出体育的台源 ==> id = 4
-	 */
-	private List<ChannelInfo> getTiYu(List<ChannelInfo> all) {
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-
-		for (int i = 0; i < all.size(); i++) {
-			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("4") || cinfo.getTypes().equals("1|4")
-					|| cinfo.getTypes().equals("2|4")
-					|| cinfo.getTypes().equals("3|4")) {
-				info.add(cinfo);
-			}
-		}
-		return info;
-	}
-
-	/*
-	 * 从所有的台源中解析出娱乐的台源 ==>id = 5
-	 */
-	private List<ChannelInfo> getYule(List<ChannelInfo> all) {
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-
-		for (int i = 0; i < all.size(); i++) {
-			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("5") || cinfo.getTypes().equals("1|5")
-					|| cinfo.getTypes().equals("2|5")
-					|| cinfo.getTypes().equals("3|5")) {
-				info.add(cinfo);
-			}
-		}
-		return info;
-	}
-
-	/*
-	 * 从所有的台源中解析出其他未分类的台源 ==>id = 6
-	 */
-	private List<ChannelInfo> getQita(List<ChannelInfo> all) {
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-
-		for (int i = 0; i < all.size(); i++) {
-			ChannelInfo cinfo = all.get(i);
-			if (cinfo.getTypes().equals("6")) {
-				info.add(cinfo);
-			}
-		}
-		return info;
 	}
 
 	// Listen for button clicks
@@ -773,10 +708,10 @@ public class ChannelTabActivity extends TabActivity implements
 	/**
 	 * 提示是否收藏
 	 */
-	private void showFavMsg(View view, ChannelInfo info) {
+	private void showFavMsg(View view, POChannelList info) {
 
 		final ImageView favView = (ImageView) view.findViewById(R.id.fav_icon);
-		final ChannelInfo saveInfo = info;
+		final POChannelList saveInfo = info;
 
 		new AlertDialog.Builder(ChannelTabActivity.this)
 				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
@@ -787,7 +722,7 @@ public class ChannelTabActivity extends TabActivity implements
 						// do nothing - it will close on its own
 						// TODO 增加加入数据库操作
 						favView.setVisibility(View.VISIBLE);
-						updateDatabase(new POChannelList(saveInfo, true));
+						updateFavDatabase(saveInfo);
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -817,9 +752,10 @@ public class ChannelTabActivity extends TabActivity implements
 						.getBoolean("isTVListSuc", false);
 
 				// 如果下载成功，重新加载当前的播放列表
-				if (isTVListSuc && allinfos != null) {
+				if (isTVListSuc) {
 					// 首先清空之前的数据
-					allinfos.clear();
+					if (allinfos != null)
+						allinfos.clear();
 
 					// 重新解析XML
 					allinfos = ParseUtil.parse(ChannelTabActivity.this, true);
@@ -833,11 +769,6 @@ public class ChannelTabActivity extends TabActivity implements
 					ChannelListBusiness.clearAllOldDatabase();
 					Log.i(LOGTAG, "===> clear old database over!");
 
-					// 重新将新地址入库
-					// int size = allinfos.size();
-					// for (int i = 0; i < size; i++) {
-					// addDatabase(new POChannelList(allinfos.get(i), false));
-					// }
 					/**
 					 * 重新更新直播地址后，需要更新数据库 TODO 此方法效率可能高一点，避免反复的打开关闭数据库
 					 */
@@ -848,13 +779,34 @@ public class ChannelTabActivity extends TabActivity implements
 					feedBackFavChannel(favListChannel);
 					Log.i(LOGTAG,
 							"===> feedback favourite channels to database over!");
+				} else {
+					// 如果加载失败，若还没有建立本地数据库，则建立之
+
+					/* 解析所有的channel list 区分是采用默认列表还是服务器列表 */
+					hasChannelDB = sharedPreferences.getBoolean("hasChannelDB",
+							false);
+					hasBackup = sharedPreferences
+							.getBoolean("hasBackup", false);
+					/* 如果还没有数据库，就创建数据库 */
+					if (!hasChannelDB) {
+						allinfos = ParseUtil.parse(ChannelTabActivity.this,
+								hasBackup);
+						if (hasBackup)
+							Log.d(LOGTAG, "采用服务器更新后的播放列表");
+						/* 创建数据库 */
+						ChannelListBusiness.buildDatabase(allinfos);
+					}
 				}
+				/* 添加数据库存在标志位 */
+				editor.putBoolean("hasChannelDB", true);
+				editor.commit();
+				// 显示播放listView
+				getPlayList();
 				// 发送刷新完毕的消息
 				onRefreshEnd();
 				Log.d(LOGTAG, "===> end refresh playlist");
 			};
 		}.start();
-
 	}
 
 	/**
@@ -864,24 +816,9 @@ public class ChannelTabActivity extends TabActivity implements
 		// 置已经备份过的标志位
 		editor.putBoolean("hasBackup", true);
 		editor.commit();
-		// 重新加载当前的播放列表
-		if (allinfos != null) {
-			// 清除之前的数据
-			yangshi_infos.clear();
-			weishi_infos.clear();
-			difang_infos.clear();
-			tiyu_infos.clear();
-			yule_infos.clear();
-			qita_infos.clear();
 
-			// 重新显示list
-			setYangshiView();
-			setWeishiView();
-			setDifangView();
-			setTiyuView();
-			setYuleView();
-			setQitaView();
-		}
+		// 重新显示list
+		showPlayList();
 	}
 
 	/**
@@ -990,7 +927,6 @@ public class ChannelTabActivity extends TabActivity implements
 					button_refresh.clearAnimation();
 					// 处理刷新结果
 					dealRefreshResult();
-
 					break;
 				default:
 					break;
@@ -1013,7 +949,7 @@ public class ChannelTabActivity extends TabActivity implements
 			new AlertDialog.Builder(ChannelTabActivity.this)
 					.setIcon(R.drawable.ic_about)
 					.setTitle("更新成功")
-					.setMessage("服务器地址更新成功")
+					.setMessage("服务器地址更新成功！\n数据库构建成功！")
 					.setNegativeButton("知道了",
 							new DialogInterface.OnClickListener() {
 								@Override
@@ -1024,13 +960,15 @@ public class ChannelTabActivity extends TabActivity implements
 								}
 							}).show();
 		} else {
-			// 弹出加载【失败】对话框
+			// 重新显示list
+			showPlayList();
+			// 弹出加载【失败】toast
 			if (ChannelTabActivity.this == null)
 				return;
 			new AlertDialog.Builder(ChannelTabActivity.this)
 					.setIcon(R.drawable.ic_dialog_alert)
 					.setTitle("更新失败")
-					.setMessage("抱歉！服务器地址更新失败\n已为您加载备份的节目地址")
+					.setMessage("抱歉！服务器地址更新失败\n默认构建本地数据库！")
 					.setNegativeButton("知道了",
 							new DialogInterface.OnClickListener() {
 								@Override
@@ -1064,29 +1002,13 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 收藏后更新某一条数据信息
 	 * 
 	 */
-	private void updateDatabase(POChannelList channelList) {
+	private void updateFavDatabase(POChannelList channelList) {
+		channelList.save = true;
+		// update
+		Log.i(LOGTAG, "==============>" + channelList.name + "###"
+				+ channelList.poId + "###" + channelList.save);
 
-		List<POChannelList> newChannelList = mDbHelper.queryForEq(
-				POChannelList.class, "name", channelList.name);
-
-		if (newChannelList.size() > 0) {
-			channelList.poId = newChannelList.get(0).poId;
-
-			// update
-			Log.i(LOGTAG, "==============>" + channelList.name + "###"
-					+ channelList.poId + "###" + channelList.save);
-
-			mDbHelper.update(channelList);
-		}
-	}
-
-	/**
-	 * 重新更新直播地址后，需要更新数据库
-	 * 
-	 */
-	private void addDatabase(POChannelList channelList) {
-		mDbHelper.create(channelList);
-		// Log.i(LOGTAG, "===> add a new data!");
+		mDbHelper.update(channelList);
 	}
 
 	// 将收藏的频道写回新数据库

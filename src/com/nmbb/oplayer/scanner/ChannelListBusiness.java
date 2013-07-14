@@ -50,13 +50,13 @@ public final class ChannelListBusiness {
 		// }
 	}
 
-	// 获取所以模糊查询的频道
-	public static List<POChannelList> getAllSearchChannels(String name) {
+	// 获取所有模糊查询的频道
+	public static List<POChannelList> getAllSearchChannels(String columnName, String name) {
 		SQLiteHelperOrm db = new SQLiteHelperOrm();
 		try {
 			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
 			QueryBuilder<POChannelList, Long> query = dao.queryBuilder();
-			return query.where().like("name", "%" + name + "%").query();
+			return query.where().like(columnName, "%" + name + "%").query();
 		} catch (SQLException e) {
 			Logger.e(e);
 		} finally {

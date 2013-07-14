@@ -40,7 +40,6 @@ public class SearchActivity extends Activity {
 	private ListView search_list = null;
 	private EditText mSearch = null;
 
-	private List<ChannelInfo> search_infos = null;
 	private List<POChannelList> listChannel = null;
 
 	/* 频道收藏的数据库 */
@@ -98,8 +97,7 @@ public class SearchActivity extends Activity {
 	 */
 	private void setSearchView() {
 		// clear old listview
-		if (search_infos != null) {
-			search_infos.clear();
+		if (listChannel != null) {
 			listChannel.clear();
 		}
 
@@ -107,8 +105,9 @@ public class SearchActivity extends Activity {
 		String searchName = mSearch.getText().toString();
 		if (searchName.length() > 0) {
 			// get search channel list
-			search_infos = getSearch(searchName);
-			ChannelAdapter adapter = new ChannelAdapter(this, search_infos);
+			listChannel = ChannelListBusiness.getAllSearchChannels("name",
+					searchName);
+			ChannelAdapter adapter = new ChannelAdapter(this, listChannel);
 			search_list.setAdapter(adapter);
 			search_list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -116,14 +115,14 @@ public class SearchActivity extends Activity {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					// TODO Auto-generated method stub
-					ChannelInfo info = (ChannelInfo) search_list
+					POChannelList info = (POChannelList) search_list
 							.getItemAtPosition(arg2);
 					// Log.d("ChannelInfo",
 					// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 					// startLiveMedia(info.getUrl(), info.getName());
-					showAllSource(info.getAllUrl(), info.getName(),
-							info.getProgram_path());
+					showAllSource(info.getAllUrl(), info.name,
+							info.program_path);
 				}
 			});
 
@@ -134,7 +133,7 @@ public class SearchActivity extends Activity {
 						@Override
 						public boolean onItemLongClick(AdapterView<?> arg0,
 								View arg1, int arg2, long arg3) {
-							ChannelInfo info = (ChannelInfo) search_list
+							POChannelList info = (POChannelList) search_list
 									.getItemAtPosition(arg2);
 							showFavMsg(arg1, info);
 							return true;
@@ -157,21 +156,10 @@ public class SearchActivity extends Activity {
 
 				}
 			});
+		} else {
+			ChannelAdapter adapter = new ChannelAdapter(this, listChannel);
+			search_list.setAdapter(adapter);
 		}
-	}
-
-	private List<ChannelInfo> getSearch(String name) {
-		listChannel = ChannelListBusiness.getAllSearchChannels(name);
-		int size = listChannel.size();
-
-		Log.d(LOGTAG, "===>find [" + size + "] channels");
-
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-		for (int i = 0; i < size; i++) {
-			POChannelList channel = listChannel.get(i);
-			info.add(channel.POCopyData());
-		}
-		return info;
 	}
 
 	/**
@@ -190,10 +178,10 @@ public class SearchActivity extends Activity {
 	/**
 	 * 提示是否收藏
 	 */
-	private void showFavMsg(View view, ChannelInfo info) {
+	private void showFavMsg(View view, POChannelList info) {
 
 		final ImageView favView = (ImageView) view.findViewById(R.id.fav_icon);
-		final ChannelInfo saveInfo = info;
+		final POChannelList saveInfo = info;
 
 		new AlertDialog.Builder(SearchActivity.this)
 				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
@@ -204,7 +192,7 @@ public class SearchActivity extends Activity {
 						// do nothing - it will close on its own
 						// TODO 增加加入数据库操作
 						favView.setVisibility(View.VISIBLE);
-						updateDatabase(new POChannelList(saveInfo, true));
+						updateDatabase(saveInfo);
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -220,19 +208,13 @@ public class SearchActivity extends Activity {
 	 * 
 	 */
 	private void updateDatabase(POChannelList channelList) {
+		channelList.save = true;
 
-		List<POChannelList> newChannelList = mDbHelper.queryForEq(
-				POChannelList.class, "name", channelList.name);
+		// update
+		Log.i(LOGTAG, "==============>" + channelList.name + "###"
+				+ channelList.poId + "###" + channelList.save);
 
-		if (newChannelList.size() > 0) {
-			channelList.poId = newChannelList.get(0).poId;
-
-			// update
-			Log.i(LOGTAG, "==============>" + channelList.name + "###"
-					+ channelList.poId + "###" + channelList.save);
-
-			mDbHelper.update(channelList);
-		}
+		mDbHelper.update(channelList);
 	}
 
 	// Listen for button clicks
@@ -251,7 +233,7 @@ public class SearchActivity extends Activity {
 				break;
 			case R.id.delete_btn:
 				// 删除所有的收藏的频道
-				// clearAllFavMsg();
+				mSearch.setText(null);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");

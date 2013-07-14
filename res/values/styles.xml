@@ -67,7 +67,7 @@
     <style name="style_header">
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:background">@drawable/bg_list_item_selected</item>
+        <item name="android:background">@color/powderblue</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">42.0dip</item>
     </style>

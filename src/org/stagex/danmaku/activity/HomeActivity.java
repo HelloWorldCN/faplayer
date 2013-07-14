@@ -183,7 +183,9 @@ public class HomeActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.go_local:
 				// 标记为本地媒体
-				editor.putBoolean("isLiveMedia", false);
+				// editor.putBoolean("isLiveMedia", false);
+				// 暂时去掉本地媒体播放，所以这里仍然设置为直播电视
+				editor.putBoolean("isLiveMedia", true);
 				editor.commit();
 				startLocalMedia();
 				break;

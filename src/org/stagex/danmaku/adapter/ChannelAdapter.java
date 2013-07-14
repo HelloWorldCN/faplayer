@@ -6,6 +6,7 @@ import org.keke.player.R;
 import org.stagex.danmaku.activity.TvProgramActivity;
 
 import com.fedorvlasov.lazylist.ImageLoader;
+import com.nmbb.oplayer.scanner.POChannelList;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,13 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ChannelAdapter extends BaseAdapter {
-	private List<ChannelInfo> infos;
+	private List<POChannelList> infos;
 	private Context mContext;
 
 	// 自定义的img加载类，提升加载性能，防止OOM
 	public ImageLoader imageLoader;
 
-	public ChannelAdapter(Context context, List<ChannelInfo> infos) {
+	public ChannelAdapter(Context context, List<POChannelList> infos) {
 		this.infos = infos;
 		this.mContext = context;
 
@@ -58,6 +59,7 @@ public class ChannelAdapter extends BaseAdapter {
 		ImageView imageView = (ImageView) view.findViewById(R.id.channel_icon);
 		ImageView hotView = (ImageView) view.findViewById(R.id.hot_icon);
 		ImageView newView = (ImageView) view.findViewById(R.id.new_icon);
+		final ImageView favView = (ImageView) view.findViewById(R.id.fav_icon);
 
 		// TODO 节目预告
 		LinearLayout programView = (LinearLayout) view
@@ -71,9 +73,8 @@ public class ChannelAdapter extends BaseAdapter {
 				// "您单击了[" + infos.get((Integer) v.getTag()).getName()
 				// + "]", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(mContext, TvProgramActivity.class);
-				String channel_name = infos.get((Integer) v.getTag()).getName();
-				String program_path = infos.get((Integer) v.getTag())
-						.getProgram_path();
+				String channel_name = infos.get((Integer) v.getTag()).name;
+				String program_path = infos.get((Integer) v.getTag()).program_path;
 				if (program_path == null) {
 					new AlertDialog.Builder(mContext)
 							.setIcon(R.drawable.ic_dialog_alert)
@@ -96,18 +97,21 @@ public class ChannelAdapter extends BaseAdapter {
 				}
 			}
 		});
-
-		text.setText(infos.get(position).getName());
+		
+		// 是否显示已收藏图标
+		if (infos.get(position).save)
+			favView.setVisibility(View.VISIBLE);
+		
+		text.setText(infos.get(position).name);
 		// 判断是否是热门频道，暂时使用HOT字样
-		if (infos.get(position).getMode().equalsIgnoreCase("HOT"))
+		if (infos.get(position).mode.equalsIgnoreCase("HOT"))
 			hotView.setVisibility(View.VISIBLE);
 		// 判断是否是新频道，暂时用NEW字样
-		if (infos.get(position).getMode().equalsIgnoreCase("NEW"))
+		if (infos.get(position).mode.equalsIgnoreCase("NEW"))
 			newView.setVisibility(View.VISIBLE);
 
 		// TODO 新方法，防止OOM
-		imageLoader.DisplayImage(infos.get(position).getIcon_url(), null,
-				imageView);
+		imageLoader.DisplayImage(infos.get(position).icon_url, null, imageView);
 
 		return view;
 	}

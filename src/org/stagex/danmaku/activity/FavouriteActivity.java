@@ -40,8 +40,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	private static final String LOGTAG = "FavouriteActivity";
 	private ListView fav_list;
 
-	private List<ChannelInfo> fav_infos = null;
-	private List<POChannelList> listChannel = null;
+	private List<POChannelList> fav_infos = null;
 
 	/* 频道收藏的数据库 */
 	private DbHelper<POChannelList> mDbHelper;
@@ -80,7 +79,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	 * 设置其他未分类台源的channel list
 	 */
 	private void setFavView() {
-		fav_infos = getFav();
+		fav_infos = ChannelListBusiness.getAllFavChannels();
 		ChannelAdapter adapter = new ChannelAdapter(this, fav_infos);
 		fav_list.setAdapter(adapter);
 		fav_list.setOnItemClickListener(new OnItemClickListener() {
@@ -89,14 +88,13 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				ChannelInfo info = (ChannelInfo) fav_list
+				POChannelList info = (POChannelList) fav_list
 						.getItemAtPosition(arg2);
 				// Log.d("ChannelInfo",
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.getName(),
-						info.getProgram_path());
+				showAllSource(info.getAllUrl(), info.name, info.program_path);
 			}
 		});
 
@@ -106,7 +104,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				ChannelInfo info = (ChannelInfo) fav_list
+				POChannelList info = (POChannelList) fav_list
 						.getItemAtPosition(arg2);
 				ClearFavMsg(arg1, info);
 				return true;
@@ -130,19 +128,6 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 		});
 	}
 
-	private List<ChannelInfo> getFav() {
-		listChannel = ChannelListBusiness.getAllFavChannels();
-		int size = listChannel.size();
-		List<ChannelInfo> info = new ArrayList<ChannelInfo>();
-		for (int i = 0; i < size; i++) {
-			POChannelList channel = listChannel.get(i);
-			info.add(channel.POCopyData());
-			// just for test
-			// example.setText(channel.toString());
-		}
-		return info;
-	}
-
 	/**
 	 * 显示所有的台源
 	 */
@@ -159,8 +144,8 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	/**
 	 * 提示是否取消收藏
 	 */
-	private void ClearFavMsg(View view, ChannelInfo info) {
-		final ChannelInfo saveInfo = info;
+	private void ClearFavMsg(View view, POChannelList info) {
+		final POChannelList saveInfo = info;
 
 		new AlertDialog.Builder(FavouriteActivity.this)
 				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
@@ -168,9 +153,8 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// do nothing - it will close on its own
 						// TODO 增加加入数据库操作
-						clearDatabase(new POChannelList(saveInfo, false));
+						clearDatabase(saveInfo);
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -220,12 +204,7 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	 * @throws FileNotFoundException
 	 */
 	private void clearDatabase(POChannelList channelList) {
-		mDbWhere.put("name", channelList.name);
-
-		POChannelList newChannelList = mDbHelper.queryForEq(
-				POChannelList.class, "name", channelList.name).get(0);
-		channelList.poId = newChannelList.poId;
-
+		channelList.save = false;
 		// update
 		Log.i(LOGTAG, "==============>" + channelList.name + "###"
 				+ channelList.poId + "###" + channelList.save);
