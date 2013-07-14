@@ -834,11 +834,15 @@ public class ChannelTabActivity extends TabActivity implements
 					Log.i(LOGTAG, "===> clear old database over!");
 
 					// 重新将新地址入库
-					int size = allinfos.size();
-					for (int i = 0; i < size; i++) {
-						addDatabase(new POChannelList(allinfos.get(i), false));
-					}
-					Log.i(LOGTAG, "===> add new database over!");
+					// int size = allinfos.size();
+					// for (int i = 0; i < size; i++) {
+					// addDatabase(new POChannelList(allinfos.get(i), false));
+					// }
+					/**
+					 * 重新更新直播地址后，需要更新数据库 TODO 此方法效率可能高一点，避免反复的打开关闭数据库
+					 */
+					ChannelListBusiness.buildDatabase(allinfos);
+					Log.i(LOGTAG, "===> build new database over!");
 
 					// 将收藏的频道写回新数据库
 					feedBackFavChannel(favListChannel);
@@ -1082,7 +1086,7 @@ public class ChannelTabActivity extends TabActivity implements
 	 */
 	private void addDatabase(POChannelList channelList) {
 		mDbHelper.create(channelList);
-//		Log.i(LOGTAG, "===> add a new data!");
+		// Log.i(LOGTAG, "===> add a new data!");
 	}
 
 	// 将收藏的频道写回新数据库

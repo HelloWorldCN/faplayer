@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.util.Logger;
 
 import com.j256.ormlite.dao.Dao;
@@ -31,19 +32,22 @@ public final class ChannelListBusiness {
 	// 清除所有的数据
 	public static void clearAllOldDatabase() {
 		SQLiteHelperOrm db = new SQLiteHelperOrm();
-		try {
-			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
-			List<POChannelList> allChannelList = dao.queryForAll();
-			int size = allChannelList.size();
-			for (int i = 0; i < size; i++) {
-				dao.delete(allChannelList.get(i));
-			}
-		} catch (SQLException e) {
-			Logger.e(e);
-		} finally {
-			if (db != null)
-				db.close();
-		}
+		// 此删除方法效率很低
+		// try {
+		// Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
+		// List<POChannelList> allChannelList = dao.queryForAll();
+		// int size = allChannelList.size();
+		// for (int i = 0; i < size; i++) {
+		// dao.delete(allChannelList.get(i));
+		// }
+		// } catch (SQLException e) {
+		// Logger.e(e);
+		// } finally {
+		// FIXME 此种方式，效率很高，很快，直接删除所有行数据
+		db.getWritableDatabase().delete("channeLlist", null, null);
+		if (db != null)
+			db.close();
+		// }
 	}
 
 	// 获取所以模糊查询的频道
@@ -60,5 +64,22 @@ public final class ChannelListBusiness {
 				db.close();
 		}
 		return new ArrayList<POChannelList>();
+	}
+
+	// 建立数据库所有数据
+	public static void buildDatabase(List<ChannelInfo> channelList) {
+		SQLiteHelperOrm db = new SQLiteHelperOrm();
+		try {
+			Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
+			int size = channelList.size();
+			for (int i = 0; i < size; i++) {
+				dao.create(new POChannelList(channelList.get(i), false));
+			}
+		} catch (SQLException e) {
+			Logger.e(e);
+		} finally {
+			if (db != null)
+				db.close();
+		}
 	}
 }
