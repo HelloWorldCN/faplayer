@@ -55,8 +55,6 @@ public class ChannelSourceActivity extends Activity {
 		// 防止滑动黑屏
 		mFileList.setCacheColorHint(Color.TRANSPARENT);
 
-		TextView text = (TextView) findViewById(R.id.channel_name);
-
 		/* 广告栏控件 */
 		LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
 		new AdView(this, container).DisplayAd();
@@ -80,7 +78,7 @@ public class ChannelSourceActivity extends Activity {
 			Log.e(LOGTAG, "infos is null");
 		channel_name = intent.getStringExtra("channel_name");
 		program_path = intent.getStringExtra("program_path");
-		text.setText(channel_name);
+		button_back.setText(channel_name);
 
 		mSourceAdapter = new ChannelSourceAdapter(this, infos);
 		mFileList.setAdapter(mSourceAdapter);
@@ -120,8 +118,7 @@ public class ChannelSourceActivity extends Activity {
 					new AlertDialog.Builder(ChannelSourceActivity.this)
 							.setIcon(R.drawable.ic_dialog_alert)
 							.setTitle("警告")
-							.setMessage(
-									"暂时没有该电视台的节目预告！")
+							.setMessage("暂时没有该电视台的节目预告！")
 							.setPositiveButton("知道了",
 									new DialogInterface.OnClickListener() {
 										@Override

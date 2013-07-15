@@ -233,7 +233,8 @@ public class SearchActivity extends Activity {
 				break;
 			case R.id.delete_btn:
 				// 删除所有的收藏的频道
-				mSearch.setText(null);
+				if (mSearch.getText().toString().length() > 0)
+					mSearch.setText(null);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");

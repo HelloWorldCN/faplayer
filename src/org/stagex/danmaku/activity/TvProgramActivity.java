@@ -62,7 +62,7 @@ public class TvProgramActivity extends Activity {
 		mProgramPath = intent.getStringExtra("ProgramPath");
 		mChannelName = intent.getStringExtra("ChannelName");
 
-		button_back.setText(mChannelName);
+		button_back.setText("节目预告");
 		
 		/* ====================================================== */
 		/* 用webview方式显示节目预告 */
@@ -90,7 +90,7 @@ public class TvProgramActivity extends Activity {
 				infos.add(info);
 
 //				test_txt.setText(Calendar.getInstance().get(Calendar.DAY_OF_YEAR));
-				test_txt.setText("节目预告");
+				test_txt.setText(mChannelName);
 			}
 			
 			mProgramAdapter = new ProgramAdapter(this, infos);

@@ -9,8 +9,7 @@
 
         <TextView
             android:id="@+id/back_btn"
-            style="@style/style_header_text"
-            android:text="@string/live_btn" />
+            style="@style/style_header_text" />
 
         <ImageView
             android:id="@+id/source_btn"
@@ -36,27 +35,17 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/channel_name"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/text_line"
-        android:gravity="center"
-        android:textColor="#3197FF"
-        android:textSize="25sp" />
-
-    <ListView
-        android:id="@+id/channel_source"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="#00000000" />
-
     <LinearLayout
         android:id="@+id/AdLinearLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="horizontal" />
+
+    <ListView
+        android:id="@+id/channel_source"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000" />
 
 </LinearLayout>
