@@ -775,14 +775,16 @@ public class PlayerActivity extends Activity implements
 		// 数据初始化
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
+		
 		// 选择播放器
-
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		isHardDec = sharedPreferences.getBoolean("isHardDec", false);
 		if (isHardDec) {
 			// 选择系统硬解码
 			selectMediaPlayer(uri, false);
+			// 应用运行时，保持屏幕高亮，不锁屏
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		} else {
 			// 强制选择VLC播放器
 			selectMediaPlayer(uri, true);
