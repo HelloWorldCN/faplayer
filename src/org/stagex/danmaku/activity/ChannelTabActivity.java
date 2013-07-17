@@ -12,6 +12,8 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
+import org.stagex.danmaku.adapter.ProvinceAdapter;
+import org.stagex.danmaku.adapter.ProvinceInfo;
 import org.stagex.danmaku.util.ParseUtil;
 
 import com.nmbb.oplayer.scanner.ChannelListBusiness;
@@ -61,7 +63,7 @@ public class ChannelTabActivity extends TabActivity implements
 
 	List<POChannelList> yangshi_infos = null;
 	List<POChannelList> weishi_infos = null;
-	List<POChannelList> difang_infos = null;
+	List<ProvinceInfo> difang_infos = null;
 	List<POChannelList> tiyu_infos = null;
 	List<POChannelList> yule_infos = null;
 	List<POChannelList> qita_infos = null;
@@ -271,12 +273,12 @@ public class ChannelTabActivity extends TabActivity implements
 		// 根据JSON里面的types来区分直播频道分类
 		yangshi_infos = ChannelListBusiness.getAllSearchChannels("types", "1");
 		weishi_infos = ChannelListBusiness.getAllSearchChannels("types", "2");
-		difang_infos = ChannelListBusiness.getAllSearchChannels("types", "3");
+		difang_infos = ParseUtil.getProvinceNames(ChannelTabActivity.this);
 		tiyu_infos = ChannelListBusiness.getAllSearchChannels("types", "4");
 		yule_infos = ChannelListBusiness.getAllSearchChannels("types", "5");
 		qita_infos = ChannelListBusiness.getAllSearchChannels("types", "6");
 	}
-
+	
 	// 显示播放listView
 	private void showPlayList() {
 		setYangshiView();
@@ -453,7 +455,7 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 设置地方台源的channel list
 	 */
 	private void setDifangView() {
-		ChannelAdapter adapter = new ChannelAdapter(this, difang_infos);
+		ProvinceAdapter adapter = new ProvinceAdapter(this, difang_infos);
 		di_fang_list.setAdapter(adapter);
 		di_fang_list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -461,26 +463,10 @@ public class ChannelTabActivity extends TabActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				POChannelList info = (POChannelList) di_fang_list
+				ProvinceInfo info = (ProvinceInfo) di_fang_list
 						.getItemAtPosition(arg2);
-				// Log.d("ChannelInfo",
-				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
-				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.name, info.program_path);
-			}
-		});
-
-		// 增加长按频道收藏功能
-		di_fang_list.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				POChannelList info = (POChannelList) di_fang_list
-						.getItemAtPosition(arg2);
-				showFavMsg(arg1, info);
-				return true;
+				showProvinceChannel(info.getProvinceName());
 			}
 		});
 
@@ -670,6 +656,16 @@ public class ChannelTabActivity extends TabActivity implements
 		startActivity(intent);
 	}
 
+	/**
+	 * 显示省台的所有频道
+	 */
+	private void showProvinceChannel(String provinceName) {
+		Intent intent = new Intent(ChannelTabActivity.this,
+				ProvinceActivity.class);
+		intent.putExtra("province_name", provinceName);
+		startActivity(intent);
+	}
+	
 	// Listen for button clicks
 	private void setListensers() {
 		button_home.setOnClickListener(goListener);

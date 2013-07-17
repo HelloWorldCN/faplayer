@@ -25,6 +25,9 @@ public class POChannelList {
 	/** 电视台台标 */
 	@DatabaseField
 	public String icon_url;
+	/** 省名称 */
+	@DatabaseField
+	public String province_name;
 	/** 节目源模式 */
 	@DatabaseField
 	public String mode;
@@ -52,9 +55,10 @@ public class POChannelList {
 		id = info.getId();
 		name = info.getName();
 		icon_url = info.getIcon_url();
+		province_name = info.getProvince_name();
 		mode = info.getMode();
 		url = info.getUrl();
-		this.second_url = info.getSecond_url();
+		second_url = info.getSecond_url();
 		types = info.getTypes();
 		program_path = info.getProgram_path();
 		// 默认不收藏

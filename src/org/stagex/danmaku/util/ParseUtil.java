@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stagex.danmaku.adapter.ChannelInfo;
+import org.stagex.danmaku.adapter.ProvinceInfo;
 
 import android.content.Context;
 import android.os.Environment;
@@ -25,13 +26,13 @@ public class ParseUtil {
 		StringBuffer stringBuffer = new StringBuffer();
 		int len = -1;
 		int all = 0;
-		
-		/* FIXME 为了便于测试直播地址，特地在这里加一行代码，强制
-		 * 使用本地asset的下的地址，测试通过之后，再上传服务器
+
+		/*
+		 * FIXME 为了便于测试直播地址，特地在这里加一行代码，强制 使用本地asset的下的地址，测试通过之后，再上传服务器
 		 */
 		pathFlag = false;
 		/* end */
-		
+
 		try {
 			byte[] readBuffer = new byte[1024];
 			// pathFlag为true，表示采用更新后的地址
@@ -75,6 +76,9 @@ public class ParseUtil {
 				int id = obj.getInt("channel_id");
 				String name = obj.getString("channel_name");
 				String icon_url = obj.getString("icon_url");
+				String province_name = null;
+				if (obj.has("province"))
+					province_name = obj.getString("province");
 				String mode = obj.getString("mode");
 				String url = obj.getString("url");
 				JSONArray secArr = obj.getJSONArray("second_url");
@@ -90,7 +94,7 @@ public class ParseUtil {
 				String path = null;
 				if (obj.has("path"))
 					path = obj.getString("path");
-				ChannelInfo info = new ChannelInfo(id, name, icon_url, mode,
+				ChannelInfo info = new ChannelInfo(id, name, icon_url, province_name, mode,
 						url, second_url, types, path);
 				list.add(info);
 			}
@@ -133,7 +137,7 @@ public class ParseUtil {
 						// 最后一组节目源
 						String[] second_url = new String[list_url.size()];
 						list_url.toArray(second_url);
-						ChannelInfo info = new ChannelInfo(0, privName, null,
+						ChannelInfo info = new ChannelInfo(0, privName, null, null,
 								null, first_url, second_url, null, null);
 						list.add(info);
 						break;
@@ -155,8 +159,9 @@ public class ParseUtil {
 							// 保存节目源
 							String[] second_url = new String[list_url.size()];
 							list_url.toArray(second_url);
-							ChannelInfo info = new ChannelInfo(0, privName,
-									null, null, first_url, second_url, null, null);
+							ChannelInfo info = new ChannelInfo(0, privName, null,
+									null, null, first_url, second_url, null,
+									null);
 							list.add(info);
 						}
 						list_url.clear();
@@ -212,4 +217,57 @@ public class ParseUtil {
 
 		return code;
 	}
+
+	/**
+	 * 获取省份名单分类
+	 * 
+	 * @return
+	 */
+	public static List<ProvinceInfo> getProvinceNames(Context context) {
+		List<ProvinceInfo> list = new ArrayList<ProvinceInfo>();
+		StringBuffer stringBuffer = new StringBuffer();
+		int len = -1;
+		int all = 0;
+
+		try {
+			byte[] readBuffer = new byte[1024];
+
+			InputStream fip = context.getAssets().open("province.json");
+			while ((len = fip.read(readBuffer)) != -1) {
+				all += len;
+				String readString = new String(readBuffer, 0, len);
+				stringBuffer.append(readString);
+			}
+			fip.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Log.d("ParseUtil",
+				"all = " + all + " buff len = " + stringBuffer.length());
+
+		try {
+			JSONArray arr = new JSONArray(stringBuffer.toString());
+
+			int nums = arr.length();
+
+			for (int i = 0; i < nums; i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				String name = obj.getString("name");
+				ProvinceInfo info = new ProvinceInfo(name);
+				list.add(info);
+			}
+
+			Log.d("ParseUtil", "province nums = " + nums);
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 }
