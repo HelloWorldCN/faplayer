@@ -4,15 +4,17 @@ public class ProgramInfo {
 
 	private String time;
 	private String program;
+	private Boolean curProgram;
 
 	public ProgramInfo() {
 
 	}
 
-	public ProgramInfo(String time, String program) {
+	public ProgramInfo(String time, String program, Boolean flag) {
 
 		this.time = time;
 		this.program = program;
+		this.curProgram = flag;
 	}
 
 	public String getTime() {
@@ -31,4 +33,11 @@ public class ProgramInfo {
 		this.time = time;
 	}
 
+	public Boolean getCurProgram() {
+		return curProgram;
+	}
+
+	public void SetProgram(Boolean flag) {
+		this.curProgram = flag;
+	}
 }

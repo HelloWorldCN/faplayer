@@ -1,15 +1,17 @@
 package org.stagex.danmaku.activity;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.keke.player.R;
-import org.stagex.danmaku.adapter.ChannelSourceAdapter;
 import org.stagex.danmaku.adapter.ProgramAdapter;
 import org.stagex.danmaku.adapter.ProgramInfo;
 
@@ -17,6 +19,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,10 +40,13 @@ public class TvProgramActivity extends Activity {
 	private WebView mWebView;
 	private String mProgramPath;
 	private String mChannelName;
-	
-	private TextView test_txt;
+
+	private TextView program_txt;
+	private TextView date_txt;
 	private ListView program_list;
-	
+
+	private int listPosition = 0;
+
 	private ProgramAdapter mProgramAdapter;
 
 	@Override
@@ -51,8 +57,9 @@ public class TvProgramActivity extends Activity {
 		/* 顶部标题栏的控件 */
 		button_back = (TextView) findViewById(R.id.back_btn);
 		mWebView = (WebView) findViewById(R.id.wv);
-		test_txt =  (TextView) findViewById(R.id.test_txt);
-		program_list = (ListView)findViewById(R.id.program_list);
+		program_txt = (TextView) findViewById(R.id.program_txt);
+		date_txt = (TextView) findViewById(R.id.date_txt);
+		program_list = (ListView) findViewById(R.id.program_list);
 		// 防止滑动黑屏
 		program_list.setCacheColorHint(Color.TRANSPARENT);
 		/* 设置监听 */
@@ -63,43 +70,90 @@ public class TvProgramActivity extends Activity {
 		mChannelName = intent.getStringExtra("ChannelName");
 
 		button_back.setText("节目预告");
-		
+
 		/* ====================================================== */
 		/* 用webview方式显示节目预告 */
-//		readHtmlFormAssets();
+		// readHtmlFormAssets();
 		/* ====================================================== */
 		/* TODO 以listView文本方式显示节目预告 */
 		Document doc = null;
 		try {
-			doc = Jsoup.connect("http://www.tvmao.com/ext/show_tv.jsp?p=" + mProgramPath).get();
-			
-			Elements links = doc.select("li"); //带有href属性的a元素
+			doc = Jsoup.connect(
+					"http://www.tvmao.com/ext/show_tv.jsp?p=" + mProgramPath)
+					.get();
+
+			Elements links = doc.select("li"); // 带有href属性的a元素
 
 			ArrayList<ProgramInfo> infos = new ArrayList<ProgramInfo>();
-			
-			int size = links.size();
-			for (int i = 0; i < size; i++) {
-				String linkText = links.get(i).text();
-				String[] pair = linkText.split(" ");
+
+			Date fromDate = new Date();
+			SimpleDateFormat simple1 = new SimpleDateFormat("kk:mm");
+
+			// 当前时间
+			String timeStr = DateFormat.format("kk:mm",
+					System.currentTimeMillis()).toString();
+			try {
+				fromDate = simple1.parse(timeStr);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			long curTime = fromDate.getTime();
+			Boolean findFlag = false;
+
+			for (Element link : links) {
+				String[] pair = link.text().split(" ");
 				if (pair.length < 2)
 					continue;
 				String time = pair[0].trim();
 				String program = pair[1].trim();
-				
-				ProgramInfo info = new ProgramInfo(time, program);
-				infos.add(info);
 
-//				test_txt.setText(Calendar.getInstance().get(Calendar.DAY_OF_YEAR));
-				test_txt.setText(mChannelName);
+				if (!findFlag) {
+					listPosition++;
+					try {
+						fromDate = simple1.parse(time);
+						/* 找到第一个比当前时间大的节目，而正在播放的实际是前一个节目 */
+						if (fromDate.getTime() >= curTime) {
+							findFlag = true;
+						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				ProgramInfo info = new ProgramInfo(time, program, false);
+				infos.add(info);
 			}
-			
+
+			// 显示节目名称和当前日期和星期
+			program_txt.setText(mChannelName);
+			date_txt.setText(DateFormat.format("MM月dd日",
+					System.currentTimeMillis())
+					+ "  " + getWeekOfDate());
+
+			// 显示节目列表，并且突出当前播放的节目
 			mProgramAdapter = new ProgramAdapter(this, infos);
 			program_list.setAdapter(mProgramAdapter);
+
+			// 在listView中突出显示当前的播放节目
+			if (!findFlag) {
+				/* 如果没有大于当前时间值的节目，说明当日的最后一个节目就是当前播放的节目 */
+				infos.get(infos.size() - 1).SetProgram(true);
+				program_list.setSelection(infos.size() - 1);
+			} else if (listPosition == 1) {
+				/* 如果第一个节目的时间指就大于当前时间，实际是前一天的最后一个节目，在新的一天什么都不显示 */
+			} else {
+				/* 其他正常情况，如果找到一个大于当前时间值的节目，置前一个节目为正在播放节目 */
+				infos.get(listPosition - 2).SetProgram(true);
+				program_list.setSelection(listPosition - 2);
+			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			test_txt.setText("抱歉，暂时无法获取该频道的节目预告！");
+			program_txt.setText("抱歉，暂时无法获取节目预告！");
 		}
 		/* ====================================================== */
 	}
@@ -155,5 +209,19 @@ public class TvProgramActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	/**
+	 * 获取星期值
+	 */
+	public static String getWeekOfDate() {
+		String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+		Calendar cal = Calendar.getInstance();
+		Date curDate = new Date(System.currentTimeMillis());
+		cal.setTime(curDate);
+		int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if (w < 0)
+			w = 0;
+		return weekDays[w];
 	}
 }
