@@ -286,5 +286,41 @@
                 android:textSize="15sp" />
         </LinearLayout>
     </RelativeLayout>
+    
+        <include layout="@layout/layout_divider_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/tuangou_sel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/sel_setup_list"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_app" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="热门团购推荐"
+                android:textColor="#ff0000ff"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

@@ -281,7 +281,7 @@ public class HomeActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		// 关闭广告
-		AppConnect.getInstance(this).finalize();
+		AppConnect.getInstance(this).close();
 		// System.exit(0);
 		// 或者下面这种方式
 		android.os.Process.killProcess(android.os.Process.myPid());

@@ -6,8 +6,6 @@ import org.stagex.danmaku.util.SystemUtility;
 import cn.waps.AppConnect;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -34,6 +32,7 @@ public class SetupActivity extends Activity {
 	private RelativeLayout feedback_sel;
 	private RelativeLayout update_sel;
 	private RelativeLayout appList_sel;
+	private RelativeLayout tuangou_sel;
 	/* 记录硬解码与软解码的状态 */
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
@@ -55,6 +54,7 @@ public class SetupActivity extends Activity {
 		feedback_sel = (RelativeLayout) findViewById(R.id.feedback_sel);
 		update_sel = (RelativeLayout) findViewById(R.id.update_sel);
 		appList_sel = (RelativeLayout) findViewById(R.id.appList_sel);
+		tuangou_sel = (RelativeLayout) findViewById(R.id.tuangou_sel);
 
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -85,6 +85,7 @@ public class SetupActivity extends Activity {
 		feedback_sel.setOnClickListener(goListener);
 		update_sel.setOnClickListener(goListener);
 		appList_sel.setOnClickListener(goListener);
+		tuangou_sel.setOnClickListener(goListener);
 	}
 
 	// 按键监听
@@ -132,6 +133,10 @@ public class SetupActivity extends Activity {
 				break;
 			case R.id.appList_sel:
 				AppConnect.getInstance(SetupActivity.this).showOffers(
+						SetupActivity.this);
+				break;
+			case R.id.tuangou_sel:
+				AppConnect.getInstance(SetupActivity.this).showTuanOffers(
 						SetupActivity.this);
 				break;
 			default:
