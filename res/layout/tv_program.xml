@@ -52,6 +52,13 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/AdLinearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" />
+
     <ListView
         android:id="@+id/program_list"
         android:layout_width="fill_parent"

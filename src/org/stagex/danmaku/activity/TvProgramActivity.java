@@ -15,6 +15,10 @@ import org.keke.player.R;
 import org.stagex.danmaku.adapter.ProgramAdapter;
 import org.stagex.danmaku.adapter.ProgramInfo;
 
+import cn.waps.AdView;
+import cn.waps.AppConnect;
+import cn.waps.MiniAdView;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,6 +31,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -156,6 +161,10 @@ public class TvProgramActivity extends Activity {
 			program_txt.setText("抱歉，暂时无法获取节目预告！");
 		}
 		/* ====================================================== */
+		
+		/* 广告栏控件 */
+		LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
+		new AdView(this, container).DisplayAd();
 	}
 
 	// Listen for button clicks

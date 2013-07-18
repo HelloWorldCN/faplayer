@@ -256,7 +256,8 @@ public class ParseUtil {
 			for (int i = 0; i < nums; i++) {
 				JSONObject obj = arr.getJSONObject(i);
 				String name = obj.getString("name");
-				ProvinceInfo info = new ProvinceInfo(name);
+				String icon = obj.getString("icon");
+				ProvinceInfo info = new ProvinceInfo(name, icon);
 				list.add(info);
 			}
 

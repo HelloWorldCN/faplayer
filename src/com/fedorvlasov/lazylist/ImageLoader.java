@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -23,6 +24,8 @@ import android.widget.ImageView;
 
 public class ImageLoader {
 
+	private Context mContext;
+	
 	MemoryCache memoryCache = new MemoryCache();
 	FileCache fileCache;
 	private Map<ImageView, String> imageViews = Collections
@@ -32,7 +35,7 @@ public class ImageLoader {
 		// Make the background thead low priority. This way it will not affect
 		// the UI performance
 		photoLoaderThread.setPriority(Thread.NORM_PRIORITY - 1);
-
+		mContext = context;
 		fileCache = new FileCache(context);
 	}
 	
@@ -72,6 +75,18 @@ public class ImageLoader {
 		Bitmap b = decodeFile(f);
 		if (b != null)
 			return b;
+		
+		if (url.contains("keke_icon")) {
+			// from assets dir
+			try {
+				b = decodeAssetsFile(url);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (b != null)
+				return b;
+		}
 
 		// from web
 		try {
@@ -93,6 +108,38 @@ public class ImageLoader {
 		}
 	}
 
+	// decodes image and scales it to reduce memory consumption
+	private Bitmap decodeAssetsFile(String url) throws IOException {
+		try {
+			// decode image size
+			BitmapFactory.Options o = new BitmapFactory.Options();
+			o.inJustDecodeBounds = true;
+			BitmapFactory.decodeStream(mContext.getAssets().open(
+					url), null, o);
+
+			// Find the correct scale value. It should be the power of 2.
+			final int REQUIRED_SIZE = 70;
+			int width_tmp = o.outWidth, height_tmp = o.outHeight;
+			int scale = 1;
+			while (true) {
+				if (width_tmp / 2 < REQUIRED_SIZE
+						|| height_tmp / 2 < REQUIRED_SIZE)
+					break;
+				width_tmp /= 2;
+				height_tmp /= 2;
+				scale *= 2;
+			}
+
+			// decode with inSampleSize
+			BitmapFactory.Options o2 = new BitmapFactory.Options();
+			o2.inSampleSize = scale;
+			return BitmapFactory.decodeStream(mContext.getAssets().open(
+					url), null, o2);
+		} catch (FileNotFoundException e) {
+		}
+		return null;
+	}
+	
 	// decodes image and scales it to reduce memory consumption
 	private Bitmap decodeFile(File f) {
 		try {
