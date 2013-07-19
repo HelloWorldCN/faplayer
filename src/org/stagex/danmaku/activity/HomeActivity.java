@@ -35,6 +35,10 @@ public class HomeActivity extends Activity {
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
 
+	// FIXME 如果数据库变化了，根据版本号，需要在这里添加判别代码
+	private int DBversion = 3; /* 特别注意，这里要与数据库SQLiteHelperOrm.java中的版本号一致 */
+	private boolean DBChanged = false;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,15 @@ public class HomeActivity extends Activity {
 
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		editor = sharedPreferences.edit();
+
+		// 判别数据库是否变化了，仅在升级或安装后，变化一次
+		if (DBversion > sharedPreferences.getInt("DBversion", 0)) {
+			Log.d(LOGTAG, "===>数据库版本过旧，即将更新！");
+			// 版本号比之前记录的版本号高，说明变化了
+			editor.putInt("DBversion", DBversion);
+			editor.putBoolean("DBChanged", true);
+			editor.commit();
+		}
 
 		// 判断CPU类型，如果低于ARMV6，则不让其运行
 		if (SystemUtility.getArmArchitecture() <= 6) {

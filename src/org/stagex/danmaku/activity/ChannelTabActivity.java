@@ -91,6 +91,7 @@ public class ChannelTabActivity extends TabActivity implements
 	private boolean hasBackup;
 	/* 是否建立了频道列表数据库 */
 	private boolean hasChannelDB;
+	private boolean DBChanged = false;
 
 	/* 旋转图标 */
 	private Animation operatingAnim;
@@ -235,8 +236,20 @@ public class ChannelTabActivity extends TabActivity implements
 		 * 将不在直接将JSON数据映射到listView的adapter中去
 		 */
 		hasChannelDB = sharedPreferences.getBoolean("hasChannelDB", false);
-		// 如果还没有建立频道数据库，将先不展示频道listView
-		if (!hasChannelDB) {
+		DBChanged = sharedPreferences.getBoolean("DBChanged", false);
+		// FIXME 如果还没有建立频道数据库，将先不展示频道listView
+		// (这种方式有问题，如果数据库版本更新了，数据会被清除掉，但是这时候，数据为空，
+		// 而却不会自动更新远程直播地址，并建立新的数据库了
+		if (!hasChannelDB || DBChanged) {
+			// 软件升级之后，因为数据库已经存在，只是清空了，
+			// 所以只是利用是否存在数据库判别是否需要重新建立数据库
+			// 是不对的，所以如果数据库变化了，需要一个标志位来控制，
+			// 在HomeActivity启动时，如果有变化，会置位该标志
+			if (DBChanged) {
+				DBChanged = false;
+				editor.putBoolean("DBChanged", false);
+				editor.commit();
+			}
 			// 沒有频道数据库，则第一次启动自动加载服务器列表地址
 			startRefreshList();
 			Log.i(LOGTAG, "===>has no database, load remote playlist first");
