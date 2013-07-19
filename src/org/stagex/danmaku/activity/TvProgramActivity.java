@@ -21,6 +21,7 @@ import cn.waps.MiniAdView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -53,7 +54,8 @@ public class TvProgramActivity extends Activity {
 	private int listPosition = 0;
 
 	private ProgramAdapter mProgramAdapter;
-
+	private SharedPreferences sharedPreferences;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -162,9 +164,15 @@ public class TvProgramActivity extends Activity {
 		}
 		/* ====================================================== */
 		
-		/* 广告栏控件 */
-		LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
-		new AdView(this, container).DisplayAd();
+		// 检测是否需要显示广告
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		if (sharedPreferences.getBoolean("noAd", false)) {
+			// nothing
+		} else {
+			/* 广告栏控件 */
+			LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
+			new AdView(this, container).DisplayAd();
+		}
 	}
 
 	// Listen for button clicks

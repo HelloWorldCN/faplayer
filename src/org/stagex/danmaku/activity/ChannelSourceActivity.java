@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +40,8 @@ public class ChannelSourceActivity extends Activity {
 	private ImageView button_applist;
 	private TextView button_back;
 
+	private SharedPreferences sharedPreferences;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,10 +57,16 @@ public class ChannelSourceActivity extends Activity {
 		mFileList = (ListView) findViewById(R.id.channel_source);
 		// 防止滑动黑屏
 		mFileList.setCacheColorHint(Color.TRANSPARENT);
-
-		/* 广告栏控件 */
-		LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
-		new AdView(this, container).DisplayAd();
+		
+		// 检测是否需要显示广告
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		if (sharedPreferences.getBoolean("noAd", false)) {
+			// nothing
+		} else {
+			/* 广告栏控件 */
+			LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
+			new AdView(this, container).DisplayAd();
+		}
 
 		// 设置监听事件
 		mFileList.setOnItemClickListener(new OnItemClickListener() {

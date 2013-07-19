@@ -135,6 +135,69 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <include layout="@layout/layout_divider_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/noad_sel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/sel_setup_list"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/a1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_decode" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="去广告"
+                android:textColor="#ff0000ff"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/points_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:textColor="#ff0000ff"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/a2"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/a1"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/ad_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/mini_operate_unselected" />
+        </LinearLayout>
+    </RelativeLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -286,8 +349,8 @@
                 android:textSize="15sp" />
         </LinearLayout>
     </RelativeLayout>
-    
-        <include layout="@layout/layout_divider_horizontal" />
+
+    <include layout="@layout/layout_divider_horizontal" />
 
     <RelativeLayout
         android:id="@+id/tuangou_sel"
