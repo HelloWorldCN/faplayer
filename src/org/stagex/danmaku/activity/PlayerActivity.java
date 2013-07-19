@@ -1,12 +1,15 @@
 package org.stagex.danmaku.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.keke.player.R;
 import org.stagex.danmaku.util.SystemUtility;
 
+import com.nmbb.oplayer.scanner.DbHelper;
+import com.nmbb.oplayer.scanner.POChannelList;
 import com.togic.mediacenter.player.AbsMediaPlayer;
 import com.togic.mediacenter.player.DefMediaPlayer;
 import com.togic.mediacenter.player.VlcMediaPlayer;
@@ -98,6 +101,7 @@ public class PlayerActivity extends Activity implements
 	private TextView mCodecMode;
 	private SeekBar mSeekBarProgress;
 	private TextView mTextViewLength;
+	private ImageButton mImageButtonStar;
 	private ImageButton mImageButtonToggleMessage;
 	private ImageButton mImageButtonSwitchAudio;
 	private ImageButton mImageButtonSwitchSubtitle;
@@ -167,6 +171,11 @@ public class PlayerActivity extends Activity implements
 	private boolean isHardDec;
 	/* 记录直播电视还是本地媒体状态 */
 	private boolean isLiveMedia;
+
+	/* 频道收藏的数据库 */
+	private DbHelper<POChannelList> mDbHelper;
+	private Boolean channelStar = false;
+	List<POChannelList> channelList = null;
 
 	/**
 	 * 判断使用的解码接口
@@ -469,6 +478,8 @@ public class PlayerActivity extends Activity implements
 		mTextViewLength = (TextView) findViewById(R.id.player_text_length);
 
 		// 播放控件
+		mImageButtonStar = (ImageButton) findViewById(R.id.player_button_star);
+		mImageButtonStar.setOnClickListener(this);
 		mImageButtonToggleMessage = (ImageButton) findViewById(R.id.player_button_toggle_message);
 		mImageButtonToggleMessage.setOnClickListener(this);
 		mImageButtonSwitchAudio = (ImageButton) findViewById(R.id.player_button_switch_audio);
@@ -514,6 +525,7 @@ public class PlayerActivity extends Activity implements
 		} else {
 			mPlayListSelected = intent.getIntExtra("selected", 0);
 			mPlayListArray = intent.getStringArrayListExtra("playlist");
+			channelStar = intent.getBooleanExtra("channelStar", false);
 			// Log.d(LOGTAG, "===>>>" + mTitleName);
 			mTitleName = intent.getStringExtra("title");
 			mSourceName = intent.getStringExtra("source");
@@ -543,6 +555,16 @@ public class PlayerActivity extends Activity implements
 		mImageButtonPrevious
 				.setVisibility((mPlayListArray.size() == 1) ? View.GONE
 						: View.VISIBLE);
+
+		// 判断是否以收藏
+		if (channelStar) {
+			resource = SystemUtility.getDrawableId("ic_star_selected");
+			mImageButtonStar.setBackgroundResource(resource);
+		} else {
+			resource = SystemUtility.getDrawableId("ic_star");
+			mImageButtonStar.setBackgroundResource(resource);
+		}
+
 		mImageButtonTogglePlay.setVisibility(View.VISIBLE);
 		resource = SystemUtility.getDrawableId("btn_play_1");
 		mImageButtonTogglePlay.setBackgroundResource(resource);
@@ -775,7 +797,10 @@ public class PlayerActivity extends Activity implements
 		// 数据初始化
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
-		
+
+		/* 频道收藏的数据库 */
+		mDbHelper = new DbHelper<POChannelList>();
+
 		// 选择播放器
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -784,7 +809,8 @@ public class PlayerActivity extends Activity implements
 			// 选择系统硬解码
 			selectMediaPlayer(uri, false);
 			// 应用运行时，保持屏幕高亮，不锁屏
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow()
+					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		} else {
 			// 强制选择VLC播放器
 			selectMediaPlayer(uri, true);
@@ -827,6 +853,11 @@ public class PlayerActivity extends Activity implements
 
 		int id = v.getId();
 		switch (id) {
+		case R.id.player_button_star: {
+			// TODO 决定是否收藏该频道
+			updateFavDatabase(mTitleName);
+			break;
+		}
 		case R.id.player_button_switch_audio: {
 			// TODO 暂不做处理
 			break;
@@ -1269,4 +1300,33 @@ public class PlayerActivity extends Activity implements
 		}
 	}
 
+	/**
+	 * 收藏后更新某一条数据信息
+	 * 
+	 */
+	private void updateFavDatabase(String name) {
+		int resource = -1;
+		List<POChannelList> channelList = mDbHelper.queryForEq(
+				POChannelList.class, "name", name);
+		for (POChannelList channel : channelList) {
+			if (channel.save) {
+				channel.save = false;
+				resource = SystemUtility.getDrawableId("ic_star");
+				mImageButtonStar.setBackgroundResource(resource);
+				Toast.makeText(getApplicationContext(), "取消收藏",
+					     Toast.LENGTH_SHORT).show();
+			} else {
+				channel.save = true;
+				resource = SystemUtility.getDrawableId("ic_star_selected");
+				mImageButtonStar.setBackgroundResource(resource);
+				Toast.makeText(getApplicationContext(), "添加收藏",
+					     Toast.LENGTH_SHORT).show();
+			}
+			// update
+			Log.i(LOGTAG, "==============>" + channel.name + "###"
+					+ channel.poId + "###" + channel.save);
+
+			mDbHelper.update(channel);
+		}
+	}
 }

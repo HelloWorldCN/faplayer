@@ -41,7 +41,9 @@ public class ChannelSourceActivity extends Activity {
 	private TextView button_back;
 
 	private SharedPreferences sharedPreferences;
-	
+
+	private Boolean channel_star = false;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class ChannelSourceActivity extends Activity {
 		mFileList = (ListView) findViewById(R.id.channel_source);
 		// 防止滑动黑屏
 		mFileList.setCacheColorHint(Color.TRANSPARENT);
-		
+
 		// 检测是否需要显示广告
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		if (sharedPreferences.getBoolean("noAd", false)) {
@@ -87,6 +89,7 @@ public class ChannelSourceActivity extends Activity {
 			Log.e(LOGTAG, "infos is null");
 		channel_name = intent.getStringExtra("channel_name");
 		program_path = intent.getStringExtra("program_path");
+		channel_star = intent.getBooleanExtra("channelStar", false);
 		button_back.setText(channel_name);
 
 		mSourceAdapter = new ChannelSourceAdapter(this, infos);
@@ -101,6 +104,7 @@ public class ChannelSourceActivity extends Activity {
 		intent.putExtra("selected", 0);
 		intent.putExtra("playlist", playlist);
 		intent.putExtra("title", name);
+		intent.putExtra("channelStar", channel_star);
 		intent.putExtra("source", "地址" + Integer.toString(pos + 1) + "："
 				+ mSourceAdapter.whichName(liveUrl));
 		startActivity(intent);

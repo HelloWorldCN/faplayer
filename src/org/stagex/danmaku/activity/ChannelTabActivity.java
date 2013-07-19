@@ -19,7 +19,6 @@ import org.stagex.danmaku.util.ParseUtil;
 import com.nmbb.oplayer.scanner.ChannelListBusiness;
 import com.nmbb.oplayer.scanner.DbHelper;
 import com.nmbb.oplayer.scanner.POChannelList;
-import com.nmbb.oplayer.ui.MainActivity;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -49,7 +48,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
@@ -278,7 +276,7 @@ public class ChannelTabActivity extends TabActivity implements
 		yule_infos = ChannelListBusiness.getAllSearchChannels("types", "5");
 		qita_infos = ChannelListBusiness.getAllSearchChannels("types", "6");
 	}
-	
+
 	// 显示播放listView
 	private void showPlayList() {
 		setYangshiView();
@@ -365,7 +363,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.name, info.program_path);
+				showAllSource(info.getAllUrl(), info.name, info.program_path,
+						info.save);
 			}
 		});
 
@@ -417,7 +416,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.name, info.program_path);
+				showAllSource(info.getAllUrl(), info.name, info.program_path,
+						info.save);
 			}
 		});
 
@@ -505,7 +505,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.name, info.program_path);
+				showAllSource(info.getAllUrl(), info.name, info.program_path,
+						info.save);
 			}
 		});
 
@@ -557,7 +558,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.name, info.program_path);
+				showAllSource(info.getAllUrl(), info.name, info.program_path,
+						info.save);
 			}
 		});
 
@@ -609,7 +611,8 @@ public class ChannelTabActivity extends TabActivity implements
 				// "name = " + info.getName() + "[" + info.getUrl() + "]");
 
 				// startLiveMedia(info.getUrl(), info.getName());
-				showAllSource(info.getAllUrl(), info.name, info.program_path);
+				showAllSource(info.getAllUrl(), info.name, info.program_path,
+						info.save);
 			}
 		});
 
@@ -647,12 +650,13 @@ public class ChannelTabActivity extends TabActivity implements
 	 * 显示所有的台源
 	 */
 	private void showAllSource(ArrayList<String> all_url, String name,
-			String path) {
+			String path, Boolean isStar) {
 		Intent intent = new Intent(ChannelTabActivity.this,
 				ChannelSourceActivity.class);
 		intent.putExtra("all_url", all_url);
 		intent.putExtra("channel_name", name);
 		intent.putExtra("program_path", path);
+		intent.putExtra("channelStar", isStar);
 		startActivity(intent);
 	}
 
@@ -665,7 +669,7 @@ public class ChannelTabActivity extends TabActivity implements
 		intent.putExtra("province_name", provinceName);
 		startActivity(intent);
 	}
-	
+
 	// Listen for button clicks
 	private void setListensers() {
 		button_home.setOnClickListener(goListener);
