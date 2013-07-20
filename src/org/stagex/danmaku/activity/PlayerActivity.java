@@ -44,6 +44,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -101,6 +102,11 @@ public class PlayerActivity extends Activity implements
 	private TextView mCodecMode;
 	private SeekBar mSeekBarProgress;
 	private TextView mTextViewLength;
+	// 点击阴影部分也不会导致隐藏
+	private LinearLayout player_overlay_header;
+	private LinearLayout interface_overlay;
+	private LinearLayout seekbar_overlay;
+	// end
 	private ImageButton mImageButtonStar;
 	private ImageButton mImageButtonToggleMessage;
 	private ImageButton mImageButtonSwitchAudio;
@@ -477,6 +483,14 @@ public class PlayerActivity extends Activity implements
 		mSeekBarProgress.setOnSeekBarChangeListener(this);
 		mTextViewLength = (TextView) findViewById(R.id.player_text_length);
 
+		// 点击阴影部分也不会隐藏
+		player_overlay_header = (LinearLayout) findViewById(R.id.player_overlay_header);
+		player_overlay_header.setOnClickListener(this);
+		interface_overlay = (LinearLayout) findViewById(R.id.interface_overlay);
+		interface_overlay.setOnClickListener(this);
+		seekbar_overlay = (LinearLayout) findViewById(R.id.seekbar_overlay);
+		seekbar_overlay.setOnClickListener(this);
+		
 		// 播放控件
 		mImageButtonStar = (ImageButton) findViewById(R.id.player_button_star);
 		mImageButtonStar.setOnClickListener(this);
@@ -558,10 +572,10 @@ public class PlayerActivity extends Activity implements
 
 		// 判断是否以收藏
 		if (channelStar) {
-			resource = SystemUtility.getDrawableId("ic_star_selected");
+			resource = SystemUtility.getDrawableId("ic_fav_pressed");
 			mImageButtonStar.setBackgroundResource(resource);
 		} else {
-			resource = SystemUtility.getDrawableId("ic_star");
+			resource = SystemUtility.getDrawableId("ic_fav");
 			mImageButtonStar.setBackgroundResource(resource);
 		}
 
@@ -1311,13 +1325,13 @@ public class PlayerActivity extends Activity implements
 		for (POChannelList channel : channelList) {
 			if (channel.save) {
 				channel.save = false;
-				resource = SystemUtility.getDrawableId("ic_star");
+				resource = SystemUtility.getDrawableId("ic_fav");
 				mImageButtonStar.setBackgroundResource(resource);
 				Toast.makeText(getApplicationContext(), "取消收藏",
 					     Toast.LENGTH_SHORT).show();
 			} else {
 				channel.save = true;
-				resource = SystemUtility.getDrawableId("ic_star_selected");
+				resource = SystemUtility.getDrawableId("ic_fav_pressed");
 				mImageButtonStar.setBackgroundResource(resource);
 				Toast.makeText(getApplicationContext(), "添加收藏",
 					     Toast.LENGTH_SHORT).show();
