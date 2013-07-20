@@ -94,8 +94,8 @@ public class ParseUtil {
 				String path = null;
 				if (obj.has("path"))
 					path = obj.getString("path");
-				ChannelInfo info = new ChannelInfo(id, name, icon_url, province_name, mode,
-						url, second_url, types, path);
+				ChannelInfo info = new ChannelInfo(id, name, icon_url,
+						province_name, mode, url, second_url, types, path);
 				list.add(info);
 			}
 
@@ -137,20 +137,32 @@ public class ParseUtil {
 						// 最后一组节目源
 						String[] second_url = new String[list_url.size()];
 						list_url.toArray(second_url);
-						ChannelInfo info = new ChannelInfo(0, privName, null, null,
-								null, first_url, second_url, null, null);
+						ChannelInfo info = new ChannelInfo(0, privName, null,
+								null, null, first_url, second_url, null, null);
 						list.add(info);
 						break;
 					}
 
 					// 如果不符合要求（节目名和节目地址以英文逗号隔开）直接忽略该行
+					// FIXME bug#0019
 					String[] pair = line.split(",");
-					if (pair.length != 2)
+					int strLen = pair.length;
+					if (strLen < 2)
 						continue;
-
 					nums++;
 					String name = pair[0].trim();
-					String url = pair[1].trim();
+					String url = null;
+					if (strLen == 2) {
+						url = pair[1].trim();
+					} else {
+						StringBuffer urlBuf = new StringBuffer();
+						for (int i = 1; i < strLen; i++) {
+							if (i >= 2)
+								urlBuf.append(",");
+							urlBuf.append(pair[i].trim());
+						}
+						url = urlBuf.toString();
+					}
 					// TODO 合并相同节目名称的源
 					if (name.equals(privName))
 						list_url.add(url);
@@ -159,9 +171,9 @@ public class ParseUtil {
 							// 保存节目源
 							String[] second_url = new String[list_url.size()];
 							list_url.toArray(second_url);
-							ChannelInfo info = new ChannelInfo(0, privName, null,
-									null, null, first_url, second_url, null,
-									null);
+							ChannelInfo info = new ChannelInfo(0, privName,
+									null, null, null, first_url, second_url,
+									null, null);
 							list.add(info);
 						}
 						list_url.clear();
