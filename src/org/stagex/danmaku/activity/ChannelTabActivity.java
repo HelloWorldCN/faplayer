@@ -785,11 +785,21 @@ public class ChannelTabActivity extends TabActivity implements
 					/**
 					 * 重新更新直播地址后，需要更新数据库 TODO 此方法效率可能高一点，避免反复的打开关闭数据库
 					 */
-					ChannelListBusiness.buildDatabase(allinfos);
+					try {
+						ChannelListBusiness.buildDatabase(allinfos);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					Log.i(LOGTAG, "===> build new database over!");
 
 					// 将收藏的频道写回新数据库
-					feedBackFavChannel(favListChannel);
+					try {
+						ChannelListBusiness.feedBackFavChannel(favListChannel);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					Log.i(LOGTAG,
 							"===> feedback favourite channels to database over!");
 				} else {
@@ -807,7 +817,12 @@ public class ChannelTabActivity extends TabActivity implements
 						if (hasBackup)
 							Log.d(LOGTAG, "采用服务器更新后的播放列表");
 						/* 创建数据库 */
-						ChannelListBusiness.buildDatabase(allinfos);
+						try {
+							ChannelListBusiness.buildDatabase(allinfos);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 				/* 添加数据库存在标志位 */
@@ -1022,19 +1037,5 @@ public class ChannelTabActivity extends TabActivity implements
 				+ channelList.poId + "###" + channelList.save);
 
 		mDbHelper.update(channelList);
-	}
-
-	// 将收藏的频道写回新数据库
-	private void feedBackFavChannel(List<POChannelList> favListChannel) {
-		int size = favListChannel.size();
-
-		for (int i = 0; i < size; i++) {
-			List<POChannelList> newChannelList = mDbHelper.queryForEq(
-					POChannelList.class, "name", favListChannel.get(i).name);
-			if (newChannelList.size() > 0) {
-				newChannelList.get(0).save = true;
-				mDbHelper.update(newChannelList.get(0));
-			}
-		}
 	}
 }
