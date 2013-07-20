@@ -112,9 +112,16 @@ public class ChannelSourceAdapter extends BaseAdapter {
 	}
 
 	public String whichName(String url1) {
+		String url;
+		/* FIXME if no xxx:// ??? */
 		int offset1 = url1.indexOf(':') + 3;
+		/* FIXME bug#0018 */
 		int offset2 = url1.indexOf('/', offset1);
-		String url = url1.substring(offset1, offset2);
+		if (offset2 == -1) {
+			url = url1;
+		} else {
+			url = url1.substring(offset1, offset2);
+		}
 		// Log.d(LOGTAG, "hostname ===>" + url);
 
 		String urlName = "未知源";
