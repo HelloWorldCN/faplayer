@@ -177,7 +177,7 @@ public class ChannelTabActivity extends TabActivity implements
 		RelativeLayout tab4 = (RelativeLayout) LayoutInflater.from(this)
 				.inflate(R.layout.tab_host_ctx, null);
 		view4 = (TextView) tab4.findViewById(R.id.tab_label);
-		view4.setText("娱乐");
+		view4.setText("港台");
 		myTabhost.addTab(myTabhost.newTabSpec("Five")// make a new Tab
 				.setIndicator(tab4)
 				// set the Title and Icon

@@ -146,9 +146,16 @@ public class TvProgramActivity extends Activity {
 
 			// 在listView中突出显示当前的播放节目
 			if (!findFlag) {
-				/* 如果没有大于当前时间值的节目，说明当日的最后一个节目就是当前播放的节目 */
-				infos.get(infos.size() - 1).SetProgram(true);
-				program_list.setSelection(infos.size() - 1);
+				// FIXME bug#0022 有些节目预告有内容，但是不是真正的节目单，此时的失败是因为没有节目单
+				if (infos.size() == 0) {
+					date_txt.setVisibility(View.GONE);
+					program_txt.setText("抱歉，暂时无法获取节目预告！");
+				} else {
+					// FIXME bug#0022 此处的没找到是因为有节目预告，但是处于24：00分左右的临界情况
+					/* 如果没有大于当前时间值的节目，说明当日的最后一个节目就是当前播放的节目 */
+					infos.get(infos.size() - 1).SetProgram(true);
+					program_list.setSelection(infos.size() - 1);
+				}
 			} else if (listPosition == 1) {
 				/* 如果第一个节目的时间指就大于当前时间，实际是前一天的最后一个节目，在新的一天什么都不显示 */
 			} else {

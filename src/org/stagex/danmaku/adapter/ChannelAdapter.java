@@ -110,8 +110,19 @@ public class ChannelAdapter extends BaseAdapter {
 		if (infos.get(position).mode.equalsIgnoreCase("NEW"))
 			newView.setVisibility(View.VISIBLE);
 
-		// TODO 新方法，防止OOM
-		imageLoader.DisplayImage(infos.get(position).icon_url, null, imageView);
+		// FIXME 添加对togic的部分图标的url无hostname的支持
+		String iconUrl = infos.get(position).icon_url;
+		if (iconUrl.startsWith("/upload")) {
+			// add "http://tv.togic.com"
+			StringBuffer urlBuf = new StringBuffer();
+			urlBuf.append("http://tv.togic.com");
+			urlBuf.append(iconUrl);
+			// TODO 新方法，防止OOM
+			imageLoader.DisplayImage(urlBuf.toString(), null, imageView);
+		} else {
+			// TODO 新方法，防止OOM
+			imageLoader.DisplayImage(iconUrl, null, imageView);
+		}
 
 		return view;
 	}
