@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,10 +22,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import cn.waps.AppConnect;
+import cn.waps.UpdatePointsNotifier;
 
 import com.nmbb.oplayer.ui.MainActivity;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements UpdatePointsNotifier {
 	private static final String LOGTAG = "HomeActivity";
 
 	private LinearLayout button_local;
@@ -38,6 +40,10 @@ public class HomeActivity extends Activity {
 	// FIXME 如果数据库变化了，根据版本号，需要在这里添加判别代码
 	private int DBversion = 3; /* 特别注意，这里要与数据库SQLiteHelperOrm.java中的版本号一致 */
 	private boolean DBChanged = false;
+
+	private String displayPointsText;
+	private String currencyName = "积分";
+	final Handler mHandler = new Handler();
 
 	/** Called when the activity is first created. */
 	@Override
@@ -298,5 +304,41 @@ public class HomeActivity extends Activity {
 		// System.exit(0);
 		// 或者下面这种方式
 		android.os.Process.killProcess(android.os.Process.myPid());
+	}
+
+	@Override
+	protected void onResume() {
+		// 从服务器端获取当前用户的虚拟货币.
+		// 返回结果在回调函数getUpdatePoints(...)中处理
+		AppConnect.getInstance(this).getPoints(this);
+		super.onResume();
+	}
+
+	/**
+	 * AppConnect.getPoints()方法的实现，必须实现
+	 * 
+	 * @param currencyName
+	 *            虚拟货币名称.
+	 * @param pointTotal
+	 *            虚拟货币余额.
+	 */
+	public void getUpdatePoints(String currencyName, int pointTotal) {
+		this.currencyName = currencyName;
+		displayPointsText = currencyName + ": " + pointTotal;
+		// 保存积分值
+		editor.putInt("pointTotal", pointTotal);
+		editor.commit();
+		Log.d(LOGTAG, "===>" + displayPointsText);
+	}
+
+	/**
+	 * AppConnect.getPoints() 方法的实现，必须实现
+	 * 
+	 * @param error
+	 *            请求失败的错误信息
+	 */
+	public void getUpdatePointsFailed(String error) {
+		displayPointsText = error;
+		Log.e(LOGTAG, "===>" + displayPointsText);
 	}
 }

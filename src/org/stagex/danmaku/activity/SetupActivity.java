@@ -49,7 +49,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 	private String displayPointsText;
 	private String currencyName = "积分";
 	final Handler mHandler = new Handler();
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,7 +71,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 		tuangou_sel = (RelativeLayout) findViewById(R.id.tuangou_sel);
 
 		pointsTextView = (TextView) findViewById(R.id.points_txt);
-		
+
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		editor = sharedPreferences.edit();
@@ -86,7 +86,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 			button_codec.setImageResource(resource);
 			Log.d(LOGTAG, "检测到为软解码模式");
 		}
-		
+
 		/* 检测是否需要显示广告 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		editor = sharedPreferences.edit();
@@ -160,31 +160,37 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 					editor.commit();
 					Log.d(LOGTAG, "设置为有广告模式");
 				} else {
-					
+
 					if (sharedPreferences.getInt("pointTotal", 0) <= 500) {
 						new AlertDialog.Builder(SetupActivity.this)
-						.setIcon(R.drawable.ic_dialog_alert)
-						.setTitle("温馨提示")
-						.setMessage("您的积分不足500分，暂时无法去除广告！\n您可以打开应用推荐赚取相应的积分，感谢您的支持！")
-						.setPositiveButton("赚积分",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										AppConnect.getInstance(SetupActivity.this).showOffers(
-												SetupActivity.this);
-									}
-								})
-						.setNegativeButton("取消",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										dialog.cancel();
-									}
-								}).show();
+								.setIcon(R.drawable.ic_dialog_alert)
+								.setTitle("温馨提示")
+								.setMessage(
+										"您的积分不足500分，暂时无法去除广告！\n您可以打开应用推荐赚取相应的积分，感谢您的支持！")
+								.setPositiveButton("赚积分",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												AppConnect
+														.getInstance(
+																SetupActivity.this)
+														.showOffers(
+																SetupActivity.this);
+											}
+										})
+								.setNegativeButton("取消",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												dialog.cancel();
+											}
+										}).show();
 					} else {
-						
+
 						int resource = SystemUtility
 								.getDrawableId("mini_operate_selected");
 						button_ad.setImageResource(resource);
@@ -240,7 +246,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 		intent.putExtra("msgName", "解码模式介绍");
 		startActivity(intent);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// 从服务器端获取当前用户的虚拟货币.
@@ -248,7 +254,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 		AppConnect.getInstance(this).getPoints(this);
 		super.onResume();
 	}
-	
+
 	// 创建一个线程
 	final Runnable mUpdateResults = new Runnable() {
 		public void run() {
@@ -257,7 +263,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 			}
 		}
 	};
-	
+
 	/**
 	 * AppConnect.getPoints()方法的实现，必须实现
 	 * 
@@ -274,7 +280,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 		editor.commit();
 		mHandler.post(mUpdateResults);
 	}
-	
+
 	/**
 	 * AppConnect.getPoints() 方法的实现，必须实现
 	 * 
