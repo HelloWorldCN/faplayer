@@ -96,7 +96,7 @@ public class ProvinceActivity extends Activity {
 							.getItemAtPosition(arg2);
 
 					showAllSource(info.getAllUrl(), info.name,
-							info.program_path);
+							info.program_path, info.save);
 				}
 			});
 
@@ -137,13 +137,28 @@ public class ProvinceActivity extends Activity {
 	 * 显示所有的台源
 	 */
 	private void showAllSource(ArrayList<String> all_url, String name,
-			String path) {
-		Intent intent = new Intent(ProvinceActivity.this,
-				ChannelSourceActivity.class);
-		intent.putExtra("all_url", all_url);
-		intent.putExtra("channel_name", name);
-		intent.putExtra("program_path", path);
-		startActivity(intent);
+			String path, Boolean isStar) {
+		// 如果该节目只有一个候选源地址，那么直接进入播放界面
+		if (all_url.size() == 1) {
+			Intent intent = new Intent(ProvinceActivity.this,
+					PlayerActivity.class);
+			ArrayList<String> playlist = new ArrayList<String>();
+			playlist.add(all_url.get(0));
+			intent.putExtra("selected", 0);
+			intent.putExtra("playlist", playlist);
+			intent.putExtra("title", name);
+			intent.putExtra("channelStar", isStar);
+			startActivity(intent);
+		} else {
+			// 否则进入候选源界面
+			Intent intent = new Intent(ProvinceActivity.this,
+					ChannelSourceActivity.class);
+			intent.putExtra("all_url", all_url);
+			intent.putExtra("channel_name", name);
+			intent.putExtra("program_path", path);
+			intent.putExtra("channelStar", isStar);
+			startActivity(intent);
+		}
 	}
 
 	/**

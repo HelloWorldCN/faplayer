@@ -40,7 +40,7 @@ public class ImageLoader {
 	}
 	
 	//默认图标
-	final int stub_id = R.drawable.ic_loading_s;
+	final int stub_id = R.drawable.ic_loading;
 
 	public void DisplayImage(String url, Activity activity, ImageView imageView) {
 		imageViews.put(imageView, url);

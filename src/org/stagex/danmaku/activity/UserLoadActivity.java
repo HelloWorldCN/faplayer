@@ -95,11 +95,24 @@ public class UserLoadActivity extends Activity {
 
 	// 打开网络媒体
 	private void startLiveMedia(ArrayList<String> all_url, String name) {
-		Intent intent = new Intent(UserLoadActivity.this,
-				ChannelSourceActivity.class);
-		intent.putExtra("all_url", all_url);
-		intent.putExtra("channel_name", name);
-		startActivity(intent);
+		// 如果该节目只有一个候选源地址，那么直接进入播放界面
+		if (all_url.size() == 1) {
+			Intent intent = new Intent(UserLoadActivity.this,
+					PlayerActivity.class);
+			ArrayList<String> playlist = new ArrayList<String>();
+			playlist.add(all_url.get(0));
+			intent.putExtra("selected", 0);
+			intent.putExtra("playlist", playlist);
+			intent.putExtra("title", name);
+			startActivity(intent);
+		} else {
+			// 否则进入候选源界面
+			Intent intent = new Intent(UserLoadActivity.this,
+					ChannelSourceActivity.class);
+			intent.putExtra("all_url", all_url);
+			intent.putExtra("channel_name", name);
+			startActivity(intent);
+		}
 	}
 
 	// 按键监听
