@@ -242,8 +242,8 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 	 */
 	private void startHelpMedia() {
 		Intent intent = new Intent(SetupActivity.this, MessageActivity.class);
-		intent.putExtra("msgPath", "codec.html");
-		intent.putExtra("msgName", "解码模式介绍");
+		intent.putExtra("msgPath", "help.html");
+		intent.putExtra("msgName", "使用帮助");
 		startActivity(intent);
 	}
 
@@ -259,7 +259,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 	final Runnable mUpdateResults = new Runnable() {
 		public void run() {
 			if (pointsTextView != null) {
-				pointsTextView.setText("(" + displayPointsText + ")");
+				pointsTextView.setText("(" + "当前" + displayPointsText + ")");
 			}
 		}
 	};

@@ -102,42 +102,6 @@
     <include layout="@layout/layout_divider_horizontal" />
 
     <RelativeLayout
-        android:id="@+id/help_sel"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:background="@drawable/sel_setup_list"
-        android:orientation="horizontal" >
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_about" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:layout_marginLeft="5dp"
-                android:gravity="center"
-                android:text="解码模式"
-                android:textColor="#ff4b4949"
-                android:textSize="15sp" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <include layout="@layout/layout_divider_horizontal" />
-
-    <RelativeLayout
         android:id="@+id/noad_sel"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
@@ -154,11 +118,11 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_decode" />
+                android:src="@drawable/ic_noad" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -237,6 +201,42 @@
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
                 android:text="关于"
+                android:textColor="#ff4b4949"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider_horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/help_sel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/sel_setup_list"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_about" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:text="使用帮助"
                 android:textColor="#ff4b4949"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -372,7 +372,7 @@
                 android:layout_height="18dp"
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_app" />
+                android:src="@drawable/ic_tuangou" />
 
             <TextView
                 android:layout_width="wrap_content"
