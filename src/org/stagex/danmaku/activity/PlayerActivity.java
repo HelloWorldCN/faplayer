@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -174,6 +175,7 @@ public class PlayerActivity extends Activity implements
 
 	/* 记录硬解码与软解码的状态 */
 	private SharedPreferences sharedPreferences;
+	private Editor editor;
 	private boolean isHardDec;
 	/* 记录直播电视还是本地媒体状态 */
 	private boolean isLiveMedia;
@@ -182,6 +184,7 @@ public class PlayerActivity extends Activity implements
 	private DbHelper<POChannelList> mDbHelper;
 	private Boolean channelStar = false;
 	List<POChannelList> channelList = null;
+	private int fav_num = 0;
 
 	/**
 	 * 判断使用的解码接口
@@ -490,7 +493,7 @@ public class PlayerActivity extends Activity implements
 		interface_overlay.setOnClickListener(this);
 		seekbar_overlay = (LinearLayout) findViewById(R.id.seekbar_overlay);
 		seekbar_overlay.setOnClickListener(this);
-		
+
 		// 播放控件
 		mImageButtonStar = (ImageButton) findViewById(R.id.player_button_star);
 		mImageButtonStar.setOnClickListener(this);
@@ -818,6 +821,7 @@ public class PlayerActivity extends Activity implements
 		// 选择播放器
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
 		isHardDec = sharedPreferences.getBoolean("isHardDec", false);
 		if (isHardDec) {
 			// 选择系统硬解码
@@ -1320,6 +1324,32 @@ public class PlayerActivity extends Activity implements
 	 */
 	private void updateFavDatabase(String name) {
 		int resource = -1;
+
+		fav_num = sharedPreferences.getInt("fav_num", 0);
+		Log.d(LOGTAG, "===>current fav_num = " + fav_num);
+
+		// 为提升用户点击广告的热情，特地将收藏频道数目超过3个的的积分额度为100积分
+		if (fav_num >= 3) {
+			// FIXME 此处可以修改积分限制
+			if (sharedPreferences.getInt("pointTotal", 0) < 100) {
+				new AlertDialog.Builder(PlayerActivity.this)
+						.setIcon(R.drawable.ic_dialog_alert)
+						.setTitle("温馨提示")
+						.setMessage(
+								"您的积分不足100分，暂时只能收藏3个频道！\n您可以到【设置】中打开应用推荐赚取相应的积分，感谢您的支持！")
+						.setNegativeButton("知道了",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.cancel();
+									}
+								}).show();
+
+				return;
+			}
+		}
+
 		List<POChannelList> channelList = mDbHelper.queryForEq(
 				POChannelList.class, "name", name);
 		for (POChannelList channel : channelList) {
@@ -1327,14 +1357,24 @@ public class PlayerActivity extends Activity implements
 				channel.save = false;
 				resource = SystemUtility.getDrawableId("ic_fav");
 				mImageButtonStar.setBackgroundResource(resource);
+
+				// 收藏频道数加1
+				editor.putInt("fav_num", fav_num - 1);
+				editor.commit();
+
 				Toast.makeText(getApplicationContext(), "取消收藏",
-					     Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_SHORT).show();
 			} else {
 				channel.save = true;
 				resource = SystemUtility.getDrawableId("ic_fav_pressed");
 				mImageButtonStar.setBackgroundResource(resource);
+
+				// 收藏频道数加1
+				editor.putInt("fav_num", fav_num + 1);
+				editor.commit();
+
 				Toast.makeText(getApplicationContext(), "添加收藏",
-					     Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_SHORT).show();
 			}
 			// update
 			Log.i(LOGTAG, "==============>" + channel.name + "###"

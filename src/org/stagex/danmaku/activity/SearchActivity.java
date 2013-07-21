@@ -13,6 +13,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,6 +51,11 @@ public class SearchActivity extends Activity {
 	/* 顶部标题栏的控件 */
 	private TextView button_back;
 	private ImageView button_delete;
+
+	// 更新收藏频道的数目
+	private SharedPreferences sharedPreferences;
+	private Editor editor;
+	private int fav_num = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +97,10 @@ public class SearchActivity extends Activity {
 
 		/* 设置监听 */
 		setListensers();
+
+		// 更新收藏频道的数目
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
 	}
 
 	/*
@@ -198,6 +209,42 @@ public class SearchActivity extends Activity {
 		final ImageView favView = (ImageView) view.findViewById(R.id.fav_icon);
 		final POChannelList saveInfo = info;
 
+		fav_num = sharedPreferences.getInt("fav_num", 0);
+		Log.d(LOGTAG, "===>current fav_num = " + fav_num);
+
+		// 为提升用户点击广告的热情，特地将收藏频道数目超过3个的的积分额度为100积分
+		if (fav_num >= 3) {
+			// FIXME 此处可以修改积分限制
+			if (sharedPreferences.getInt("pointTotal", 0) < 100) {
+				new AlertDialog.Builder(SearchActivity.this)
+						.setIcon(R.drawable.ic_dialog_alert)
+						.setTitle("温馨提示")
+						.setMessage(
+								"您的积分不足100分，暂时只能收藏3个频道！\n您可以到【设置】中打开应用推荐赚取相应的积分，感谢您的支持！")
+						.setPositiveButton("赚积分",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										Intent intent = new Intent();
+										intent.setClass(SearchActivity.this,
+												SetupActivity.class);
+										startActivity(intent);
+									}
+								})
+						.setNegativeButton("取消",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.cancel();
+									}
+								}).show();
+
+				return;
+			}
+		}
+
 		new AlertDialog.Builder(SearchActivity.this)
 				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
 				.setMessage("确定收藏该直播频道吗？")
@@ -223,6 +270,12 @@ public class SearchActivity extends Activity {
 	 * 
 	 */
 	private void updateDatabase(POChannelList channelList) {
+		if (channelList.save == false) {
+			// 如果重复点击，只算一次添加
+			// 收藏频道数加1
+			editor.putInt("fav_num", fav_num + 1);
+			editor.commit();
+		}
 		channelList.save = true;
 
 		// update

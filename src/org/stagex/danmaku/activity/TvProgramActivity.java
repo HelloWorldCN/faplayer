@@ -55,7 +55,7 @@ public class TvProgramActivity extends Activity {
 
 	private ProgramAdapter mProgramAdapter;
 	private SharedPreferences sharedPreferences;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -170,7 +170,7 @@ public class TvProgramActivity extends Activity {
 			program_txt.setText("抱歉，暂时无法获取节目预告！");
 		}
 		/* ====================================================== */
-		
+
 		// 检测是否需要显示广告
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		if (sharedPreferences.getBoolean("noAd", false)) {

@@ -13,6 +13,8 @@ import org.stagex.danmaku.adapter.ChannelInfo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,6 +53,11 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	private ImageView button_home;
 	private ImageView button_delete;
 
+	// 更新收藏频道的数目
+	private SharedPreferences sharedPreferences;
+	private Editor editor;
+	private int fav_num = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -71,6 +78,10 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 		button_delete = (ImageView) findViewById(R.id.delete_btn);
 		/* 设置监听 */
 		setListensers();
+
+		// 更新收藏频道的数目
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
 
 		setFavView();
 	}
@@ -147,12 +158,18 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 	private void ClearFavMsg(View view, POChannelList info) {
 		final POChannelList saveInfo = info;
 
+		fav_num = sharedPreferences.getInt("fav_num", 0);
+		Log.d(LOGTAG, "===>current fav_num = " + fav_num);
+
 		new AlertDialog.Builder(FavouriteActivity.this)
 				.setIcon(R.drawable.ic_dialog_alert).setTitle("温馨提示")
 				.setMessage("确定取消该直播频道的收藏吗？")
 				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						// 收藏数目减1
+						editor.putInt("fav_num", fav_num - 1);
+						editor.commit();
 						// TODO 增加加入数据库操作
 						clearDatabase(saveInfo);
 					}
@@ -188,6 +205,10 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 						}
 						// 重新加載listView
 						reloadFavList();
+
+						// 收藏数目置为0
+						editor.putInt("fav_num", 0);
+						editor.commit();
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
