@@ -30,7 +30,7 @@ public class ParseUtil {
 		/*
 		 * FIXME 为了便于测试直播地址，特地在这里加一行代码，强制 使用本地asset的下的地址，测试通过之后，再上传服务器
 		 */
-		pathFlag = false;
+//		pathFlag = false;
 		/* end */
 
 		try {

@@ -6426,5 +6426,45 @@
     "second_url": [],
     "types": "6",
     "path": "NGS&c=NGM"
-  }
+  },
+  {
+    "channel_id": 60002,
+    "channel_name": "亚洲电影",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://223.27.170.210/channels/39/800.flv/live",
+    "second_url": [],
+    "types": "6"
+  },
+  {
+    "channel_id": 60003,
+    "channel_name": "美国中文电视",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://ec.sinovision.net/video/ts/lv.m3u8",
+    "second_url": [],
+    "types": "6"
+  },
+  {
+    "channel_id": 60004,
+    "channel_name": "新华中文",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://mobile.xinhuashixun.com/Live/cncHD.m3u8",
+    "second_url": [],
+    "types": "6"
+  },
+  {
+    "channel_id": 60005,
+    "channel_name": "新华国际",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://mobile.xinhuashixun.com/Live/cncworldHD.m3u8",
+    "second_url": [],
+    "types": "6"
+  },
 ]
