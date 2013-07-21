@@ -38,6 +38,7 @@ public class ChannelSourceActivity extends Activity {
 	/* 顶部标题栏的控件 */
 	private ImageView button_source;
 	private ImageView button_applist;
+	private ImageView button_tuangou;
 	private TextView button_back;
 
 	private SharedPreferences sharedPreferences;
@@ -52,6 +53,7 @@ public class ChannelSourceActivity extends Activity {
 		/* 顶部标题栏的控件 */
 		button_source = (ImageView) findViewById(R.id.source_btn);
 		button_applist = (ImageView) findViewById(R.id.applist_btn);
+		button_tuangou = (ImageView) findViewById(R.id.tuangou_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置监听 */
 		setListensers();
@@ -114,6 +116,7 @@ public class ChannelSourceActivity extends Activity {
 	private void setListensers() {
 		button_source.setOnClickListener(goListener);
 		button_applist.setOnClickListener(goListener);
+		button_tuangou.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 	}
 
@@ -155,6 +158,11 @@ public class ChannelSourceActivity extends Activity {
 			case R.id.applist_btn:
 				// 显示精品应用推荐
 				AppConnect.getInstance(ChannelSourceActivity.this).showOffers(
+						ChannelSourceActivity.this);
+				break;
+			case R.id.tuangou_btn:
+				// 显示团购
+				AppConnect.getInstance(ChannelSourceActivity.this).showTuanOffers(
 						ChannelSourceActivity.this);
 				break;
 			default:

@@ -35,7 +35,7 @@
                 <ImageView
                     android:id="@+id/live_media"
                     style="@style/style_home_item_img"
-                    android:src="@drawable/sel_livetv" />
+                    android:src="@drawable/ic_live" />
 
                 <TextView
                     style="@style/style_home_item_text"
@@ -55,7 +55,7 @@
                 <ImageView
                     android:id="@+id/local_media"
                     style="@style/style_home_item_img"
-                    android:src="@drawable/sel_favourite" />
+                    android:src="@drawable/ic_save" />
 
                 <TextView
                     style="@style/style_home_item_text"
@@ -81,7 +81,7 @@
                 <ImageView
                     android:id="@+id/userdef_media"
                     style="@style/style_home_item_img"
-                    android:src="@drawable/sel_def" />
+                    android:src="@drawable/ic_userdef" />
 
                 <TextView
                     style="@style/style_home_item_text"
@@ -101,7 +101,7 @@
                 <ImageView
                     android:id="@+id/setup_media"
                     style="@style/style_home_item_img"
-                    android:src="@drawable/sel_setup" />
+                    android:src="@drawable/ic_setup" />
 
                 <TextView
                     style="@style/style_home_item_text"

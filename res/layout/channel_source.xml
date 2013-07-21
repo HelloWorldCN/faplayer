@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/source_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/sel_about" />
+            android:src="@drawable/sel_program" />
 
         <include layout="@layout/layout_divider_header" />
 
@@ -25,14 +25,12 @@
 
         <include
             android:id="@+id/applist_devide"
-            layout="@layout/layout_divider_header"
-            android:visibility="gone" />
+            layout="@layout/layout_divider_header" />
 
         <ImageView
-            android:id="@+id/refresh_btn"
+            android:id="@+id/tuangou_btn"
             style="@style/style_content_header_img"
-            android:src="@drawable/ic_refresh"
-            android:visibility="gone" />
+            android:src="@drawable/sel_tuangou" />
     </LinearLayout>
 
     <LinearLayout
