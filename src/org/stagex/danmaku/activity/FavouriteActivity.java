@@ -83,6 +83,37 @@ public class FavouriteActivity extends OrmLiteBaseActivity<SQLiteHelperOrm> {
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		editor = sharedPreferences.edit();
 
+		// ===============================================================
+		if (sharedPreferences.getBoolean("no_fav_help", false) == false) {
+			new AlertDialog.Builder(FavouriteActivity.this)
+			.setIcon(R.drawable.ic_dialog_alert)
+			.setTitle("温馨提示")
+			.setMessage(
+					"【长按】直播电视频道列表的频道名称即可以实现收藏，并且在这里可以看到收藏的频道！\n" +
+					"在此的收藏频道【长按】可以实现取消收藏功能！\n同时，播放节目点击【心型】按钮也可以收藏")
+			.setPositiveButton("不再提醒",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(
+								DialogInterface dialog,
+								int which) {
+							// 不再收藏
+							editor.putBoolean("no_fav_help", true);
+							editor.commit();
+						}
+					})
+			.setNegativeButton("知道了",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(
+								DialogInterface dialog,
+								int which) {
+							dialog.cancel();
+						}
+					}).show();
+		}
+		// ===============================================================
+		
 		setFavView();
 	}
 
