@@ -226,7 +226,9 @@ public class ParseUtil {
 		}
 
 		bin.close();
-
+		
+		Log.d("Parseutil", "find text code ===>" + code);
+		
 		return code;
 	}
 

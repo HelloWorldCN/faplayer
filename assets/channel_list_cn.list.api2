@@ -388,7 +388,7 @@
     "channel_name": "CCTV-风云足球",
     "icon_url": "http://tv.togic.com:8080/ShowTimeService/images/36.png",
     "mode": "HOT",
-    "url": "http://115.238.157.235:1080/LIVE24/z.m3u8",
+    "url": "http://live.gslb.letv.com/gslb?stream_id=fyzq&tag=live&ext=m3u8&sign=live_ipad",
     "second_url": [],
     "types": "1|4",
     "path": "CCTVPAYFEE&c=CCTVPAYFEE1"
@@ -6467,4 +6467,64 @@
     "second_url": [],
     "types": "6"
   },
+  {
+    "channel_id": 60006,
+    "channel_name": "澳门莲花",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://mobile.xinhuashixun.com/Live/cncworldHD.m3u8",
+    "second_url": [],
+    "types": "5"
+  },
+  {
+    "channel_id": 60007,
+    "channel_name": "澳视高清",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://live3.tdm.com.mo/tv/smil:ch6.smil/chunklist-b632000.m3u8",
+    "second_url": [],
+    "types": "5"
+  },
+  {
+    "channel_id": 60008,
+    "channel_name": "澳视资讯",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://218.213.227.174:1935/tv/ch5.live/playlist.m3u8",
+    "second_url": [],
+    "types": "5"
+  },
+  {
+    "channel_id": 60009,
+    "channel_name": "澳视macau",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://218.213.227.174:1935/tv/ch3.live/playlist.m3u8",
+    "second_url": [],
+    "types": "5"
+  },
+  {
+    "channel_id": 60010,
+    "channel_name": "澳视体育",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://218.213.227.174:1935/tv/ch4.live/playlist.m3u8",
+    "second_url": [],
+    "types": "5"
+  },
+  {
+    "channel_id": 60011,
+    "channel_name": "壹电视新闻台",
+    "icon_url": "keke_icon/default.png",
+    "province": "其他",
+    "mode": "NEW",
+    "url": "http://newshls-i.akamaihd.net/hls/live/202100/newshls/wifistream.m3u8",
+    "second_url": [],
+    "types": "5"
+  }
 ]
