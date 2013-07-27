@@ -29,6 +29,7 @@ public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 		try {
 			TableUtils.createTable(connectionSource, POMedia.class);
 			TableUtils.createTable(connectionSource, POChannelList.class);
+			TableUtils.createTable(connectionSource, POUserDefChannel.class);
 			Log.i(SQLiteHelperOrm.class.getName(), "创建数据库成功！"); 
 		} catch (SQLException e) {
 			Log.i(SQLiteHelperOrm.class.getName(), "创建数据库失败！", e);  
@@ -41,6 +42,7 @@ public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 		try {
 			TableUtils.dropTable(connectionSource, POMedia.class, true);
 			TableUtils.dropTable(connectionSource, POChannelList.class, true);
+			TableUtils.dropTable(connectionSource, POUserDefChannel.class, true);
 			onCreate(db, connectionSource);
 			Log.i(SQLiteHelperOrm.class.getName(), "更新数据库成功！"); 
 		} catch (SQLException e) {

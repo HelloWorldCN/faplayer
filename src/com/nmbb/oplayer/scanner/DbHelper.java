@@ -97,11 +97,14 @@ public class DbHelper<T> {
 	 * 
 	 * @param c
 	 * @param values
-	 * @param columnName where字段
-	 * @param value where值
+	 * @param columnName
+	 *            where字段
+	 * @param value
+	 *            where值
 	 * @return
 	 */
-	public int update(Class<T> c, ContentValues values, String columnName, Object value) {
+	public int update(Class<T> c, ContentValues values, String columnName,
+			Object value) {
 		SQLiteHelperOrm db = new SQLiteHelperOrm();
 		try {
 			Dao dao = db.getDao(c);

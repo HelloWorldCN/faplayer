@@ -111,4 +111,19 @@ public final class ChannelListBusiness {
 				db.close();
 		}
 	}
+	
+	// 找出所有的自定义的收藏频道
+	public static List<POUserDefChannel> getAllDefFavChannels() {
+		SQLiteHelperOrm db = new SQLiteHelperOrm();
+		try {
+			Dao<POUserDefChannel, Long> dao = db.getDao(POUserDefChannel.class);
+			return dao.queryForAll();
+		} catch (SQLException e) {
+			Logger.e(e);
+		} finally {
+			if (db != null)
+				db.close();
+		}
+		return new ArrayList<POUserDefChannel>();
+	}
 }

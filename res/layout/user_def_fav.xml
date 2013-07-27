@@ -10,38 +10,19 @@
         <TextView
             android:id="@+id/back_btn"
             style="@style/style_header_text"
-            android:text="加载列表" />
+            android:text="自定义收藏频道" />
 
         <ImageView
-            android:id="@+id/fav_btn"
-            style="@style/style_content_header_img"
-            android:src="@drawable/sel_fav" />
-
-        <include
-            android:id="@+id/fav_devide"
-            layout="@layout/layout_divider_header" />
-
-        <ImageView
-            android:id="@+id/help_btn"
+            android:id="@+id/msg_btn"
             style="@style/style_content_header_img"
             android:src="@drawable/sel_about" />
-
-        <include
-            android:id="@+id/help_devide"
-            layout="@layout/layout_divider_header" />
-
-        <ImageView
-            android:id="@+id/edit_btn"
-            style="@style/style_content_header_img"
-            android:src="@drawable/sel_edit" />
     </LinearLayout>
 
     <ListView
         android:id="@+id/tv_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:fastScrollEnabled="true"
-        android:visibility="gone" />
+        android:fastScrollEnabled="true" />
 
     <WebView
         android:id="@+id/wv"

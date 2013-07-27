@@ -9,11 +9,17 @@ import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ChannelLoadAdapter;
 import org.stagex.danmaku.util.ParseUtil;
 
+import com.nmbb.oplayer.scanner.DbHelper;
+import com.nmbb.oplayer.scanner.POUserDefChannel;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -24,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class UserLoadActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -33,12 +40,16 @@ public class UserLoadActivity extends Activity {
 	private TextView button_back;
 	private ImageView button_search;
 	private ImageView button_edit;
+	private ImageView button_defFav;
 	/* ListView */
 	private ListView mTvList;
 	private ChannelLoadAdapter mSourceAdapter;
 	private List<ChannelInfo> infos;
 
 	private WebView mWebView;
+
+	/* 频道收藏的数据库 */
+	private DbHelper<POUserDefChannel> mDbHelper;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +58,9 @@ public class UserLoadActivity extends Activity {
 
 		/* 顶部标题栏的控件 */
 		button_back = (TextView) findViewById(R.id.back_btn);
-		button_search = (ImageView) findViewById(R.id.search_btn);
+		button_search = (ImageView) findViewById(R.id.help_btn);
 		button_edit = (ImageView) findViewById(R.id.edit_btn);
+		button_defFav = (ImageView) findViewById(R.id.fav_btn);
 
 		mWebView = (WebView) findViewById(R.id.wv);
 
@@ -58,6 +70,9 @@ public class UserLoadActivity extends Activity {
 		mTvList = (ListView) findViewById(R.id.tv_list);
 		// 防止滑动黑屏
 		mTvList.setCacheColorHint(Color.TRANSPARENT);
+
+		/* 频道收藏的数据库 */
+		mDbHelper = new DbHelper<POUserDefChannel>();
 
 		String path = Environment.getExternalStorageDirectory().getPath()
 				+ "/kekePlayer/tvlist.txt";
@@ -82,8 +97,24 @@ public class UserLoadActivity extends Activity {
 					startLiveMedia(info.getAllUrl(), info.getName());
 				}
 			});
-		} else
+			// 增加长按频道收藏功能
+			mTvList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					ChannelInfo info = (ChannelInfo) mTvList
+							.getItemAtPosition(arg2);
+					// 转换为数据库数据结构
+					POUserDefChannel POinfo = new POUserDefChannel(info);
+					showFavMsg(arg1, POinfo);
+					return true;
+				}
+			});
+		} else {
+			// 如果不存在，则显示帮助文档
 			readHtmlFormAssets();
+		}
 	}
 
 	// Listen for button clicks
@@ -91,6 +122,7 @@ public class UserLoadActivity extends Activity {
 		button_back.setOnClickListener(goListener);
 		button_search.setOnClickListener(goListener);
 		button_edit.setOnClickListener(goListener);
+		button_defFav.setOnClickListener(goListener);
 	}
 
 	// 打开网络媒体
@@ -123,7 +155,7 @@ public class UserLoadActivity extends Activity {
 				// 回到上一个界面(Activity)
 				finish();
 				break;
-			case R.id.search_btn:
+			case R.id.help_btn:
 				showHelp();
 				break;
 			case R.id.edit_btn:
@@ -131,6 +163,13 @@ public class UserLoadActivity extends Activity {
 				Intent intent = new Intent();
 				intent.setClass(UserLoadActivity.this, UserDefActivity.class);
 				startActivity(intent);
+				break;
+			case R.id.fav_btn:
+				// 打开自定义的收藏频道
+				Intent intent_defFav = new Intent();
+				intent_defFav.setClass(UserLoadActivity.this,
+						UserDefFavActivity.class);
+				startActivity(intent_defFav);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
@@ -158,4 +197,48 @@ public class UserLoadActivity extends Activity {
 		mWebView.setBackgroundColor(Color.TRANSPARENT);
 		mWebView.loadUrl("file:///android_asset/html/tvList_help.html");
 	}
+
+	/**
+	 * 提示是否收藏为个性频道
+	 */
+	private void showFavMsg(View view, POUserDefChannel info) {
+
+		final POUserDefChannel saveInfo = info;
+
+//		// TODO 需要判断是否已经收藏过，先按名称，再判断地址
+//		List<POUserDefChannel> exitInfo = mDbHelper.queryForEq(POUserDefChannel.class, "name", saveInfo.name);
+//		int size = exitInfo.size();
+//		if (size == 1) {
+//			ArrayList<String> loadUrl = info.getAllUrl();
+//			ArrayList<String> exitUrl = exitInfo.get(0).getAllUrl();
+//			int size1 = loadUrl.size();
+//			int size2 = exitUrl.size();
+//			for (int m = 0; m < size1; m++) {
+//				for (int n = 0; n < size1; n++) {
+//					// TODO 判断地址是否相同，不同则合并之
+//				}
+//			}
+//			
+//		} else {
+			new AlertDialog.Builder(UserLoadActivity.this)
+					.setIcon(R.drawable.ic_dialog_alert)
+					.setTitle("温馨提示")
+					.setMessage("确定收藏该自定义频道吗？")
+					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO 增加加入数据库操作
+							saveInfo.date = DateFormat.format("MM月dd日",
+									System.currentTimeMillis()).toString();
+							mDbHelper.create(saveInfo);
+						}
+					})
+					.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					}).show();
+		}
+//	}
 }
