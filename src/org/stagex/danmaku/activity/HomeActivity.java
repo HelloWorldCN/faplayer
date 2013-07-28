@@ -38,7 +38,7 @@ public class HomeActivity extends Activity implements UpdatePointsNotifier {
 	private Editor editor;
 
 	// FIXME 如果数据库变化了，根据版本号，需要在这里添加判别代码
-	private int DBversion = 3; /* 特别注意，这里要与数据库SQLiteHelperOrm.java中的版本号一致 */
+	private int DBversion = 4; /* 特别注意，这里要与数据库SQLiteHelperOrm.java中的版本号一致 */
 	private boolean DBChanged = false;
 
 	private String displayPointsText;
@@ -60,6 +60,8 @@ public class HomeActivity extends Activity implements UpdatePointsNotifier {
 			// 版本号比之前记录的版本号高，说明变化了
 			editor.putInt("DBversion", DBversion);
 			editor.putBoolean("DBChanged", true);
+			// 2013-07-28， 配合backup用户自定义的收藏列表
+			editor.putBoolean("needSelfDevFavbkp", true);
 			editor.commit();
 		}
 

@@ -7,6 +7,7 @@ import java.util.List;
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ChannelLoadAdapter;
+import org.stagex.danmaku.util.BackupData;
 import org.stagex.danmaku.util.ParseUtil;
 
 import com.nmbb.oplayer.scanner.DbHelper;
@@ -16,11 +17,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -51,6 +55,9 @@ public class UserLoadActivity extends Activity {
 	/* 频道收藏的数据库 */
 	private DbHelper<POUserDefChannel> mDbHelper;
 
+	private SharedPreferences sharedPreferences;
+	private Editor editor;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,6 +71,9 @@ public class UserLoadActivity extends Activity {
 
 		mWebView = (WebView) findViewById(R.id.wv);
 
+		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		
 		/* 设置监听 */
 		setListensers();
 
@@ -73,7 +83,28 @@ public class UserLoadActivity extends Activity {
 
 		/* 频道收藏的数据库 */
 		mDbHelper = new DbHelper<POUserDefChannel>();
-
+		
+		/* ========================================================= */
+		/* 2013-07-28
+		 *  软件第一次启动之后，会创建一个标志位needSelfDevFavbkp（该标志为在用户
+		 *  卸载软件时会消失）
+		 * 如果标志位为false，则说明是覆盖安装，也就是说，数据库的数据还在，那么就
+		 * 不需要将自定义的收藏频道从SD卡的工作目录下backup出来（如果是首次使用，
+		 * 那么肯定之前也没自定义过，也就肯定不许要restore）
+		 * 如果为true，那么需要检测SD工作目录下是否有selfDefineTVList文件，如果有的
+		 * 话，将其中的数据读出来，加入到数据库中去。
+		 * （另外一种情况，如果软件的数据库版本升级了，官方的收藏可以先不管，用户
+		 * 自定义的数据库将会清空，这种情况下也应该要backup数据, 而这个标志位的清空
+		 * 就由主界面启动时置位为true）
+		 */
+		if (sharedPreferences.getBoolean("needSelfDevFavbkp", false)) {
+			Log.d(LOGTAG, "===> needSelfDevFavbkp");
+			new BackupData(UserLoadActivity.this).execute("restoreDatabase");
+			editor.putBoolean("needSelfDevFavbkp", false);
+			editor.commit();
+		}
+		/* ========================================================= */
+		
 		String path = Environment.getExternalStorageDirectory().getPath()
 				+ "/kekePlayer/tvlist.txt";
 		File listFile = new File(path);
@@ -165,6 +196,8 @@ public class UserLoadActivity extends Activity {
 				startActivity(intent);
 				break;
 			case R.id.fav_btn:
+				// TODO 暂时在每次打开自定义收藏的时候，都进行备份数据库
+			    new BackupData(UserLoadActivity.this).execute("backupDatabase");
 				// 打开自定义的收藏频道
 				Intent intent_defFav = new Intent();
 				intent_defFav.setClass(UserLoadActivity.this,

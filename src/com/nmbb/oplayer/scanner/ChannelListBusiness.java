@@ -126,4 +126,29 @@ public final class ChannelListBusiness {
 		}
 		return new ArrayList<POUserDefChannel>();
 	}
+	
+	// 建立自定义收藏数据库所有数据
+	public static void buildSeflDefDatabase(List<ChannelInfo> List) throws Exception {
+		SQLiteHelperOrm db = new SQLiteHelperOrm();
+		final List<ChannelInfo> channelList = List;
+		try {
+			final Dao<POUserDefChannel, Long> dao = db.getDao(POUserDefChannel.class);
+			// TODO 采用ormlite的事务方式，能够极大的提高数据库的操作效率
+			dao.callBatchTasks(new Callable<Void>() {
+				public Void call() throws SQLException {
+					// insert a number of accounts at once
+					for (ChannelInfo info : channelList) {
+						// update our account object
+						dao.create(new POUserDefChannel(info));
+					}
+					return null;
+				}
+			});
+		} catch (SQLException e) {
+			Logger.e(e);
+		} finally {
+			if (db != null)
+				db.close();
+		}
+	}
 }

@@ -14,7 +14,7 @@ import com.j256.ormlite.table.TableUtils;
 
 public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "kekePlayer.db";
-	private static final int DATABASE_VERSION = 3;			/* modify 2013-07-19 */
+	private static final int DATABASE_VERSION = 4;			/* modify 2013-07-28 */
 
 	public SQLiteHelperOrm(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

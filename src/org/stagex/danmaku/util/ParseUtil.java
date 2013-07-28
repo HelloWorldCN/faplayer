@@ -118,6 +118,9 @@ public class ParseUtil {
 		String first_url = null;
 		ArrayList<String> list_url = new ArrayList<String>();
 
+		// FIXBUG 2013-07-28
+		Boolean dropLast = true;
+		
 		try {
 			// 探测txt文件的编码格式
 			code = codeString(tvList);
@@ -134,21 +137,30 @@ public class ParseUtil {
 				while (true) {
 					String line = br.readLine();
 					if (line == null) {
-						// 最后一组节目源
-						String[] second_url = new String[list_url.size()];
-						list_url.toArray(second_url);
-						ChannelInfo info = new ChannelInfo(0, privName, null,
-								null, null, first_url, second_url, null, null);
-						list.add(info);
+						// FIXBUG 2013-07-28
+						if (dropLast != true) {
+							// 最后一组节目源
+							String[] second_url = new String[list_url.size()];
+							list_url.toArray(second_url);
+							ChannelInfo info = new ChannelInfo(0, privName, null,
+									null, null, first_url, second_url, null, null);
+							list.add(info);
+						}
 						break;
 					}
 
+					// FIXBUG 2013-07-28
+					dropLast = false;
+					
 					// 如果不符合要求（节目名和节目地址以英文逗号隔开）直接忽略该行
 					// FIXME bug#0019
 					String[] pair = line.split(",");
 					int strLen = pair.length;
-					if (strLen < 2)
+					if (strLen < 2) {
+						// FIXBUG 2013-07-28
+						dropLast = true;
 						continue;
+					}
 					nums++;
 					String name = pair[0].trim();
 					String url = null;

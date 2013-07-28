@@ -301,6 +301,8 @@ public class PlayerActivity extends Activity implements
 						// mPlayListArray.get(mPlayListSelected), true);
 						// break;
 						mProgressBarPreparing.setVisibility(View.GONE);
+						// FIXME bug#0023
+						mPercentTxt.setVisibility(View.GONE);
 //						mLoadingTxt.setVisibility(View.GONE);
 						/* TODO 用在硬解解码模式，判断不支持的源 */
 						new AlertDialog.Builder(PlayerActivity.this)
@@ -346,6 +348,8 @@ public class PlayerActivity extends Activity implements
 						mSurfaceViewVlc.setVisibility(View.GONE);
 						// Log.i(LOGTAG, "VlcMediaPlayer update UI");
 						mProgressBarPreparing.setVisibility(View.GONE);
+						// FIXME bug#0023
+						mPercentTxt.setVisibility(View.GONE);
 //						mLoadingTxt.setVisibility(View.GONE);
 						// 弹出播放失败的窗口@{
 						new AlertDialog.Builder(PlayerActivity.this)
@@ -666,6 +670,8 @@ public class PlayerActivity extends Activity implements
 		if (mMediaPlayer.setDataSource(uri) == false) {
 			/* 隐藏缓冲圈 */
 			mProgressBarPreparing.setVisibility(View.GONE);
+			// FIXME bug#0023
+			mPercentTxt.setVisibility(View.GONE);
 //			mLoadingTxt.setVisibility(View.GONE);
 			/* TODO 用在硬解解码模式，判断不支持的源 */
 			new AlertDialog.Builder(PlayerActivity.this)
