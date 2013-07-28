@@ -91,7 +91,7 @@ public class PlayerActivity extends Activity implements
 
 	/* player misc */
 	private ProgressBar mProgressBarPreparing;
-	private TextView mLoadingTxt;
+//	private TextView mLoadingTxt;
 	private TextView mPercentTxt;
 
 	/* player controls */
@@ -208,12 +208,14 @@ public class PlayerActivity extends Activity implements
 	protected void initializeEvents() {
 		mEventHandler = new Handler() {
 			public void handleMessage(Message msg) {
+//				Log.d(LOGTAG, "===> get message [" + msg.what + "]");
 				switch (msg.what) {
 				case MEDIA_PLAYER_BUFFERING_UPDATE: {
-					if (mMediaPlayerLoaded) {
-
+					// FIXBUG bug#0023 这里的判断标志会引起第一次启动时没有
+					// 缓冲百分比的提示
+//					if (mMediaPlayerLoaded) {
 						// Log.d(LOGTAG, "===>load   " + msg.arg1 + "%");
-						mPercentTxt.setText("已缓冲===> "
+						mPercentTxt.setText("正在缓冲===> "
 								+ String.valueOf(msg.arg1) + "%");
 
 						mPercentTxt.setVisibility(msg.arg1 < 100 ? View.VISIBLE
@@ -223,12 +225,12 @@ public class PlayerActivity extends Activity implements
 								.setVisibility(msg.arg1 < 100 ? View.VISIBLE
 										: View.GONE);
 
-						// mLoadingTxt
-						// .setVisibility(msg.arg1 < 100 ? View.VISIBLE
-						// : View.GONE);
+//						 mLoadingTxt
+//						 .setVisibility(msg.arg1 < 100 ? View.VISIBLE
+//						 : View.GONE);
 					}
 					break;
-				}
+//				}
 				case MEDIA_PLAYER_COMPLETION: {
 					/* TODO 播放结束后，如何处理 */
 					// 使用通知窗口
@@ -243,7 +245,7 @@ public class PlayerActivity extends Activity implements
 						// 缓冲环显示
 						mProgressBarPreparing.setVisibility(View.VISIBLE);
 						// 缓冲提示语
-						mLoadingTxt.setVisibility(View.VISIBLE);
+//						mLoadingTxt.setVisibility(View.VISIBLE);
 						Log.d(LOGTAG,
 								"reconnect the Media Server in LiveTV mode");
 						if (sharedPreferences.getBoolean("isHardDec", false)) {
@@ -299,7 +301,7 @@ public class PlayerActivity extends Activity implements
 						// mPlayListArray.get(mPlayListSelected), true);
 						// break;
 						mProgressBarPreparing.setVisibility(View.GONE);
-						mLoadingTxt.setVisibility(View.GONE);
+//						mLoadingTxt.setVisibility(View.GONE);
 						/* TODO 用在硬解解码模式，判断不支持的源 */
 						new AlertDialog.Builder(PlayerActivity.this)
 								.setIcon(R.drawable.ic_dialog_alert)
@@ -344,7 +346,7 @@ public class PlayerActivity extends Activity implements
 						mSurfaceViewVlc.setVisibility(View.GONE);
 						// Log.i(LOGTAG, "VlcMediaPlayer update UI");
 						mProgressBarPreparing.setVisibility(View.GONE);
-						mLoadingTxt.setVisibility(View.GONE);
+//						mLoadingTxt.setVisibility(View.GONE);
 						// 弹出播放失败的窗口@{
 						new AlertDialog.Builder(PlayerActivity.this)
 								.setIcon(R.drawable.ic_dialog_alert)
@@ -375,6 +377,10 @@ public class PlayerActivity extends Activity implements
 					break;
 				}
 				case MEDIA_PLAYER_PREPARED: {
+					Log.d(LOGTAG, "===> MEDIA_PLAYER_PREPARED");
+					// FIXME bug#0023 对于rtmp的视频，不会有该message
+					// 因此是个bug，暂时将mMediaPlayerLoaded = true在MEDIA_PLAYER_PROGRESS_UPDATE
+					// 中也进行置位操作
 					if (isDefMediaPlayer(msg.obj) || isVlcMediaPlayer(msg.obj)) {
 						/* update status */
 						mMediaPlayerLoaded = true;
@@ -382,12 +388,17 @@ public class PlayerActivity extends Activity implements
 					/* update UI */
 					if (mMediaPlayerLoaded) {
 						mProgressBarPreparing.setVisibility(View.GONE);
-						mLoadingTxt.setVisibility(View.GONE);
+//						mLoadingTxt.setVisibility(View.GONE);
+						// FIXME bug#0023
+						mPercentTxt.setVisibility(View.GONE);
 					}
 					startMediaPlayer();
 					break;
 				}
 				case MEDIA_PLAYER_PROGRESS_UPDATE: {
+					// FIXME bug#0023
+					mMediaPlayerLoaded = true;
+					//
 					if (mMediaPlayer != null) {
 						int length = msg.arg2;
 						if (length >= 0) {
@@ -517,7 +528,7 @@ public class PlayerActivity extends Activity implements
 		// 缓冲进度圈
 		mProgressBarPreparing = (ProgressBar) findViewById(R.id.player_prepairing);
 		// 缓冲提示语言
-		mLoadingTxt = (TextView) findViewById(R.id.player_loading);
+//		mLoadingTxt = (TextView) findViewById(R.id.player_loading);
 		// 缓冲比例
 		mPercentTxt = (TextView) findViewById(R.id.buffer_percent);
 
@@ -655,7 +666,7 @@ public class PlayerActivity extends Activity implements
 		if (mMediaPlayer.setDataSource(uri) == false) {
 			/* 隐藏缓冲圈 */
 			mProgressBarPreparing.setVisibility(View.GONE);
-			mLoadingTxt.setVisibility(View.GONE);
+//			mLoadingTxt.setVisibility(View.GONE);
 			/* TODO 用在硬解解码模式，判断不支持的源 */
 			new AlertDialog.Builder(PlayerActivity.this)
 					.setIcon(R.drawable.ic_dialog_alert)
@@ -714,6 +725,7 @@ public class PlayerActivity extends Activity implements
 	 * 启动播放器
 	 */
 	protected void startMediaPlayer() {
+		// FIXME bug#0023 rtmp的视频可能不走这里，但是如何开始播放的呢？
 		// Log.i(LOGTAG, "startMediaPlayer() ");
 		if (mMediaPlayerStarted || !mMediaPlayerLoaded) {
 			// Log.i(LOGTAG,
@@ -721,7 +733,7 @@ public class PlayerActivity extends Activity implements
 			return;
 		}
 		if (mMediaPlayer != null) {
-			// Log.i(LOGTAG, "mMediaPlayer.start()");
+//			 Log.i(LOGTAG, "===> mMediaPlayer.start()");
 			mMediaPlayer.start();
 			mMediaPlayerStarted = true;
 		}
@@ -810,7 +822,7 @@ public class PlayerActivity extends Activity implements
 		// 缓冲环显示
 		mProgressBarPreparing.setVisibility(View.VISIBLE);
 		// 缓冲提示语
-		mLoadingTxt.setVisibility(View.VISIBLE);
+//		mLoadingTxt.setVisibility(View.VISIBLE);
 		// 数据初始化
 		initializeData();
 		String uri = mPlayListArray.get(mPlayListSelected);
@@ -860,6 +872,8 @@ public class PlayerActivity extends Activity implements
 	 */
 	@Override
 	public void onClick(View v) {
+		// FIXME 由于rtmp的视频没有 MEDIA_PLAYER_PREPARED message
+		// 所以点击不会出现播放控件界面
 		if (!mMediaPlayerLoaded)
 			return;
 
