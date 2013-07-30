@@ -13,15 +13,6 @@
             android:text="自定义" />
 
         <ImageView
-            android:id="@+id/fav_btn"
-            style="@style/style_content_header_img"
-            android:src="@drawable/sel_fav" />
-
-        <include
-            android:id="@+id/fav_devide"
-            layout="@layout/layout_divider_header" />
-
-        <ImageView
             android:id="@+id/help_btn"
             style="@style/style_content_header_img"
             android:src="@drawable/sel_about" />

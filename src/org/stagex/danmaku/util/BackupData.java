@@ -72,7 +72,7 @@ public class BackupData extends AsyncTask<String, Void, Integer> {
 			Log.d("BackupData", "===>restore backup selfdefine fav tvlist");
 			
 			String path = Environment.getExternalStorageDirectory().getPath()
-					+ "/kekePlayer/.selfDefineTVList";
+					+ "/kekePlayer/selfDefineTVList.txt";
 			File listFile = new File(path);
 			if (listFile.exists()) {
 				List<ChannelInfo> infos = ParseUtil.parseDef(mContext, path);

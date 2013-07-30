@@ -44,7 +44,7 @@ public class UserLoadActivity extends Activity {
 	private TextView button_back;
 	private ImageView button_search;
 	private ImageView button_edit;
-	private ImageView button_defFav;
+//	private ImageView button_defFav;
 	/* ListView */
 	private ListView mTvList;
 	private ChannelLoadAdapter mSourceAdapter;
@@ -67,7 +67,7 @@ public class UserLoadActivity extends Activity {
 		button_back = (TextView) findViewById(R.id.back_btn);
 		button_search = (ImageView) findViewById(R.id.help_btn);
 		button_edit = (ImageView) findViewById(R.id.edit_btn);
-		button_defFav = (ImageView) findViewById(R.id.fav_btn);
+//		button_defFav = (ImageView) findViewById(R.id.fav_btn);
 
 		mWebView = (WebView) findViewById(R.id.wv);
 
@@ -83,27 +83,6 @@ public class UserLoadActivity extends Activity {
 
 		/* 频道收藏的数据库 */
 		mDbHelper = new DbHelper<POUserDefChannel>();
-		
-		/* ========================================================= */
-		/* 2013-07-28
-		 *  软件第一次启动之后，会创建一个标志位needSelfDevFavbkp（该标志为在用户
-		 *  卸载软件时会消失）
-		 * 如果标志位为false，则说明是覆盖安装，也就是说，数据库的数据还在，那么就
-		 * 不需要将自定义的收藏频道从SD卡的工作目录下backup出来（如果是首次使用，
-		 * 那么肯定之前也没自定义过，也就肯定不许要restore）
-		 * 如果为true，那么需要检测SD工作目录下是否有selfDefineTVList文件，如果有的
-		 * 话，将其中的数据读出来，加入到数据库中去。
-		 * （另外一种情况，如果软件的数据库版本升级了，官方的收藏可以先不管，用户
-		 * 自定义的数据库将会清空，这种情况下也应该要backup数据, 而这个标志位的清空
-		 * 就由主界面启动时置位为true）
-		 */
-		if (sharedPreferences.getBoolean("needSelfDevFavbkp", false)) {
-			Log.d(LOGTAG, "===> needSelfDevFavbkp");
-			new BackupData(UserLoadActivity.this).execute("restoreDatabase");
-			editor.putBoolean("needSelfDevFavbkp", false);
-			editor.commit();
-		}
-		/* ========================================================= */
 		
 		String path = Environment.getExternalStorageDirectory().getPath()
 				+ "/kekePlayer/tvlist.txt";
@@ -185,7 +164,7 @@ public class UserLoadActivity extends Activity {
 		button_back.setOnClickListener(goListener);
 		button_search.setOnClickListener(goListener);
 		button_edit.setOnClickListener(goListener);
-		button_defFav.setOnClickListener(goListener);
+//		button_defFav.setOnClickListener(goListener);
 	}
 
 	// 打开网络媒体
@@ -227,15 +206,15 @@ public class UserLoadActivity extends Activity {
 				intent.setClass(UserLoadActivity.this, UserDefActivity.class);
 				startActivity(intent);
 				break;
-			case R.id.fav_btn:
-				// TODO 暂时在每次打开自定义收藏的时候，都进行备份数据库
-			    new BackupData(UserLoadActivity.this).execute("backupDatabase");
-				// 打开自定义的收藏频道
-				Intent intent_defFav = new Intent();
-				intent_defFav.setClass(UserLoadActivity.this,
-						UserDefFavActivity.class);
-				startActivity(intent_defFav);
-				break;
+//			case R.id.fav_btn:
+//				// TODO 暂时在每次打开自定义收藏的时候，都进行备份数据库
+//			    new BackupData(UserLoadActivity.this).execute("backupDatabase");
+//				// 打开自定义的收藏频道
+//				Intent intent_defFav = new Intent();
+//				intent_defFav.setClass(UserLoadActivity.this,
+//						UserDefFavActivity.class);
+//				startActivity(intent_defFav);
+//				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
 			}
@@ -296,6 +275,10 @@ public class UserLoadActivity extends Activity {
 							saveInfo.date = DateFormat.format("MM月dd日",
 									System.currentTimeMillis()).toString();
 							mDbHelper.create(saveInfo);
+							
+							// TODO 暂时在每次打开自定义收藏的时候，都进行备份数据库
+						    new BackupData(UserLoadActivity.this).execute("backupDatabase");
+							
 						}
 					})
 					.setNegativeButton("取消", new DialogInterface.OnClickListener() {
