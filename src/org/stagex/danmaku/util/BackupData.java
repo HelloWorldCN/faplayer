@@ -38,7 +38,7 @@ public class BackupData extends AsyncTask<String, Void, Integer> {
 
 			File backupFile = new File(
 					Environment.getExternalStorageDirectory(),
-					"/kekePlayer/.selfDefineTVList");
+					"/kekePlayer/selfDefineTVList.txt");
 			try {
 				FileOutputStream fos = new FileOutputStream(backupFile);
 				OutputStreamWriter ow = new OutputStreamWriter(fos, "GBK");

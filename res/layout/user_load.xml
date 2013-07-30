@@ -10,7 +10,7 @@
         <TextView
             android:id="@+id/back_btn"
             style="@style/style_header_text"
-            android:text="加载列表" />
+            android:text="自定义" />
 
         <ImageView
             android:id="@+id/fav_btn"

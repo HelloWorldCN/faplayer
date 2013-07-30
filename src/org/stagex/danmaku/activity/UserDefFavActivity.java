@@ -14,10 +14,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -33,14 +36,14 @@ public class UserDefFavActivity extends Activity {
 
 	/* 顶部标题栏的控件 */
 	private TextView button_back;
-	private ImageView button_search;
+	private ImageView button_help;
 	/* ListView */
 	private ListView mTvList;
 	private ChannelDefFavAdapter mSourceAdapter;
 	private List<POUserDefChannel> infos;
 
 	private WebView mWebView;
-
+	
 	/* 频道收藏的数据库 */
 	private DbHelper<POUserDefChannel> mDbHelper;
 
@@ -51,7 +54,7 @@ public class UserDefFavActivity extends Activity {
 
 		/* 顶部标题栏的控件 */
 		button_back = (TextView) findViewById(R.id.back_btn);
-		button_search = (ImageView) findViewById(R.id.msg_btn);
+		button_help = (ImageView) findViewById(R.id.msg_btn);
 
 		mWebView = (WebView) findViewById(R.id.wv);
 
@@ -64,7 +67,7 @@ public class UserDefFavActivity extends Activity {
 
 		/* 频道收藏的数据库 */
 		mDbHelper = new DbHelper<POUserDefChannel>();
-
+		
 		showList();
 	}
 
@@ -103,7 +106,7 @@ public class UserDefFavActivity extends Activity {
 	// Listen for button clicks
 	private void setListensers() {
 		button_back.setOnClickListener(goListener);
-		button_search.setOnClickListener(goListener);
+		button_help.setOnClickListener(goListener);
 	}
 
 	// 打开网络媒体
@@ -138,6 +141,7 @@ public class UserDefFavActivity extends Activity {
 				break;
 			case R.id.msg_btn:
 				// TODO 显示帮助
+				readHtmlFormAssets();
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");
@@ -173,5 +177,21 @@ public class UserDefFavActivity extends Activity {
 						dialog.cancel();
 					}
 				}).show();
+	}
+	
+	// 利用webview来显示帮助的文本信息
+	private void readHtmlFormAssets() {
+		mTvList.setVisibility(View.GONE);
+		mWebView.setVisibility(View.VISIBLE);
+		WebSettings webSettings = mWebView.getSettings();
+
+		webSettings.setLoadWithOverviewMode(true);
+		// WebView双击变大，再双击后变小，当手动放大后，双击可以恢复到原始大小
+		// webSettings.setUseWideViewPort(true);
+		// 设置WebView可触摸放大缩小：
+		// webSettings.setBuiltInZoomControls(true);
+		// WebView 背景透明效果
+		mWebView.setBackgroundColor(Color.TRANSPARENT);
+		mWebView.loadUrl("file:///android_asset/html/SelfFavTVList_help.html");
 	}
 }

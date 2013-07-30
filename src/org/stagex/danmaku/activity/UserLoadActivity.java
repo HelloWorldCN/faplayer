@@ -109,6 +109,38 @@ public class UserLoadActivity extends Activity {
 				+ "/kekePlayer/tvlist.txt";
 		File listFile = new File(path);
 		if (listFile.exists()) {
+			
+			// ===============================================================
+			if (sharedPreferences.getBoolean("no_SelfFav_help", false) == false) {
+				new AlertDialog.Builder(UserLoadActivity.this)
+				.setIcon(R.drawable.ic_dialog_alert)
+				.setTitle("温馨提示")
+				.setMessage(
+						"【长按】自定义列表的频道名称即可以实现自定义收藏，并且点击工具栏的心型按钮可以跳转到自定义收藏的频道列表！\n" +
+						"【长按】收藏频道列表的频道名称可以实现取消收藏功能！\n")
+				.setPositiveButton("不再提醒",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(
+									DialogInterface dialog,
+									int which) {
+								// 不再收藏
+								editor.putBoolean("no_SelfFav_help", true);
+								editor.commit();
+							}
+						})
+				.setNegativeButton("知道了",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(
+									DialogInterface dialog,
+									int which) {
+								dialog.cancel();
+							}
+						}).show();
+			}
+			// ===============================================================
+			
 			mTvList.setVisibility(View.VISIBLE);
 			mWebView.setVisibility(View.GONE);
 			// 解析本地的自定义列表
