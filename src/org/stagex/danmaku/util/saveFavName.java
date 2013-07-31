@@ -11,15 +11,15 @@ import java.util.List;
 
 import org.stagex.danmaku.adapter.ChannelInfo;
 
-import com.nmbb.oplayer.scanner.ChannelListBusiness;
-import com.nmbb.oplayer.scanner.POUserDefChannel;
-
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
-public class BackupData extends AsyncTask<String, Void, Integer> {
+import com.nmbb.oplayer.scanner.ChannelListBusiness;
+import com.nmbb.oplayer.scanner.POChannelList;
+import com.nmbb.oplayer.scanner.POUserDefChannel;
+
+public class saveFavName extends AsyncTask<String, Void, Integer> {
 	private static final String COMMAND_BACKUP = "backupDatabase";
 	public static final String COMMAND_RESTORE = "restoreDatabase";
 //	private Context mContext;
@@ -28,7 +28,7 @@ public class BackupData extends AsyncTask<String, Void, Integer> {
 //		this.mContext = context;
 //	}
 
-	public BackupData() {
+	public saveFavName() {
 		
 	}
 	
@@ -38,25 +38,22 @@ public class BackupData extends AsyncTask<String, Void, Integer> {
 		String command = params[0];
 		if (command.equals(COMMAND_BACKUP)) {
 
-			Log.d("BackupData", "===>begin backup selfdefine fav tvlist");
+			Log.d("BackupData", "===>begin backup fav tv name");
 
 			File backupFile = new File(
 					Environment.getExternalStorageDirectory(),
-					"/kekePlayer/selfDefineTVList.txt");
+					"/kekePlayer/.favName.txt");
 			try {
 				FileOutputStream fos = new FileOutputStream(backupFile);
-				OutputStreamWriter ow = new OutputStreamWriter(fos, "GBK");
+				OutputStreamWriter ow = new OutputStreamWriter(fos, "UTF-8");
 				BufferedWriter bw = new BufferedWriter(ow);
 				try {
-					// 备份数据库内的自定义的收藏频道
-					List<POUserDefChannel> infos = ChannelListBusiness
-							.getAllDefFavChannels();
-					for (POUserDefChannel info : infos) {
+					// 备份数据库内的收藏频道节目名称
+					List<POChannelList> infos = ChannelListBusiness
+							.getAllFavChannels();
+					for (POChannelList info : infos) {
 						ArrayList<String> urls = info.getAllUrl();
-						for (String url : urls) {
-//							bw.write(info.name + "," + url + "\n");
-							bw.append(info.name + "," + url + "\n");
-						}
+							bw.append(info.name +"\n");
 					}
 					bw.flush();
 				} finally {
@@ -64,7 +61,7 @@ public class BackupData extends AsyncTask<String, Void, Integer> {
 					ow.close();
 					fos.close();
 					Log.d("BackupData",
-							"===>backup selfdefine fav tvlist success");
+							"===>backup fav tv name success");
 				}
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -75,18 +72,18 @@ public class BackupData extends AsyncTask<String, Void, Integer> {
 			}
 			return null;
 		} else if (command.equals(COMMAND_RESTORE)) {
-			Log.d("BackupData", "===>restore backup selfdefine fav tvlist");
+			Log.d("BackupData", "===>restore fav tv name");
 			
 			String path = Environment.getExternalStorageDirectory().getPath()
-					+ "/kekePlayer/selfDefineTVList.txt";
+					+ "/kekePlayer/.favName.txt";
 			File listFile = new File(path);
 			if (listFile.exists()) {
-				List<ChannelInfo> infos = ParseUtil.parseDef(path);
+				List<String> nameList = ParseUtil.parseName(path);
 				// 重新创建自定义收藏频道数据库表格
 				try {
-					ChannelListBusiness.buildSeflDefDatabase(infos);
+					ChannelListBusiness.feedBackNameFavChannel(nameList);
 					Log.d("BackupData",
-							"===>restore selfdefine fav tvlist success");
+							"===>restore fav tv name success");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

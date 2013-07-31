@@ -30,7 +30,7 @@ public class ParseUtil {
 		/*
 		 * FIXME 为了便于测试直播地址，特地在这里加一行代码，强制 使用本地asset的下的地址，测试通过之后，再上传服务器
 		 */
-//		pathFlag = false;
+		// pathFlag = false;
 		/* end */
 
 		try {
@@ -110,7 +110,7 @@ public class ParseUtil {
 	}
 
 	// 解析本地自定义的列表
-	public static List<ChannelInfo> parseDef(Context context, String tvList) {
+	public static List<ChannelInfo> parseDef(String tvList) {
 		List<ChannelInfo> list = new ArrayList<ChannelInfo>();
 		int nums = 0;
 		String code = "GBK";
@@ -120,7 +120,7 @@ public class ParseUtil {
 
 		// FIXBUG 2013-07-28
 		Boolean dropLast = true;
-		
+
 		try {
 			// 探测txt文件的编码格式
 			code = codeString(tvList);
@@ -142,8 +142,9 @@ public class ParseUtil {
 							// 最后一组节目源
 							String[] second_url = new String[list_url.size()];
 							list_url.toArray(second_url);
-							ChannelInfo info = new ChannelInfo(0, privName, null,
-									null, null, first_url, second_url, null, null);
+							ChannelInfo info = new ChannelInfo(0, privName,
+									null, null, null, first_url, second_url,
+									null, null);
 							list.add(info);
 						}
 						break;
@@ -151,7 +152,7 @@ public class ParseUtil {
 
 					// FIXBUG 2013-07-28
 					dropLast = false;
-					
+
 					// 如果不符合要求（节目名和节目地址以英文逗号隔开）直接忽略该行
 					// FIXME bug#0019
 					String[] pair = line.split(",");
@@ -238,9 +239,9 @@ public class ParseUtil {
 		}
 
 		bin.close();
-		
+
 		Log.d("Parseutil", "find text code ===>" + code);
-		
+
 		return code;
 	}
 
@@ -297,4 +298,44 @@ public class ParseUtil {
 		return list;
 	}
 
+	// 解析本地自定义的列表
+	public static List<String> parseName(String path) {
+		List<String> list = new ArrayList<String>();
+		int nums = 0;
+		String code = "GBK";
+
+		try {
+			// 探测txt文件的编码格式
+			code = codeString(path);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			InputStream is = new FileInputStream(path);
+			InputStreamReader ir = new InputStreamReader(is, code);
+			BufferedReader br = new BufferedReader(ir);
+			try {
+				while (true) {
+					String line = br.readLine();
+					if (line == null) {
+						break;
+					}
+					list.add(line);
+				}
+			} finally {
+				br.close();
+				ir.close();
+				is.close();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Log.d("ParseUtil", "user fav  tvlist nums = " + nums);
+
+		return list;
+	}
 }

@@ -11,6 +11,7 @@ import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelDefFavAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.util.BackupData;
+import org.stagex.danmaku.util.saveFavName;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -21,6 +22,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -88,6 +90,8 @@ public class FavouriteActivity extends TabActivity implements
 
 		/* 频道收藏的数据库 */
 		mDbHelper = new DbHelper<POChannelList>();
+		/* 自定义收藏的数据库 */
+		mSelfDbHelper = new DbHelper<POUserDefChannel>();
 
 		/* 顶部标题栏的控件 */
 		button_back = (TextView) findViewById(R.id.back_btn);
@@ -115,7 +119,8 @@ public class FavouriteActivity extends TabActivity implements
 		 */
 		if (sharedPreferences.getBoolean("needSelfDevFavbkp", false)) {
 			Log.d(LOGTAG, "===> needSelfDevFavbkp");
-			new BackupData(FavouriteActivity.this).execute("restoreDatabase");
+//			new BackupData(FavouriteActivity.this).execute("restoreDatabase");
+			new BackupData().execute("restoreDatabase");
 			editor.putBoolean("needSelfDevFavbkp", false);
 			editor.commit();
 		}
@@ -128,7 +133,7 @@ public class FavouriteActivity extends TabActivity implements
 					.setTitle("温馨提示")
 					.setMessage(
 							"【长按】直播电视频道列表的频道名称即可以实现收藏，并且在这里可以看到收藏的频道！\n"
-									+ "在此的收藏频道【长按】可以实现取消收藏功能！\n同时，播放节目点击【心型】按钮也可以收藏")
+									+ "在此的收藏频道【长按】可以实现取消收藏功能！\n同时，播放界面点击【心型】按钮也可以收藏")
 					.setPositiveButton("不再提醒",
 							new DialogInterface.OnClickListener() {
 								@Override
@@ -516,17 +521,23 @@ public class FavouriteActivity extends TabActivity implements
 			switch (v.getId()) {
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
+				
+				new BackupData().execute("backupDatabase");
+				
 				finish();
 				break;
 			case R.id.home_btn:
 				// 回到上一个界面(Activity)
+				
+				new BackupData().execute("backupDatabase");
+				
 				finish();
 				break;
 			case R.id.delete_btn:
 				// 删除所有的收藏的频道
 				// FIXME 需要区分，删除官方收藏还是自定义的收藏
 				// 官方收藏
-				if (selfView)
+				if (!selfView)
 					clearAllFavMsg();
 				// 自定义收藏
 //				else
@@ -538,4 +549,24 @@ public class FavouriteActivity extends TabActivity implements
 			}
 		}
 	};
+	
+	/**
+	 * 在主界面按下返回键，提示用户是否退出应用
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// 按下键盘上返回按钮
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// TODO 暂时在每次返回的时候，都进行备份数据库
+//		    new BackupData(UserLoadActivity.this).execute("backupDatabase");
+		    new BackupData().execute("backupDatabase");
+		 // TODO 暂时在每次返回的时候，都进行备份数据库
+		    new saveFavName().execute("backupDatabase");
+		    
+		    finish();
+			return true;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
+	}
 }

@@ -123,7 +123,7 @@ public class UserLoadActivity extends Activity {
 			mTvList.setVisibility(View.VISIBLE);
 			mWebView.setVisibility(View.GONE);
 			// 解析本地的自定义列表
-			infos = ParseUtil.parseDef(this, path);
+			infos = ParseUtil.parseDef(path);
 
 			mSourceAdapter = new ChannelLoadAdapter(this, infos);
 			mTvList.setAdapter(mSourceAdapter);
@@ -195,6 +195,11 @@ public class UserLoadActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
+				
+				// TODO 暂时在每次返回的时候，都进行备份数据库
+//			    new BackupData(UserLoadActivity.this).execute("backupDatabase");
+			    new BackupData().execute("backupDatabase");
+			    
 				finish();
 				break;
 			case R.id.help_btn:
@@ -276,8 +281,8 @@ public class UserLoadActivity extends Activity {
 									System.currentTimeMillis()).toString();
 							mDbHelper.create(saveInfo);
 							
-							// TODO 暂时在每次打开自定义收藏的时候，都进行备份数据库
-						    new BackupData(UserLoadActivity.this).execute("backupDatabase");
+//							// TODO 暂时在每次打开自定义收藏的时候，都进行备份数据库
+//						    new BackupData(UserLoadActivity.this).execute("backupDatabase");
 							
 						}
 					})
@@ -289,4 +294,22 @@ public class UserLoadActivity extends Activity {
 					}).show();
 		}
 //	}
+	
+	/**
+	 * 在主界面按下返回键，提示用户是否退出应用
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// 按下键盘上返回按钮
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// TODO 暂时在每次返回的时候，都进行备份数据库
+//		    new BackupData(UserLoadActivity.this).execute("backupDatabase");
+		    new BackupData().execute("backupDatabase");
+		    
+		    finish();
+			return true;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
+	}
 }

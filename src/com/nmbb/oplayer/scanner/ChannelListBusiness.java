@@ -112,6 +112,37 @@ public final class ChannelListBusiness {
 		}
 	}
 	
+	// 根据存储的名称将收藏的频道写回新数据库
+	public static void feedBackNameFavChannel(List<String> name)
+			throws Exception {
+		SQLiteHelperOrm db = new SQLiteHelperOrm();
+		final List<String> nameList = name;
+		try {
+			final Dao<POChannelList, Long> dao = db.getDao(POChannelList.class);
+			// TODO 采用ormlite的事务方式，能够极大的提高数据库的操作效率
+			dao.callBatchTasks(new Callable<Void>() {
+				public Void call() throws SQLException {
+					// insert a number of accounts at once
+					for (String name : nameList) {
+						List<POChannelList> newChannelList = dao.queryForEq(
+								"name", name);
+						if (newChannelList.size() > 0) {
+							newChannelList.get(0).save = true;
+							// update our account object
+							dao.update(newChannelList.get(0));
+						}
+					}
+					return null;
+				}
+			});
+		} catch (SQLException e) {
+			Logger.e(e);
+		} finally {
+			if (db != null)
+				db.close();
+		}
+	}
+	
 	// 找出所有的自定义的收藏频道
 	public static List<POUserDefChannel> getAllDefFavChannels() {
 		SQLiteHelperOrm db = new SQLiteHelperOrm();

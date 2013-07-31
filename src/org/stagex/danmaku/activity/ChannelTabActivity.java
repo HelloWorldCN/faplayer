@@ -14,7 +14,9 @@ import org.stagex.danmaku.adapter.ChannelAdapter;
 import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ProvinceAdapter;
 import org.stagex.danmaku.adapter.ProvinceInfo;
+import org.stagex.danmaku.util.BackupData;
 import org.stagex.danmaku.util.ParseUtil;
+import org.stagex.danmaku.util.saveFavName;
 
 import cn.waps.AppConnect;
 
@@ -34,6 +36,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -713,10 +716,16 @@ public class ChannelTabActivity extends TabActivity implements
 			switch (v.getId()) {
 			case R.id.home_btn:
 				// 退回主界面(homeActivity)
+				// TODO 暂时在每次返回的时候，都进行备份数据库
+			    new saveFavName().execute("backupDatabase");
+			    
 				finish();
 				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
+				// TODO 暂时在每次返回的时候，都进行备份数据库
+			    new saveFavName().execute("backupDatabase");
+			    
 				finish();
 				break;
 			case R.id.search_btn:
@@ -1097,5 +1106,22 @@ public class ChannelTabActivity extends TabActivity implements
 				+ channelList.poId + "###" + channelList.save);
 
 		mDbHelper.update(channelList);
+	}
+	
+	/**
+	 * 在主界面按下返回键，提示用户是否退出应用
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// 按下键盘上返回按钮
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// TODO 暂时在每次返回的时候，都进行备份数据库
+		    new saveFavName().execute("backupDatabase");
+		    
+		    finish();
+			return true;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
 	}
 }
