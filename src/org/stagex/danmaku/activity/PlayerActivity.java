@@ -10,6 +10,7 @@ import org.stagex.danmaku.util.SystemUtility;
 
 import com.nmbb.oplayer.scanner.DbHelper;
 import com.nmbb.oplayer.scanner.POChannelList;
+import com.nmbb.oplayer.scanner.POUserDefChannel;
 import com.togic.mediacenter.player.AbsMediaPlayer;
 import com.togic.mediacenter.player.DefMediaPlayer;
 import com.togic.mediacenter.player.VlcMediaPlayer;
@@ -103,6 +104,7 @@ public class PlayerActivity extends Activity implements
 	private TextView mCodecMode;
 	private SeekBar mSeekBarProgress;
 	private TextView mTextViewLength;
+	private TextView mSelfdef;
 	// 点击阴影部分也不会导致隐藏
 	private LinearLayout player_overlay_header;
 	private LinearLayout interface_overlay;
@@ -182,10 +184,14 @@ public class PlayerActivity extends Activity implements
 
 	/* 频道收藏的数据库 */
 	private DbHelper<POChannelList> mDbHelper;
+	private DbHelper<POUserDefChannel> mSelfDbHelper;
 	private Boolean channelStar = false;
 	List<POChannelList> channelList = null;
 	private int fav_num = 0;
 
+	/* 是否是自定义频道 */
+	private Boolean isSelfTV = false;
+	
 	/**
 	 * 判断使用的解码接口
 	 * 
@@ -488,6 +494,9 @@ public class PlayerActivity extends Activity implements
 
 		});
 
+		// TODO 2013-08-01
+		mSelfdef = (TextView) findViewById(R.id.selfdef_tv);
+		
 		// overlay header
 		mTitle = (TextView) findViewById(R.id.player_overlay_title);
 		mSource = (TextView) findViewById(R.id.player_overlay_name);
@@ -561,6 +570,7 @@ public class PlayerActivity extends Activity implements
 			// Log.d(LOGTAG, "===>>>" + mTitleName);
 			mTitleName = intent.getStringExtra("title");
 			mSourceName = intent.getStringExtra("source");
+			isSelfTV = intent.getBooleanExtra("isSelfTV", false);
 		}
 		if (mPlayListArray == null || mPlayListArray.size() == 0) {
 			Log.e(LOGTAG, "initializeData(): empty");
@@ -595,6 +605,12 @@ public class PlayerActivity extends Activity implements
 		} else {
 			resource = SystemUtility.getDrawableId("ic_fav");
 			mImageButtonStar.setBackgroundResource(resource);
+		}
+		
+		// TODO 2013-08-01 自定义频道暂时不支持在播放界面收藏
+		if (isSelfTV) {
+			mImageButtonStar.setVisibility(View.GONE);
+			mSelfdef.setVisibility(View.VISIBLE);
 		}
 
 		mImageButtonTogglePlay.setVisibility(View.VISIBLE);
@@ -835,7 +851,8 @@ public class PlayerActivity extends Activity implements
 
 		/* 频道收藏的数据库 */
 		mDbHelper = new DbHelper<POChannelList>();
-
+		mSelfDbHelper  = new DbHelper<POUserDefChannel>();
+		
 		// 选择播放器
 		/* 判断解码器状态 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
@@ -893,7 +910,14 @@ public class PlayerActivity extends Activity implements
 		switch (id) {
 		case R.id.player_button_star: {
 			// TODO 决定是否收藏该频道
-			updateFavDatabase(mTitleName);
+			if (isSelfTV) {
+				// 用户自定义的频道
+				// TODO 2013-08-01 暂时不支持自定义的频道在播放界面收藏
+//				updateSelfFavDatabase(mTitleName);
+			} else {
+				// 官方频道
+				updateFavDatabase(mTitleName);
+			}
 			break;
 		}
 		case R.id.player_button_switch_audio: {
@@ -1403,4 +1427,37 @@ public class PlayerActivity extends Activity implements
 			mDbHelper.update(channel);
 		}
 	}
+	
+//	/**
+//	 * 自定义收藏后更新某一条数据信息
+//	 * 
+//	 */
+//	private void updateSelfFavDatabase(String name) {
+//		int resource = -1;
+//
+//		List<POUserDefChannel> channelList = mSelfDbHelper.queryForEq(
+//				POUserDefChannel.class, "name", name);
+//		for (POUserDefChannel channel : channelList) {
+//			if (channel.save) {
+//				channel.save = false;
+//				resource = SystemUtility.getDrawableId("ic_fav");
+//				mImageButtonStar.setBackgroundResource(resource);
+//
+//				Toast.makeText(getApplicationContext(), "取消收藏",
+//						Toast.LENGTH_SHORT).show();
+//			} else {
+//				channel.save = true;
+//				resource = SystemUtility.getDrawableId("ic_fav_pressed");
+//				mImageButtonStar.setBackgroundResource(resource);
+//
+//				Toast.makeText(getApplicationContext(), "添加收藏",
+//						Toast.LENGTH_SHORT).show();
+//			}
+//			// update
+//			Log.i(LOGTAG, "==============>" + channel.name + "###"
+//					+ channel.poId + "###" + channel.save);
+//
+//			mSelfDbHelper.update(channel);
+//		}
+//	}
 }

@@ -285,7 +285,7 @@ public class FavouriteActivity extends TabActivity implements
 				POUserDefChannel info = (POUserDefChannel) selffav_list
 						.getItemAtPosition(arg2);
 
-				startSelfLiveMedia(info.getAllUrl(), info.name);
+				startSelfLiveMedia(info.getAllUrl(), info.name, true);
 			}
 		});
 		// 增加长按频道删除收藏的个性频道
@@ -331,7 +331,7 @@ public class FavouriteActivity extends TabActivity implements
 	}
 
 	// 打开自定义的网络媒体
-	private void startSelfLiveMedia(ArrayList<String> all_url, String name) {
+	private void startSelfLiveMedia(ArrayList<String> all_url, String name, Boolean isStar) {
 		// 如果该节目只有一个候选源地址，那么直接进入播放界面
 		if (all_url.size() == 1) {
 			Intent intent = new Intent(FavouriteActivity.this,
@@ -341,6 +341,8 @@ public class FavouriteActivity extends TabActivity implements
 			intent.putExtra("selected", 0);
 			intent.putExtra("playlist", playlist);
 			intent.putExtra("title", name);
+			intent.putExtra("isSelfTV", true);
+			intent.putExtra("channelStar", isStar);
 			startActivity(intent);
 		} else {
 			// 否则进入候选源界面
@@ -348,6 +350,8 @@ public class FavouriteActivity extends TabActivity implements
 					ChannelSourceActivity.class);
 			intent.putExtra("all_url", all_url);
 			intent.putExtra("channel_name", name);
+			intent.putExtra("isSelfTV", true);
+			intent.putExtra("channelStar", isStar);
 			startActivity(intent);
 		}
 	}

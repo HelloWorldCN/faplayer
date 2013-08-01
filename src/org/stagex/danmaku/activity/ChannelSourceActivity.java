@@ -44,6 +44,7 @@ public class ChannelSourceActivity extends Activity {
 	private SharedPreferences sharedPreferences;
 
 	private Boolean channel_star = false;
+	private Boolean isSelfTV = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class ChannelSourceActivity extends Activity {
 		channel_name = intent.getStringExtra("channel_name");
 		program_path = intent.getStringExtra("program_path");
 		channel_star = intent.getBooleanExtra("channelStar", false);
+		isSelfTV = intent.getBooleanExtra("isSelfTV", false);
 		button_back.setText(channel_name);
 
 		mSourceAdapter = new ChannelSourceAdapter(this, infos);
@@ -109,6 +111,8 @@ public class ChannelSourceActivity extends Activity {
 		intent.putExtra("channelStar", channel_star);
 		intent.putExtra("source", "地址" + Integer.toString(pos + 1) + "："
 				+ mSourceAdapter.whichName(liveUrl));
+		if (isSelfTV)
+			intent.putExtra("isSelfTV", true);
 		startActivity(intent);
 	}
 

@@ -54,7 +54,7 @@ public class POUserDefChannel {
 
 	}
 
-	public POUserDefChannel(ChannelInfo info) {
+	public POUserDefChannel(ChannelInfo info, Boolean isSave) {
 		id = info.getId();
 		name = info.getName();
 		icon_url = info.getIcon_url();
@@ -64,6 +64,7 @@ public class POUserDefChannel {
 		second_url = info.getSecond_url();
 		types = info.getTypes();
 		program_path = info.getProgram_path();
+		save = isSave;
 	}
 
 	// just for test

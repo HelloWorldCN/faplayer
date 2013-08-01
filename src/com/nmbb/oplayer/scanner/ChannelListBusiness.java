@@ -170,7 +170,7 @@ public final class ChannelListBusiness {
 					// insert a number of accounts at once
 					for (ChannelInfo info : channelList) {
 						// update our account object
-						dao.create(new POUserDefChannel(info));
+						dao.create(new POUserDefChannel(info, true));
 					}
 					return null;
 				}

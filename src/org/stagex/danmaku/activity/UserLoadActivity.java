@@ -136,7 +136,8 @@ public class UserLoadActivity extends Activity {
 					ChannelInfo info = (ChannelInfo) mTvList
 							.getItemAtPosition(arg2);
 
-					startLiveMedia(info.getAllUrl(), info.getName());
+					// FIXME 2013-07-31 这里的收藏就不放入是否收藏的按钮了
+					startLiveMedia(info.getAllUrl(), info.getName(), false);
 				}
 			});
 			// 增加长按频道收藏功能
@@ -148,7 +149,7 @@ public class UserLoadActivity extends Activity {
 					ChannelInfo info = (ChannelInfo) mTvList
 							.getItemAtPosition(arg2);
 					// 转换为数据库数据结构
-					POUserDefChannel POinfo = new POUserDefChannel(info);
+					POUserDefChannel POinfo = new POUserDefChannel(info, true);
 					showFavMsg(arg1, POinfo);
 					return true;
 				}
@@ -168,7 +169,7 @@ public class UserLoadActivity extends Activity {
 	}
 
 	// 打开网络媒体
-	private void startLiveMedia(ArrayList<String> all_url, String name) {
+	private void startLiveMedia(ArrayList<String> all_url, String name, Boolean isStar) {
 		// 如果该节目只有一个候选源地址，那么直接进入播放界面
 		if (all_url.size() == 1) {
 			Intent intent = new Intent(UserLoadActivity.this,
@@ -178,6 +179,8 @@ public class UserLoadActivity extends Activity {
 			intent.putExtra("selected", 0);
 			intent.putExtra("playlist", playlist);
 			intent.putExtra("title", name);
+			intent.putExtra("channelStar", isStar);
+			intent.putExtra("isSelfTV", true);
 			startActivity(intent);
 		} else {
 			// 否则进入候选源界面
@@ -185,6 +188,8 @@ public class UserLoadActivity extends Activity {
 					ChannelSourceActivity.class);
 			intent.putExtra("all_url", all_url);
 			intent.putExtra("channel_name", name);
+			intent.putExtra("channelStar", isStar);
+			intent.putExtra("isSelfTV", true);
 			startActivity(intent);
 		}
 	}
