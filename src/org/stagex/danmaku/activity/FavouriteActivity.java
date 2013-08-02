@@ -25,6 +25,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -67,16 +69,18 @@ public class FavouriteActivity extends TabActivity implements
 	private TextView button_back;
 	private ImageView button_home;
 	private ImageView button_delete;
-
+	
 	// 更新收藏频道的数目
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
 	private int fav_num = 0;
 
 	private TabHost myTabhost;
-	TextView view0, view1;
+	TextView view0, view1, view2;
 	private Boolean selfView = false;
 
+	private WebView mWebView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -97,6 +101,9 @@ public class FavouriteActivity extends TabActivity implements
 		button_back = (TextView) findViewById(R.id.back_btn);
 		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_delete = (ImageView) findViewById(R.id.delete_btn);
+		
+		mWebView = (WebView) findViewById(R.id.wv);
+		
 		/* 设置监听 */
 		setListensers();
 
@@ -180,6 +187,16 @@ public class FavouriteActivity extends TabActivity implements
 				.setContent(R.id.selffav_list));
 		// set the layout
 
+		RelativeLayout tab2 = (RelativeLayout) LayoutInflater.from(this)
+				.inflate(R.layout.tab_fav_ctx, null);
+		view2 = (TextView) tab2.findViewById(R.id.tab_label);
+		view2.setText("帮助");
+		myTabhost.addTab(myTabhost.newTabSpec("Three")// make a new Tab
+				.setIndicator(tab2)
+				// set the Title and Icon
+				.setContent(R.id.selffav_list));
+		// set the layout
+		
 		/* 设置Tab的监听事件 */
 		myTabhost.setOnTabChangedListener(this);
 		
@@ -193,12 +210,13 @@ public class FavouriteActivity extends TabActivity implements
 		fav_list.setCacheColorHint(Color.TRANSPARENT);
 		
 		// 默认显示第一个标签
-		view0.setTextSize(25);
+		view0.setTextSize(20);
 		view1.setTextSize(15);
+		view2.setTextSize(15);
 		// ===============================================================
 		
 		setFavView();
-		setSelfFavView();
+//		setSelfFavView();
 	}
 
 	@Override
@@ -206,13 +224,28 @@ public class FavouriteActivity extends TabActivity implements
 		// TODO Auto-generated method stub
 		if (tagString.equals("One")) {
 			selfView = false;
-			view0.setTextSize(25);
+			mWebView.setVisibility(View.GONE);
+			fav_list.setVisibility(View.VISIBLE);
+			view0.setTextSize(20);
 			view1.setTextSize(15);
+			view2.setTextSize(15);
 		}
 		if (tagString.equals("Two")) {
 			selfView = true;
+			mWebView.setVisibility(View.GONE);
+			selffav_list.setVisibility(View.VISIBLE);
 			view0.setTextSize(15);
-			view1.setTextSize(25);
+			view1.setTextSize(20);
+			view2.setTextSize(15);
+
+			setSelfFavView();
+		}
+		if (tagString.equals("Three")) {
+			selfView = false;
+			view0.setTextSize(15);
+			view1.setTextSize(15);
+			view2.setTextSize(20);
+			readHtmlFormAssets();
 		}
 	}
 	
@@ -482,26 +515,22 @@ public class FavouriteActivity extends TabActivity implements
 		new AlertDialog.Builder(FavouriteActivity.this)
 				.setIcon(R.drawable.ic_dialog_alert)
 				.setTitle("警告")
-				.setMessage("确定取消所有【自定义】收藏频道吗？")
+				.setMessage("确定取消所有【自定义】收藏频道吗？\n注意：删除后将不可恢复！")
 				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO 取消所有收藏频道
-						List<POChannelList> allFavChannel = ChannelListBusiness
-								.getAllFavChannels();
-						int size = allFavChannel.size();
-						POChannelList favChannel;
-						for (int i = 0; i < size; i++) {
-							favChannel = allFavChannel.get(i);
-							favChannel.save = false;
-							mDbHelper.update(favChannel);
+						// TODO 取消所有自定义收藏频道
+						SQLiteHelperOrm db = new SQLiteHelperOrm();
+						// FIXME 此种方式，效率很高，很快，直接删除所有行数据
+						db.getWritableDatabase().delete("UserDefChannel", null, null);
+						if (db != null)
+							db.close();
+						
+						// 重新加载list
+						if (infos != null) {
+							infos.clear();
+							setSelfFavView();
 						}
-						// 重新加載listView
-						reloadFavList();
-
-						// 收藏数目置为0
-						editor.putInt("fav_num", 0);
-						editor.commit();
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -544,8 +573,8 @@ public class FavouriteActivity extends TabActivity implements
 				if (!selfView)
 					clearAllFavMsg();
 				// 自定义收藏
-//				else
-//					clearAllSelfFavMsg();
+				else
+					clearAllSelfFavMsg();
 				// TODO
 				break;
 			default:
@@ -572,5 +601,22 @@ public class FavouriteActivity extends TabActivity implements
 		} else {
 			return super.onKeyDown(keyCode, event);
 		}
+	}
+	
+	// 利用webview来显示帮助的文本信息
+	private void readHtmlFormAssets() {
+		fav_list.setVisibility(View.GONE);
+		selffav_list.setVisibility(View.GONE);
+		mWebView.setVisibility(View.VISIBLE);
+		WebSettings webSettings = mWebView.getSettings();
+
+		webSettings.setLoadWithOverviewMode(true);
+		// WebView双击变大，再双击后变小，当手动放大后，双击可以恢复到原始大小
+		// webSettings.setUseWideViewPort(true);
+		// 设置WebView可触摸放大缩小：
+		// webSettings.setBuiltInZoomControls(true);
+		// WebView 背景透明效果
+		mWebView.setBackgroundColor(Color.TRANSPARENT);
+		mWebView.loadUrl("file:///android_asset/html/SelfFavTVList_help.html");
 	}
 }
