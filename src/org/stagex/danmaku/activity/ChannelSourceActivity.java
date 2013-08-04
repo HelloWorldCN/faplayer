@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import org.keke.player.R;
 import org.stagex.danmaku.adapter.ChannelSourceAdapter;
+import org.stagex.danmaku.util.SourceName;
+
+import br.com.dina.ui.widget.UITableView;
+import br.com.dina.ui.widget.UITableView.ClickListener;
 
 import cn.waps.AdView;
 import cn.waps.AppConnect;
@@ -24,12 +28,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class ChannelSourceActivity extends Activity {
 	/** Called when the activity is first created. */
 
 	private static final String LOGTAG = "ChannelSourceActivity";
-	private ListView mFileList;
+	// private ListView mFileList;
 	private ChannelSourceAdapter mSourceAdapter;
 	private ArrayList<String> infos;
 	private String channel_name;
@@ -46,6 +51,8 @@ public class ChannelSourceActivity extends Activity {
 	private Boolean channel_star = false;
 	private Boolean isSelfTV = false;
 
+	UITableView tableView;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,13 +63,12 @@ public class ChannelSourceActivity extends Activity {
 		button_applist = (ImageView) findViewById(R.id.applist_btn);
 		button_tuangou = (ImageView) findViewById(R.id.tuangou_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
-		/* 设置监听 */
-		setListensers();
 
-		mFileList = (ListView) findViewById(R.id.channel_source);
-		// 防止滑动黑屏
-		mFileList.setCacheColorHint(Color.TRANSPARENT);
-
+		//
+		// mFileList = (ListView) findViewById(R.id.channel_source);
+		// // 防止滑动黑屏
+		// mFileList.setCacheColorHint(Color.TRANSPARENT);
+		//
 		// 检测是否需要显示广告
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		if (sharedPreferences.getBoolean("noAd", false)) {
@@ -72,20 +78,20 @@ public class ChannelSourceActivity extends Activity {
 			LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
 			new AdView(this, container).DisplayAd();
 		}
-
-		// 设置监听事件
-		mFileList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				String info = (String) mFileList.getItemAtPosition(arg2);
-
-				startLiveMedia(info, channel_name, arg2);
-			}
-		});
-
+		//
+		// // 设置监听事件
+		// mFileList.setOnItemClickListener(new OnItemClickListener() {
+		//
+		// @Override
+		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+		// long arg3) {
+		// // TODO Auto-generated method stub
+		// String info = (String) mFileList.getItemAtPosition(arg2);
+		//
+		// startLiveMedia(info, channel_name, arg2);
+		// }
+		// });
+		//
 		Intent intent = getIntent();
 		infos = intent.getStringArrayListExtra("all_url");
 		if (infos == null)
@@ -95,11 +101,66 @@ public class ChannelSourceActivity extends Activity {
 		channel_star = intent.getBooleanExtra("channelStar", false);
 		isSelfTV = intent.getBooleanExtra("isSelfTV", false);
 		button_back.setText(channel_name);
+		//
+		// mSourceAdapter = new ChannelSourceAdapter(this, infos);
+		// mFileList.setAdapter(mSourceAdapter);
 
-		mSourceAdapter = new ChannelSourceAdapter(this, infos);
-		mFileList.setAdapter(mSourceAdapter);
+		// =====================================================
+		tableView = (UITableView) findViewById(R.id.tableView);
+		createList();
+		Log.d(LOGTAG, "total items: " + tableView.getCount());
+		tableView.commit();
+		// =====================================================
+
+		/* 设置监听 */
+		setListensers();
 	}
 
+	// ===========================================================================
+	/**
+	 * 采用圆角布局的ListView
+	 */
+	private void createList() {
+		CustomClickListener listener = new CustomClickListener();
+		tableView.setClickListener(listener);
+		int index = 0;
+		String url = null;
+		for (String info : infos) {
+			url = SourceName.whichName(info);
+//			if (SourceName.mHd || SourceName.mHot) {
+				// 添加每一项
+				tableView.addBasicItem(++index + ".\t" + url, "\t\t"
+						+ ((SourceName.mHd == true) ? "HD\t" : "")
+						+ ((SourceName.mHot == true) ? "HOT\t" : ""));
+//			} else {
+//				// 添加每一项
+//				tableView.addBasicItem(++index + ".\t" + url);
+//			}
+		}
+	}
+
+	/**
+	 * 设置监听事件
+	 * 
+	 * @author jgf
+	 * 
+	 */
+	private class CustomClickListener implements ClickListener {
+		@Override
+		public void onClick(int index) {
+			startLiveMedia(infos.get(index), channel_name, index);
+		}
+	}
+
+	// ===========================================================================
+
+	/**
+	 * 启动播放器界面
+	 * 
+	 * @param liveUrl
+	 * @param name
+	 * @param pos
+	 */
 	private void startLiveMedia(String liveUrl, String name, int pos) {
 		Intent intent = new Intent(ChannelSourceActivity.this,
 				PlayerActivity.class);
@@ -110,7 +171,8 @@ public class ChannelSourceActivity extends Activity {
 		intent.putExtra("title", name);
 		intent.putExtra("channelStar", channel_star);
 		intent.putExtra("source", "地址" + Integer.toString(pos + 1) + "："
-				+ mSourceAdapter.whichName(liveUrl));
+		// + mSourceAdapter.whichName(liveUrl));
+				+ SourceName.whichName(liveUrl));
 		if (isSelfTV)
 			intent.putExtra("isSelfTV", true);
 		startActivity(intent);
@@ -166,8 +228,8 @@ public class ChannelSourceActivity extends Activity {
 				break;
 			case R.id.tuangou_btn:
 				// 显示团购
-				AppConnect.getInstance(ChannelSourceActivity.this).showTuanOffers(
-						ChannelSourceActivity.this);
+				AppConnect.getInstance(ChannelSourceActivity.this)
+						.showTuanOffers(ChannelSourceActivity.this);
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");

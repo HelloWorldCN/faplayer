@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/white"
     android:orientation="vertical" >
 
@@ -40,6 +40,19 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal" />
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:fadingEdge="vertical"
+        android:fastScrollEnabled="true"
+        android:scrollbars="vertical" >
+
+        <br.com.dina.ui.widget.UITableView
+            android:id="@+id/tableView"
+            style="@style/UITableView" />
+    </ScrollView>
+
     <ListView
         android:id="@+id/channel_source"
         android:layout_width="fill_parent"
@@ -47,6 +60,7 @@
         android:cacheColorHint="#ffffffff"
         android:divider="@drawable/list_bottom"
         android:dividerHeight="1.0px"
-        android:listSelector="#00000000" />
+        android:listSelector="#00000000"
+        android:visibility="gone" />
 
 </LinearLayout>
