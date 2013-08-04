@@ -136,8 +136,8 @@ public class ChannelTabActivity extends TabActivity implements
 		myTabhost = this.getTabHost();
 		myTabhost.setup();
 
-		myTabhost.setBackgroundDrawable(this.getResources().getDrawable(
-				R.drawable.bg_home));
+//		myTabhost.setBackgroundDrawable(this.getResources().getDrawable(
+//				R.drawable.bg_home));
 
 		/* 设置每一个台类别的Tab */
 		RelativeLayout tab0 = (RelativeLayout) LayoutInflater.from(this)

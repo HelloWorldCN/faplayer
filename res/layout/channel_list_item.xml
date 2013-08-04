@@ -69,12 +69,12 @@
 
         <ImageView
             android:id="@+id/devide_icon"
-            android:layout_width="1dp"
+            android:layout_width="1px"
             android:layout_height="62dp"
             android:layout_gravity="center_vertical"
             android:focusable="false"
             android:gravity="center_vertical"
-            android:src="#808080" />
+            android:src="@drawable/list_devide" />
 
         <LinearLayout
             android:id="@+id/program_icon"

@@ -3,7 +3,7 @@
     android:id="@+id/home"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_home"
+    android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10.0dip" >
