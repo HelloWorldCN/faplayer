@@ -15,6 +15,7 @@ import org.stagex.danmaku.adapter.ChannelInfo;
 import org.stagex.danmaku.adapter.ProvinceAdapter;
 import org.stagex.danmaku.adapter.ProvinceInfo;
 import org.stagex.danmaku.util.BackupData;
+import org.stagex.danmaku.util.GlobalValue;
 import org.stagex.danmaku.util.ParseUtil;
 import org.stagex.danmaku.util.saveFavName;
 
@@ -55,6 +56,7 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @SuppressWarnings("deprecation")
 public class ChannelTabActivity extends TabActivity implements
@@ -106,6 +108,10 @@ public class ChannelTabActivity extends TabActivity implements
 	private DbHelper<POChannelList> mDbHelper;
 	private Map<String, Object> mDbWhere = new HashMap<String, Object>(2);
 	private int fav_num = 0;
+	
+	/* 是否正在刷新频道的标志位 */
+	private Boolean isRefreshing = false;
+	private String serverValue;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -256,6 +262,18 @@ public class ChannelTabActivity extends TabActivity implements
 				editor.putBoolean("DBChanged", false);
 				editor.commit();
 			}
+			// 正在刷新
+			isRefreshing = true;
+			
+			// 此处的入口强制加入获取服务器tvlistVersion的代码
+			// 为的是避免由此处自动升级，如果没有以下代码，
+			// 回导致重启后又重复提醒更新的问题（实际已经更新至最新了）
+			serverValue=AppConnect.getInstance(this).getConfig("tvlistNew", "19700101");
+			editor.putString("tvlistDate", serverValue);
+			editor.commit();
+			
+			Toast.makeText(ChannelTabActivity.this.getApplicationContext(), "正在下载直播地址", Toast.LENGTH_LONG).show();
+			
 			// 沒有频道数据库，则第一次启动自动加载服务器列表地址
 			startRefreshList();
 			Log.i(LOGTAG, "===>has no database, load remote playlist first");
@@ -268,11 +286,53 @@ public class ChannelTabActivity extends TabActivity implements
 		/* ======================================================== */
 		
 		// 2013-08-05获取在线参数tvlistNew（日期形式），用以标记节目源地址是否有更新
-		String value=AppConnect.getInstance(this).getConfig("tvlistNew", "20130101");
-		Log.i(LOGTAG, "===> get netServer value : " + value);
-		//=====
+		if (isRefreshing == false) {	/* 如果不在刷新 */
+			if (tvlistNew()) {
+				//  如果服务器上的节目源日期大于本地日期，那么需要更新
+				new AlertDialog.Builder(this)
+				.setIcon(R.drawable.ic_dialog_alert)
+				.setTitle("节目源有更新")
+				.setMessage("现在刷新吗？")
+				.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						})
+				.setPositiveButton(R.string.confirm,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								// 正在刷新
+								isRefreshing = true;
+								
+								editor.putString("tvlistDate", serverValue);
+								editor.commit();
+								
+								// 刷新节目列表
+								startRefreshList();
+							}
+						}).show();
+			}
+		}
+		//==========================================================
 	}
 
+	// 判断节目源地址是否有更新
+	private Boolean tvlistNew() {
+		serverValue=AppConnect.getInstance(this).getConfig("tvlistNew", "19700101");
+		Log.i(LOGTAG, "===> get netServer value : " + serverValue);
+		// 获取本地存储的上次更新的日期，默认值为每次提交时的时间
+		int localValue = Integer.parseInt(sharedPreferences.getString("tvlistDate", GlobalValue.tvlistVersion));
+		int netValue = Integer.parseInt(serverValue);
+		
+		if (netValue > localValue) {
+			return true;
+		} else 
+			return false;
+	}
+	
 	// 从数据库listView
 	private void getPlayList() {
 		// 重新加载当前的播放列表
@@ -309,6 +369,9 @@ public class ChannelTabActivity extends TabActivity implements
 		setTiyuView();
 		setYuleView();
 		setQitaView();
+		
+		// 刷新结束
+		isRefreshing = false;
 	}
 
 	@Override
@@ -741,7 +804,48 @@ public class ChannelTabActivity extends TabActivity implements
 				break;
 			case R.id.refresh_btn:
 				// 更新服务器地址
-				startRefreshList();
+				// 判断是否正在刷新
+				if (isRefreshing == true) {
+					// 发出警告toast
+					Toast.makeText(ChannelTabActivity.this.getApplicationContext(), "正在刷新中", Toast.LENGTH_LONG).show();
+				} else if (tvlistNew()){
+					// 正在刷新
+					isRefreshing = true;
+					
+					editor.putString("tvlistDate", serverValue);
+					editor.commit();
+					
+					// 刷新节目列表
+					startRefreshList();
+				} else {
+					// 地址已经是最新，再提供一个强制更新的按钮
+//					Toast.makeText(ChannelTabActivity.this.getApplicationContext(), "节目源已经是最新", Toast.LENGTH_LONG).show();
+					new AlertDialog.Builder(ChannelTabActivity.this)
+					.setIcon(R.drawable.ic_dialog_alert)
+					.setTitle("温馨提示")
+					.setMessage("已经是最新地址！\n需要强制刷新吗？")
+					.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							})
+					.setPositiveButton(R.string.confirm,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									// 正在刷新
+									isRefreshing = true;
+									
+//									editor.putString("tvlistDate", serverValue);
+//									editor.commit();
+									
+									// 刷新节目列表
+									startRefreshList();
+								}
+							}).show();
+				}
 				break;
 			default:
 				Log.d(LOGTAG, "not supported btn id");

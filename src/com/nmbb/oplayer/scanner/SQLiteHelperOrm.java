@@ -3,6 +3,7 @@ package com.nmbb.oplayer.scanner;
 import java.sql.SQLException;
 
 import org.stagex.danmaku.OPlayerApplication;
+import org.stagex.danmaku.util.GlobalValue;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,7 +15,7 @@ import com.j256.ormlite.table.TableUtils;
 
 public class SQLiteHelperOrm extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "kekePlayer.db";
-	private static final int DATABASE_VERSION = 4;			/* modify 2013-07-28 */
+	private static final int DATABASE_VERSION = GlobalValue.dataBaseVerion;	
 
 	public SQLiteHelperOrm(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -3,6 +3,7 @@ package org.stagex.danmaku.activity;
 import java.io.File;
 
 import org.keke.player.R;
+import org.stagex.danmaku.util.GlobalValue;
 import org.stagex.danmaku.util.Network;
 import org.stagex.danmaku.util.SystemUtility;
 
@@ -38,7 +39,7 @@ public class HomeActivity extends Activity implements UpdatePointsNotifier {
 	private Editor editor;
 
 	// FIXME 如果数据库变化了，根据版本号，需要在这里添加判别代码
-	private int DBversion = 4; /* 特别注意，这里要与数据库SQLiteHelperOrm.java中的版本号一致 */
+	private int DBversion = GlobalValue.dataBaseVerion; /* 特别注意，这里要与数据库SQLiteHelperOrm.java中的版本号一致 */
 	private boolean DBChanged = false;
 
 	private String displayPointsText;
