@@ -266,6 +266,11 @@ public class ChannelTabActivity extends TabActivity implements
 			showPlayList();
 		}
 		/* ======================================================== */
+		
+		// 2013-08-05获取在线参数tvlistNew（日期形式），用以标记节目源地址是否有更新
+		String value=AppConnect.getInstance(this).getConfig("tvlistNew", "20130101");
+		Log.i(LOGTAG, "===> get netServer value : " + value);
+		//=====
 	}
 
 	// 从数据库listView
