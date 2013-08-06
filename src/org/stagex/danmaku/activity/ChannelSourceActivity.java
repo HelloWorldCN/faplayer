@@ -77,6 +77,35 @@ public class ChannelSourceActivity extends Activity {
 			/* 广告栏控件 */
 			LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
 			new AdView(this, container).DisplayAd();
+			
+			// TODO 2013-08-06
+			// 此处加载去广告积分优惠活动
+			String serverValue=AppConnect.getInstance(this).getConfig("adactivity", null);
+			if (serverValue != null) {
+				new AlertDialog.Builder(ChannelSourceActivity.this)
+				.setIcon(R.drawable.ic_dialog_alert)
+				.setTitle("缤纷活动")
+				.setMessage(serverValue)
+				.setPositiveButton("不再提醒",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(
+									DialogInterface dialog,
+									int which) {
+								// TODO
+							}
+						})
+				.setNegativeButton("知道了",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(
+									DialogInterface dialog,
+									int which) {
+								dialog.cancel();
+							}
+						}).show();
+			}
+			//==============
 		}
 		//
 		// // 设置监听事件

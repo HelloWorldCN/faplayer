@@ -87,6 +87,13 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 			Log.d(LOGTAG, "检测到为软解码模式");
 		}
 
+		//========================================================
+		// 2013-08-06
+		// 由于新版1.3.1之后加入了积分要求在线配置的功能，所以可能会有调节功能
+		// 如某段时间搞活动，要求的积分较少，过一段时间，可能要上调
+		// 主要根据收益情况调整（这部分工作放到HomeActivity中去做）
+		//========================================================
+		
 		/* 检测是否需要显示广告 */
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
 		editor = sharedPreferences.edit();
@@ -160,13 +167,29 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 					editor.commit();
 					Log.d(LOGTAG, "设置为有广告模式");
 				} else {
-
-					if (sharedPreferences.getInt("pointTotal", 0) <= 500) {
+					// 在线获取需要的积分参数，以便随时可以控制积分值
+					String noAdPoint=AppConnect.getInstance(SetupActivity.this).getConfig("noAdPoint", "88888");
+					if (noAdPoint.equals("88888")) {
+						// 如果因为首次运行网络原因，获取到的是88888，说明需要提醒用户联网操作
+						new AlertDialog.Builder(SetupActivity.this)
+						.setIcon(R.drawable.ic_dialog_alert)
+						.setTitle("温馨提示")
+						.setMessage("亲，该操作需要联网操作哦！\n同时，该操作需要打开网络后重新启动一次！")
+						.setPositiveButton("知道了",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+									}
+								}).show();
+						break;
+					}
+					if (sharedPreferences.getInt("pointTotal", 0) <=  Integer.parseInt(noAdPoint)) {
+					// 改为从万普的在线参数里获取这个积分值
 						new AlertDialog.Builder(SetupActivity.this)
 								.setIcon(R.drawable.ic_dialog_alert)
 								.setTitle("温馨提示")
 								.setMessage(
-										"您的积分不足500分，暂时无法去除广告！\n您可以打开应用推荐赚取相应的积分，感谢您的支持！")
+										"您的积分不足" + noAdPoint + "分，暂时无法去除广告！\n您可以打开应用推荐赚取相应的积分，感谢您的支持！")
 								.setPositiveButton("赚积分",
 										new DialogInterface.OnClickListener() {
 											@Override
@@ -189,6 +212,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 												dialog.cancel();
 											}
 										}).show();
+						
 					} else {
 
 						int resource = SystemUtility

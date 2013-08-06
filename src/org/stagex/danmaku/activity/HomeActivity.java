@@ -172,6 +172,20 @@ public class HomeActivity extends Activity implements UpdatePointsNotifier {
 		// 启动广告
 		AppConnect.getInstance(this);
 
+		//========================================================
+		// 2013-08-06
+		// 由于新版1.3.1之后加入了积分要求在线配置的功能，所以可能会有调节功能
+		// 如某段时间搞活动，要求的积分较少，过一段时间，可能要上调
+		// 主要根据收益情况调整（这部分工作放到HomeActivity中去做）
+		// 在线获取需要的积分参数，以便随时可以控制积分值
+		String noAdPoint=AppConnect.getInstance(HomeActivity.this).getConfig("noAdPoint", "88888");
+		if (sharedPreferences.getInt("pointTotal", 0) <=  Integer.parseInt(noAdPoint)) {
+			editor.putBoolean("noAd", false);
+			editor.commit();
+			Log.d(LOGTAG, "===> reset Ad mode, has ad agatin");
+		}
+		//========================================================
+		
 		// 创建应用程序工作目录
 		File dir = new File(Environment.getExternalStorageDirectory().getPath()
 				+ "/kekePlayer");
