@@ -26,7 +26,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 	private static final String LOGTAG = "SetupActivity";
 
 	/* 顶部标题栏的控件 */
-	private ImageView button_home;
+//	private ImageView button_home;
 	private TextView button_back;
 	/* 设置控件 */
 	private RelativeLayout codec_sel;
@@ -56,7 +56,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 		setContentView(R.layout.setup);
 
 		/* 顶部标题栏的控件 */
-		button_home = (ImageView) findViewById(R.id.home_btn);
+//		button_home = (ImageView) findViewById(R.id.home_btn);
 		button_back = (TextView) findViewById(R.id.back_btn);
 		/* 设置控件 */
 		codec_sel = (RelativeLayout) findViewById(R.id.codec_sel);
@@ -115,7 +115,7 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 
 	// Listen for button clicks
 	private void setListensers() {
-		button_home.setOnClickListener(goListener);
+//		button_home.setOnClickListener(goListener);
 		button_back.setOnClickListener(goListener);
 		codec_sel.setOnClickListener(goListener);
 		about_sel.setOnClickListener(goListener);
@@ -131,10 +131,10 @@ public class SetupActivity extends Activity implements UpdatePointsNotifier {
 	private Button.OnClickListener goListener = new Button.OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.home_btn:
-				// 退回主界面(homeActivity)
-				finish();
-				break;
+//			case R.id.home_btn:
+//				// 退回主界面(homeActivity)
+//				finish();
+//				break;
 			case R.id.back_btn:
 				// 回到上一个界面(Activity)
 				finish();

@@ -184,6 +184,12 @@ public class HomeActivity extends Activity implements UpdatePointsNotifier {
 			editor.commit();
 			Log.d(LOGTAG, "===> reset Ad mode, has ad agatin");
 		}
+		
+		// 2013-08-08
+		// 为了不重复在source界面出现广告积分活动，每次启动程序只会运行一次广告活动
+		// 同时，广告活动只会在有广告出现是才显示
+		editor.putBoolean("showActivity", true);
+		editor.commit();
 		//========================================================
 		
 		// 创建应用程序工作目录

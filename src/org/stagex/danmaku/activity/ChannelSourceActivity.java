@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +48,7 @@ public class ChannelSourceActivity extends Activity {
 	private TextView button_back;
 
 	private SharedPreferences sharedPreferences;
+	private Editor editor;
 
 	private Boolean channel_star = false;
 	private Boolean isSelfTV = false;
@@ -71,6 +73,7 @@ public class ChannelSourceActivity extends Activity {
 		//
 		// 检测是否需要显示广告
 		sharedPreferences = getSharedPreferences("keke_player", MODE_PRIVATE);
+		editor = sharedPreferences.edit();
 		if (sharedPreferences.getBoolean("noAd", false)) {
 			// nothing
 		} else {
@@ -78,34 +81,47 @@ public class ChannelSourceActivity extends Activity {
 			LinearLayout container = (LinearLayout) findViewById(R.id.AdLinearLayout);
 			new AdView(this, container).DisplayAd();
 			
-			// TODO 2013-08-06
-			// 此处加载去广告积分优惠活动
-			String serverValue=AppConnect.getInstance(this).getConfig("adactivity", null);
-			if (serverValue != null) {
-				new AlertDialog.Builder(ChannelSourceActivity.this)
-				.setIcon(R.drawable.ic_dialog_alert)
-				.setTitle("缤纷活动")
-				.setMessage(serverValue)
-				.setPositiveButton("不再提醒",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(
-									DialogInterface dialog,
-									int which) {
-								// TODO
-							}
-						})
-				.setNegativeButton("知道了",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(
-									DialogInterface dialog,
-									int which) {
-								dialog.cancel();
-							}
-						}).show();
+			// TODO 2013-08-08
+			if (sharedPreferences.getBoolean("showActivity", true)) {
+				// TODO 2013-08-06
+				// 此处加载去广告积分优惠活动
+				String serverValue=AppConnect.getInstance(this).getConfig("adactivity", null);
+				if (serverValue != null) {
+					new AlertDialog.Builder(ChannelSourceActivity.this)
+					.setIcon(R.drawable.ic_dialog_alert)
+					.setTitle("去广告活动")
+					.setMessage(serverValue)
+					.setPositiveButton("退出前不再提醒",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(
+										DialogInterface dialog,
+										int which) {
+									// TODO
+									// 2013-08-08
+									// 为了不重复在source界面出现广告积分活动，每次启动程序只会运行一次广告活动
+									// 同时，广告活动只会在有广告出现是才显示
+									editor.putBoolean("showActivity", false);
+									editor.commit();
+								}
+							})
+					.setNegativeButton("赚积分",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(
+										DialogInterface dialog,
+										int which) {
+									// 打开设置界面
+									Intent intent = new Intent();
+									intent.setClass(ChannelSourceActivity.this, SetupActivity.class);
+									startActivity(intent);
+									//===
+									dialog.cancel();
+								}
+							}).show();
+				}
+				//==============
 			}
-			//==============
 		}
 		//
 		// // 设置监听事件
